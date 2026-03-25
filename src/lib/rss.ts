@@ -135,7 +135,9 @@ export async function fetchArticles(): Promise<Article[]> {
         let realTitle: string | null = null;
         const safeGuid = typeof item.guid === 'string' ? item.guid : null;
         const actualLink = typeof item.link === 'string' ? item.link : (((item.link as any)?.href as string) || '#');
-        const articleId = String(safeGuid || actualLink || Math.random());
+        const rawId = String(safeGuid || actualLink || "rand-" + Math.random());
+        // On crée un ID "propre" (URL-safe) pour éviter les erreurs 404 liées aux caractères spéciaux
+        const articleId = Buffer.from(rawId).toString('base64url');
         
         if (actualLink !== '#' && !imageUrl) {
             const ogData = await fetchOgData(actualLink);
