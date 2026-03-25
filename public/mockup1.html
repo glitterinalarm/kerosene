@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+  body { font-family: 'Syne', sans-serif; background: #fcfcfc; margin: 0; padding: 4vw; color: #050505; }
+  .bento-hero {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 1vw;
+      height: 60vh;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+  }
+  .bento-main-img {
+      grid-column: 1 / 2;
+      grid-row: 1 / 3;
+      background: url('https://www.danstapub.com/wp-content/uploads/2026/03/Nike-1.webp') center/cover;
+      position: relative;
+  }
+  .bento-label {
+      position: absolute; top: 1rem; left: 1rem;
+      background: #050505; color: #fff; padding: 0.3rem 0.6rem;
+      font-size: 0.75rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em;
+  }
+  .bento-title-block {
+      grid-column: 2 / 3; grid-row: 1 / 2;
+      background: #050505; color: #fff;
+      padding: 2vw; display: flex; flex-direction: column; justify-content: center;
+  }
+  .bento-title { font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 800; line-height: 1.1; margin: 0; letter-spacing: -0.02em; }
+  
+  .bento-insight-block {
+      grid-column: 2 / 3; grid-row: 2 / 3;
+      background: url('https://www.danstapub.com/wp-content/uploads/2026/03/Nike-3.webp') center/cover;
+      position: relative;
+  }
+  .bento-insight-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.7);
+      padding: 2vw; display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .bento-insight-text { color: #fff; font-size: 1.1rem; line-height: 1.5; margin: 0; font-weight: 500; }
+  .bento-insight-label { font-size: 0.65rem; color: #aaa; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; font-weight: 800; }
+</style>
+</head>
+<body>
+    <h3 style="text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; margin-bottom: 2vw;">Maquette 1 : L'Édito "Bento Box" (Format Grille Stricte 60vh)</h3>
+    <div class="bento-hero">
+        <div class="bento-main-img"><span class="bento-label">SPORT</span></div>
+        <div class="bento-title-block">
+            <h2 class="bento-title">Nike dévoile un maillot qui s'inspire de la Statue de la Liberté pour les Bleus</h2>
+        </div>
+        <div class="bento-insight-block">
+            <div class="bento-insight-overlay">
+                <span class="bento-insight-label">L'ŒIL DU D.A.</span>
+                <p class="bento-insight-text">« Abandon radical du blanc traditionnel pour un "vert-de-gris" narratif historique, le vêtement de performance se mue en pur artefact streetwear. »</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

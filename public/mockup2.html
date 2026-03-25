@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+  body { font-family: 'Syne', sans-serif; background: #fcfcfc; margin: 0; padding: 4vw; }
+  .cover-hero {
+      position: relative;
+      height: 60vh;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      background: url('https://www.danstapub.com/wp-content/uploads/2026/03/Nike-1.webp') center 20%/cover;
+      border-radius: 8px;
+      overflow: hidden;
+  }
+  .cover-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 4vw; color: #fff;
+  }
+  .cover-label {
+      background: #fff; color: #000; padding: 0.3rem 0.6rem;
+      font-size: 0.75rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em;
+      align-self: flex-start; margin-bottom: 2vw;
+  }
+  .cover-title { font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 800; line-height: 1; margin: 0 0 1rem 0; letter-spacing: -0.02em; max-width: 900px; }
+  .cover-insight { font-size: 1.2rem; line-height: 1.5; max-width: 800px; margin: 0; font-weight: 500; color: #ddd; }
+  .cover-insight strong { color: #fff; }
+</style>
+</head>
+<body>
+    <h3 style="text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; margin-bottom: 2vw;">Maquette 2 : La "Cover" Magazine (Format Full-Bleed 60vh)</h3>
+    <div class="cover-hero">
+        <div class="cover-overlay">
+            <span class="cover-label">SPORT</span>
+            <h2 class="cover-title">Nike dévoile un maillot qui s'inspire de la Statue de la Liberté pour les Bleus</h2>
+            <p class="cover-insight"><strong>L'ŒIL DU D.A. :</strong> L'équipementier américain redéfinit les frontières du patriotisme avec une série de tenues pour la Coupe du Monde 2026 qui relèguent le drapeau traditionnel au rang de relique.</p>
+        </div>
+    </div>
+</body>
+</html>
