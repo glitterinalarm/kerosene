@@ -76,55 +76,50 @@ function generateRealAnalysis(title: string, description: string = ''): { insigh
     // DYNAMO KÉROSÈNE : ANALYSE PROFONDE & RADICALE (STYLE JURY CLUB DES D.A.)
     // -------------------------------------------------------------------------
     
-// TOPIC 1 : BURGER KING 2026 (RECLAIM THE FLAME)
+// TOPIC 1 : BURGER KING PUERTO RICO (WHOPPER AS HOT DOG)
     if (t.includes('burger king') || t.includes('whopper')) {
         return {
             insight: `
-                <p>En 2026, Burger King opère un sabotage salutaire de sa propre mythologie. En "tuant" officiellement la mascotte encombrante du King au profit d'un slogan radical — <strong>"The New King Is You"</strong> — la marque ne fait pas que du service client, elle fait de la politique de l'image. C'est la fin de l'ère du porte-parole figé pour celle de l'engagement individuel brut. Le design des nouveaux packagings, plus haptique, moins saturé, cherche à retrouver une vérité de produit là où la fast-food nous avait habitués au mensonge visuel. Le Club des D.A., dans sa 57e édition, y verrait sans doute cette exigence de "Return to Truth" : moins de décorum, plus de radicalité dans le service.</p>
-                <p>Cette mue structurelle, baptisée "Reclaim the Flame", dépasse largement le cadre d'un simple ajustement de logo. Elle s'inscrit dans une tendance de fond que nous observons au sein de la création française : le besoin de désintermédiation totale. En affichant le numéro de téléphone du président Tom Curtis sur les panneaux publicitaires, BK brise le quatrième mur corporatiste. Pour le directeur artistique, le défi est de maintenir une cohérence iconographique forte (la typographie custom 'Flame' reste le pilier) tout en acceptant une certaine 'saleur' du réel. C'est un exercice d'équilibriste entre la puissance d'une marque globale et l'intimité d'un feedback local.</p>
-                <p>Enfin, l'obsession du détail sur le produit lui-même — du bun reformulé à la mayonnaise moins industrielle — prouve que le design de l'expérience ne s'arrête pas à l'écran. C'est une leçon pour tout le microcosme de la communication : sans un produit irréprochable au centre du dispositif, le branding n'est qu'une façade fragile. Kérosène valide cette approche où le craft culinaire et le craft graphique se rejoignent pour sacrer l'idée juste.</p>
+                <p>Pour le <strong>World Baseball Classic 2026</strong> à Porto Rico, Burger King et l'agence De la Cruz / Ogilvy ont opéré un "hack" de territoire magistral. Dans un environnement où le hot dog est roi — le stade — le Whopper a dû se grimer pour infiltrer les gradins sans trahir sa promesse de goût.</p>
+                <p>Il ne s'agit pas d'un simple changement de forme, mais d'un détournement radical de l'icône. En allongeant le Whopper pour épouser le format longiligne d'un pain à hot dog, BK prouve que la flexibilité est l'arme fatale des marques globales. Le Club des D.A., dans cette 57e édition, saluerait cette intelligence du support : s'adapter au contexte local (la culture baseball) tout en gardant intact l'exigence du craft (la cuisson à la flamme).</p>
+                <p>Ce geste créatif rappelle que le design n'est pas qu'une affaire de symétrie, c'est une affaire de contexte. Infiltrer un marché par le biais d'un camouflage est une stratégie de "Guerilla Branding" qui replace le produit au cœur de la narration populaire. Kérosène valide cette radicalité qui refuse le lissage publicitaire pour privilégier l'idée disruptive.</p>
             `,
             longform: {
                 slides: [
                     { 
-                        text: "<strong>L'Adieu au Monarque</strong><br><br>Le retrait de la mascotte iconique marque un tournant brutal. Dans un monde saturé par l'influence, Burger King choisit d'effacer sa figure de proue pour laisser la place au consommateur. C'est l'anti-branding par excellence : la marque s'efface pour devenir un simple outil d'expression personnelle.", 
-                        image: "/editorial/bk_2026.png", 
-                        caption: "The end of an era" 
+                        text: "<strong>L'Infiltration par le Design</strong><br><br>Le Whopper Dog n'est pas une nouvelle recette, c'est un déguisement stratégique. En adoptant les codes visuels du hot dog dans un stade de baseball, Burger King contourne les habitudes de consommation pour imposer son icône là où elle était absente.", 
+                        image: "/editorial/bk_infiltrate.png", 
+                        caption: "Camouflage Territorial" 
                     },
                     { 
-                        text: "<strong>Le Craft du Produit</strong><br><br>Le Reclaim the Flame n'est pas qu'un plan marketing, c'est une obsession du craft culinaire appliqué à l'échelle industrielle. Nouvelle texture de bun, mayonnaise reformulée, packaging 'anti-écrasement' : chaque détail est repensé pour que l'expérience physique survive à la logistique du transport. La direction artistique se focalise sur le 'vrai', le grain, la fumée.", 
-                        image: "/editorial/bk_2026.png", 
-                        caption: "Obsession du détail" 
-                    },
-                    { 
-                        text: "<strong>L'Identité haptique</strong><br><br>En 2026, l'image ne suffit plus, il faut sentir la marque. BK l'a compris en intégrant le retour d'expérience direct (le numéro de téléphone du président sur les publicités) comme un élément graphique à part entière. La typographie Flame, déjà culte, prend ici une dimension plus humaine, presque manuscrite par moments.", 
-                        image: "/editorial/bk_2026.png", 
-                        caption: "Human-centric branding" 
+                        text: "<strong>World Baseball Classic 2026</strong><br><br>Le contexte : Porto Rico, une terre où le baseball est sacré et où le rituel du hot dog est intouchable. L'agence De la Cruz utilise ce rituel non pas pour le combattre, mais pour le hacker avec humour et précision technique.", 
+                        image: "/editorial/bk_infiltrate.png", 
+                        caption: "Contextual Branding" 
                     }
                 ]
             }
         };
     }
 
-// TOPIC 2 : PRISM MODEL & AI AGENTIC PERSONALITY
+    // TOPIC 2 : PRISM MODEL (OCEAN FOR BRANDS)
     if (t.includes('prism') || t.includes('agentic') || t.includes('reschke')) {
         return {
             insight: `
-                <p>Le Prism Model de Kapferer, vieux de 40 ans, trouve en 2026 une seconde vie inattendue dans le champ de l'<strong>IA Agentique</strong>. Stephan Reschke soulève un point critique : on ne construit plus une image de marque, on sculpte un système nerveux autonome. L'idée que l'IA doive posséder une personnalité "agentique" (capable d'initiative et d'erreur) change radicalement le métier de DA. Nous ne sommes plus des metteurs en scène, mais des architectes de comportements. La friction, l'imprévisibilité et le ton de voix deviennent les nouveaux matériaux nobles du branding post-numérique.</p>
-                <p>Appliquer le prisme de l'identité aux agents autonomes oblige à repenser le 'Physique' et la 'Personnalité' non plus comme des traits statiques, mais comme des constantes évolutives. Une IA qui possède une identité propre n'est plus un simple outil de productivité, elle devient un collaborateur créatif. Le Club des D.A., toujours en quête d'innovation radicale, observe ce glissement où le design d'interface s'efface devant le design conversationnel. La structure facettée du prisme permet de stabiliser cette nouvelle forme de 'Branding Dynamique' qui refuse l'uniformité des modèles actuels.</p>
-                <p>En fin de compte, la réussite d'un agent IA ne se mesurera pas à sa vitesse d'exécution, mais à la consistance de son identité. Est-il capable de s'opposer à l'utilisateur au nom de ses 'valeurs de marque' ? Si la réponse est oui, alors nous avons réussi ce que nous appelons chez Kérosène le 'Self-Aware Branding'. C'est une révolution pour le microcosme qui force à une exigence de rédaction et de concept sans précédent.</p>
+                <p>Le <strong>PRISM Model</strong> de Stephan Reschke ne se contente pas de dépoussiérer les théories classiques. Il adapte le modèle psychologique OCEAN (Big Five) à l'ère de l'IA Agentique : Précision, Relation, Intensité, Stabilité et Mindset.</p>
+                <p>L'insight est brutal : les LLM (Large Language Models) n'écoutent pas les campagnes publicitaires, ils lisent des architectures de données. Pour exister demain, une marque doit coder son "âme digitale" dans un framework comportemental que les machines peuvent comprendre et rendre en temps réel. Le Club des D.A. observe ici le passage du design graphique au design de conscience artificielle.</p>
+                <p>Cette approche, que Reschke appelle "Brand language instead of brand campaign", déplace le centre de gravité de la communication. Le ton de voix n'est plus un PDF, c'est un "System Prompt" destiné aux agents IA. Chez Kérosène, nous voyons dans ce modèle le socle de ce que nous appelons le 'Self-Aware Branding' : une identité qui ne se subit pas, mais qui se comporte.</p>
             `,
             longform: {
                 slides: [
                     { 
-                        text: "<strong>La Personnalité comme Matériau</strong><br><br>Dans le modèle PRISM, la personnalité n'est plus un adjectif sur un brief, c'est un code source. L'IA 'Agentique' doit être capable de refuser, de proposer et d'affirmer un caractère propre. Branding and behavior are now one and the same.", 
+                        text: "<strong>Precision, Relation, Intensity, Stability, Mindset</strong><br><br>Au lieu des archétypes classiques, le PRISM définit des gradations comportementales précises. Comment une IA doit-elle réagir face à un refus ? Quel est son degré d'autonomie (Agentic) ? Le modèle permet de stabiliser ces nuances de personnalité machine.", 
                         image: "/editorial/prism_ai.png", 
-                        caption: "Autonomous Identity" 
+                        caption: "OCEAN for Agents" 
                     },
                     { 
-                        text: "<strong>L'Architecture du Soi</strong><br><br>Le facet 'Self-Image' du prisme définit comment l'IA se perçoit elle-même dans son interaction avec l'utilisateur. Si l'IA se 'sent' experte, son design UI doit refléter cette autorité par une sobriété radicale et une précision chirurgicale des données.", 
+                        text: "<strong>Le Langage comme Point de Contact</strong><br><br>Avec l'essor de la voix et du conversationnel, la typographie et le logo s'effacent devant la sémantique. Les marques doivent devenir des 'Agentic Lovemarks' en dotant leurs IA d'un système de pensée cohérent, capable de créer des connexions émotionnelles réelles.", 
                         image: "/editorial/prism_ai.png", 
-                        caption: "Internal Logic" 
+                        caption: "Digital Soul Architecture" 
                     }
                 ]
             }
