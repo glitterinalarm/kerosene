@@ -88,13 +88,23 @@ function generateRealAnalysis(title: string, description: string = ''): { insigh
                 slides: [
                     { 
                         text: "<strong>L'Infiltration par le Design</strong><br><br>Le Whopper Dog n'est pas une nouvelle recette, c'est un déguisement stratégique. En adoptant les codes visuels du hot dog dans un stade de baseball, Burger King contourne les habitudes de consommation pour imposer son icône là où elle était absente.", 
-                        image: "/editorial/bk_infiltrate.png", 
+                        image: "https://creativereview.imgix.net/uploads/2026/03/01-1.png?auto=compress,format&crop=faces,entropy,edges&fit=crop&q=60&w=1920&h=1080", 
                         caption: "Camouflage Territorial" 
                     },
                     { 
+                        text: "<strong>L'Ingénierie du Packaging</strong><br><br>Le secret réside dans une boîte verticale innovante dotée d'un 'Vertical Lock'. Ce dispositif maintient le Whopper sur la tranche, masquant sa forme circulaire habituelle pour parfaire l'illusion du hot-dog à l'ouverture.", 
+                        image: "https://creativereview.imgix.net/uploads/2026/03/03-1.png?auto=compress,format&q=60&w=2000", 
+                        caption: "Packaging Structure" 
+                    },
+                    { 
                         text: "<strong>World Baseball Classic 2026</strong><br><br>Le contexte : Porto Rico, une terre où le baseball est sacré et où le rituel du hot dog est intouchable. L'agence De la Cruz utilise ce rituel non pas pour le combattre, mais pour le hacker avec humour et précision technique.", 
-                        image: "/editorial/bk_infiltrate.png", 
+                        image: "https://image.adsoftheworld.com/35f27gj1wqwoj68iddc3u2eqkckk", 
                         caption: "Contextual Branding" 
+                    },
+                    { 
+                        text: "<strong>Le Hack comme Outil Commercial</strong><br><br>En retournant simplement son produit phare, Burger King s'insère dans une conversation nationale sans changer une seule ligne de sa production. Une leçon de minimalisme stratégique et de puissance de marque.", 
+                        image: "https://i.ytimg.com/vi/4yIboS6B-88/maxresdefault.jpg", 
+                        caption: "Strategic Minimalism" 
                     }
                 ]
             }
@@ -113,12 +123,12 @@ function generateRealAnalysis(title: string, description: string = ''): { insigh
                 slides: [
                     { 
                         text: "<strong>Precision, Relation, Intensity, Stability, Mindset</strong><br><br>Au lieu des archétypes classiques, le PRISM définit des gradations comportementales précises. Comment une IA doit-elle réagir face à un refus ? Quel est son degré d'autonomie (Agentic) ? Le modèle permet de stabiliser ces nuances de personnalité machine.", 
-                        image: "/editorial/prism_ai.png", 
+                        image: "https://cdn.brandingmag.com/wp-content/uploads/2026/03/Stephan-Reschke-Graphic1-2048x2048.png", 
                         caption: "OCEAN for Agents" 
                     },
                     { 
                         text: "<strong>Le Langage comme Point de Contact</strong><br><br>Avec l'essor de la voix et du conversationnel, la typographie et le logo s'effacent devant la sémantique. Les marques doivent devenir des 'Agentic Lovemarks' en dotant leurs IA d'un système de pensée cohérent, capable de créer des connexions émotionnelles réelles.", 
-                        image: "/editorial/prism_ai.png", 
+                        image: "https://cdn.brandingmag.com/wp-content/uploads/2026/03/Stephan-Reschke-Graphic2-2048x1334.png", 
                         caption: "Digital Soul Architecture" 
                     }
                 ]
@@ -138,12 +148,12 @@ function generateRealAnalysis(title: string, description: string = ''): { insigh
                 slides: [
                     { 
                         text: "<strong>L'Éloge de l'Erreur</strong><br><br>Melis affirme que son travail ne réussit que s'il est 'légèrement imparfait'. C'est ce grain, cette incertitude du trait qui crée le lien émotionnel impossible à reproduire pour une machine. Son processus hybride (main puis numérique) garde la trace du geste originel.", 
-                        image: "/editorial/francesca_art.png", 
+                        image: "https://media.itsnicethat.com/images/M.Francesca_Melis_Cover_ETC_Maga.format-webp.width-2880_z182sRuA1dz0b4qh.webp", 
                         caption: "Handmade friction" 
                     },
                     { 
                         text: "<strong>Mythologie Sarde</strong><br><br>Inspirée par son éducation en Sardaigne, elle transforme les paysages botaniques en environnements surréalistes. Le 'Psychedelic Floral' devient ici un langage universel pour traiter de la santé mentale et de l'identité avec une douceur visuelle impitoyable.", 
-                        image: "/editorial/francesca_art.png", 
+                        image: "https://media.itsnicethat.com/images/Maria_Francesca_Melis_Hermes_01.format-webp.width-2880_LCvEC3zcBTh0ufvZ.webp", 
                         caption: "Organic surrealism" 
                     }
                 ]
