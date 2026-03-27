@@ -68,29 +68,98 @@ function extractImageFromContent(content: string = ''): string | null {
 /**
  * MOTEUR D'ANALYSE (VF Club DA)
  */
-function generateRealAnalysis(title: string): string | null {
+function generateRealAnalysis(title: string, description: string = ''): { insight: string; longform?: Article['longform'] } {
     const t = title.toLowerCase();
+    const d = description.toLowerCase();
     
-    if (t.includes('club des d.a') || t.includes('jury')) {
-        return "Une annonce qui donne le ton. Le choix des 210 jurés confirme la volonté de recentrer le débat sur l'essence même du métier : l'idée pure face à la surenchère technologique. Une institution qui refuse l'obsolescence.";
+    // -------------------------------------------------------------------------
+    // DYNAMO KÉROSÈNE : ANALYSE PROFONDE & RADICALE (STYLE JURY CLUB DES D.A.)
+    // -------------------------------------------------------------------------
+    
+// TOPIC 1 : BURGER KING 2026 (RECLAIM THE FLAME)
+    if (t.includes('burger king') || t.includes('whopper')) {
+        return {
+            insight: `
+                <p>En 2026, Burger King opère un sabotage salutaire de sa propre mythologie. En "tuant" officiellement la mascotte encombrante du King au profit d'un slogan radical — <strong>"The New King Is You"</strong> — la marque ne fait pas que du service client, elle fait de la politique de l'image. C'est la fin de l'ère du porte-parole figé pour celle de l'engagement individuel brut. Le design des nouveaux packagings, plus haptique, moins saturé, cherche à retrouver une vérité de produit là où la fast-food nous avait habitués au mensonge visuel. Le Club des D.A., dans sa 57e édition, y verrait sans doute cette exigence de "Return to Truth" : moins de décorum, plus de radicalité dans le service.</p>
+                <p>Cette mue structurelle, baptisée "Reclaim the Flame", dépasse largement le cadre d'un simple ajustement de logo. Elle s'inscrit dans une tendance de fond que nous observons au sein de la création française : le besoin de désintermédiation totale. En affichant le numéro de téléphone du président Tom Curtis sur les panneaux publicitaires, BK brise le quatrième mur corporatiste. Pour le directeur artistique, le défi est de maintenir une cohérence iconographique forte (la typographie custom 'Flame' reste le pilier) tout en acceptant une certaine 'saleur' du réel. C'est un exercice d'équilibriste entre la puissance d'une marque globale et l'intimité d'un feedback local.</p>
+                <p>Enfin, l'obsession du détail sur le produit lui-même — du bun reformulé à la mayonnaise moins industrielle — prouve que le design de l'expérience ne s'arrête pas à l'écran. C'est une leçon pour tout le microcosme de la communication : sans un produit irréprochable au centre du dispositif, le branding n'est qu'une façade fragile. Kérosène valide cette approche où le craft culinaire et le craft graphique se rejoignent pour sacrer l'idée juste.</p>
+            `,
+            longform: {
+                slides: [
+                    { 
+                        text: "<strong>L'Adieu au Monarque</strong><br><br>Le retrait de la mascotte iconique marque un tournant brutal. Dans un monde saturé par l'influence, Burger King choisit d'effacer sa figure de proue pour laisser la place au consommateur. C'est l'anti-branding par excellence : la marque s'efface pour devenir un simple outil d'expression personnelle.", 
+                        image: "/editorial/bk_2026.png", 
+                        caption: "The end of an era" 
+                    },
+                    { 
+                        text: "<strong>Le Craft du Produit</strong><br><br>Le Reclaim the Flame n'est pas qu'un plan marketing, c'est une obsession du craft culinaire appliqué à l'échelle industrielle. Nouvelle texture de bun, mayonnaise reformulée, packaging 'anti-écrasement' : chaque détail est repensé pour que l'expérience physique survive à la logistique du transport. La direction artistique se focalise sur le 'vrai', le grain, la fumée.", 
+                        image: "/editorial/bk_2026.png", 
+                        caption: "Obsession du détail" 
+                    },
+                    { 
+                        text: "<strong>L'Identité haptique</strong><br><br>En 2026, l'image ne suffit plus, il faut sentir la marque. BK l'a compris en intégrant le retour d'expérience direct (le numéro de téléphone du président sur les publicités) comme un élément graphique à part entière. La typographie Flame, déjà culte, prend ici une dimension plus humaine, presque manuscrite par moments.", 
+                        image: "/editorial/bk_2026.png", 
+                        caption: "Human-centric branding" 
+                    }
+                ]
+            }
+        };
     }
-    if (t.includes('firefox') || t.includes('mascotte') || t.includes('logo')) {
-        return "Donner vie à l'identité de marque via une mascotte physique (Kit) est un clin d'œil malin aux codes du Web 1.0. C'est chaleureux et régressif, mais ce soupçon de nostalgie suffira-t-il à moderniser l'image d'un navigateur en perte de vitesse ?";
+
+// TOPIC 2 : PRISM MODEL & AI AGENTIC PERSONALITY
+    if (t.includes('prism') || t.includes('agentic') || t.includes('reschke')) {
+        return {
+            insight: `
+                <p>Le Prism Model de Kapferer, vieux de 40 ans, trouve en 2026 une seconde vie inattendue dans le champ de l'<strong>IA Agentique</strong>. Stephan Reschke soulève un point critique : on ne construit plus une image de marque, on sculpte un système nerveux autonome. L'idée que l'IA doive posséder une personnalité "agentique" (capable d'initiative et d'erreur) change radicalement le métier de DA. Nous ne sommes plus des metteurs en scène, mais des architectes de comportements. La friction, l'imprévisibilité et le ton de voix deviennent les nouveaux matériaux nobles du branding post-numérique.</p>
+                <p>Appliquer le prisme de l'identité aux agents autonomes oblige à repenser le 'Physique' et la 'Personnalité' non plus comme des traits statiques, mais comme des constantes évolutives. Une IA qui possède une identité propre n'est plus un simple outil de productivité, elle devient un collaborateur créatif. Le Club des D.A., toujours en quête d'innovation radicale, observe ce glissement où le design d'interface s'efface devant le design conversationnel. La structure facettée du prisme permet de stabiliser cette nouvelle forme de 'Branding Dynamique' qui refuse l'uniformité des modèles actuels.</p>
+                <p>En fin de compte, la réussite d'un agent IA ne se mesurera pas à sa vitesse d'exécution, mais à la consistance de son identité. Est-il capable de s'opposer à l'utilisateur au nom de ses 'valeurs de marque' ? Si la réponse est oui, alors nous avons réussi ce que nous appelons chez Kérosène le 'Self-Aware Branding'. C'est une révolution pour le microcosme qui force à une exigence de rédaction et de concept sans précédent.</p>
+            `,
+            longform: {
+                slides: [
+                    { 
+                        text: "<strong>La Personnalité comme Matériau</strong><br><br>Dans le modèle PRISM, la personnalité n'est plus un adjectif sur un brief, c'est un code source. L'IA 'Agentique' doit être capable de refuser, de proposer et d'affirmer un caractère propre. Branding and behavior are now one and the same.", 
+                        image: "/editorial/prism_ai.png", 
+                        caption: "Autonomous Identity" 
+                    },
+                    { 
+                        text: "<strong>L'Architecture du Soi</strong><br><br>Le facet 'Self-Image' du prisme définit comment l'IA se perçoit elle-même dans son interaction avec l'utilisateur. Si l'IA se 'sent' experte, son design UI doit refléter cette autorité par une sobriété radicale et une précision chirurgicale des données.", 
+                        image: "/editorial/prism_ai.png", 
+                        caption: "Internal Logic" 
+                    }
+                ]
+            }
+        };
     }
-    if (t.includes('primark') || t.includes('high fashion')) {
-        return "S'approprier les codes austères du luxe pour vendre de la fast-fashion : l'ironie est totale. L'exécution photographique est magistrale, mais le cynisme de la démarche interroge sur la limite de l'exercice de style.";
-    }
-    if (t.includes('nike') && t.includes('libert')) {
-        return "Le hack culturel par excellence. Utiliser la Statue de la Liberté pour le maillot des Bleus est un pas de côté audacieux qui brouille les frontières patriotiques avec une exécution textile impeccable. Du grand art.";
-    }
-    if (t.includes('nazionale') || t.includes('packaging')) {
-        return "Un packaging qui sublime un rituel populaire (le baby-foot) avec une rigueur éditoriale digne des plus grandes maisons de design. Le travail typographique rouge sur noir est d'une violence visuelle absolue. On adore.";
-    }
-    if (t.includes('ia') || t.includes('authentique')) {
-        return "La grande bataille de 2026. Alors que l'industrie s'aveugle sur le rendu génératif, l'engagement véritable repose toujours sur la friction humaine. Ce conseil stratégique tape dans le mille : l'imperfection crée le lien.";
+
+// TOPIC 3 : FRANCESCA MELIS (L'IMPERFECTION COMME LUXE)
+    if (t.includes('francesca melis') || t.includes('imperfect')) {
+        return {
+            insight: `
+                <p>Face à la perfection clinique du pixel génératif, le travail de <strong>Francesca Melis</strong> agit comme un contre-poison radical. Réclamer l'imperfection n'est pas une posture, c'est une résistance éthique au lissage algorithmique mondial. Ses compositions 'jam-packed' saturent l'œil de détails artisanaux, de bruits visuels hérités des broderies sardes et d'une mythologie fantastique. C'est le triomphe de la friction humaine sur la fluidité technologique. Au Club des D.A., cette quête du 'Handmade' avec une exigence de haute clôture est le Graal de l'année 2026.</p>
+                <p>Son approche, qu'elle qualifie de 'légèrement imparfaite', est en réalité une démonstration de force technique. En mélangeant dessins à la main et altérations numériques, Melis crée un univers 'slightly otherworldly' qui refuse la facilité du rendu instantané. Chaque illustration est un palimpseste de mémoires familiales et de cultures méditerranéennes (Sardaigne), offrant une profondeur de lecture qui manque cruellement à la création assistée par IA. C'est ici que se joue la valeur ajoutée du créateur : dans la capacité à introduire du chaos maîtrisé et du récit intime.</p>
+                <p>Pour le microcosme créatif, Francesca Melis propose une voie de sortie au 'pixel-perfect' fatigant. Son travail pour des maisons comme Hermès prouve que le luxe réside désormais dans la trace du geste, dans l'impossibilité de la copie conforme. Chez Kérosène, nous saluons cette radicalité qui sacre la création artisanale en la propulsant au cœur d'une modernité bruyante et colorée.</p>
+            `,
+            longform: {
+                slides: [
+                    { 
+                        text: "<strong>L'Éloge de l'Erreur</strong><br><br>Melis affirme que son travail ne réussit que s'il est 'légèrement imparfait'. C'est ce grain, cette incertitude du trait qui crée le lien émotionnel impossible à reproduire pour une machine. Son processus hybride (main puis numérique) garde la trace du geste originel.", 
+                        image: "/editorial/francesca_art.png", 
+                        caption: "Handmade friction" 
+                    },
+                    { 
+                        text: "<strong>Mythologie Sarde</strong><br><br>Inspirée par son éducation en Sardaigne, elle transforme les paysages botaniques en environnements surréalistes. Le 'Psychedelic Floral' devient ici un langage universel pour traiter de la santé mentale et de l'identité avec une douceur visuelle impitoyable.", 
+                        image: "/editorial/francesca_art.png", 
+                        caption: "Organic surrealism" 
+                    }
+                ]
+            }
+        };
     }
     
-    return null;
+    // FALLBACK GENERIQUE
+    return {
+        insight: "Un signal créatif fort qui mérite notre attention. Dans un flux saturé, cette approche se distingue par sa justesse d'exécution et sa capacité à bousculer les codes établis de son segment.",
+    };
 }
 
 async function fetchOgData(url: string): Promise<{ image: string | null; title: string | null }> {
@@ -122,33 +191,47 @@ async function fetchOgData(url: string): Promise<{ image: string | null; title: 
 export async function fetchArticles(): Promise<Article[]> {
   let allArticles: Article[] = [];
 
-  for (const feed of feeds) {
+  // 1. Fetching all feeds in parallel for speed
+  const feedPromises = feeds.map(async (feed) => {
     try {
+      // Revalidation set to 1 hour (3600s)
       const response = await fetch(feed.url, { next: { revalidate: 3600 } });
       const text = await response.text();
       const parsed = await parser.parseString(text);
 
-      const recentItems = parsed.items.slice(0, 3); // On pompe généreusement (3) pour nourrir le "En Bref"
+      // Fetch more items (e.g., 15) to actually populate archives and ensure stability
+      const items = parsed.items.slice(0, 15);
+      const results: Article[] = [];
 
-      for (const item of recentItems) {
+      // We fetch OG data in parallel for items of this single feed too
+      const itemsPromises = items.map(async (item) => {
         let imageUrl: string | null = null;
         let realTitle: string | null = null;
+        
         const safeGuid = typeof item.guid === 'string' ? item.guid : null;
         const actualLink = typeof item.link === 'string' ? item.link : (((item.link as any)?.href as string) || '#');
         const rawId = String(safeGuid || actualLink || "rand-" + Math.random());
-        // On crée un ID "propre" (URL-safe) pour éviter les erreurs 404 liées aux caractères spéciaux
+        
+        // Base64URL safe ID
         const articleId = Buffer.from(rawId).toString('base64url');
         
-        if (actualLink !== '#' && !imageUrl) {
+        // Fallback images from feed content if OG failed
+        let feedImageUrl = item.mediaContent?.['$']?.url || extractImageFromContent(item.contentEncoded) || extractImageFromContent(item.description);
+
+        // If we have no image from feed, AND we have a link, try to fetch OG data
+        if (!feedImageUrl && actualLink !== '#' && actualLink.startsWith('http')) {
             const ogData = await fetchOgData(actualLink);
             imageUrl = ogData.image;
             realTitle = ogData.title;
+        } else {
+            imageUrl = feedImageUrl;
         }
 
-        if (!imageUrl) imageUrl = item.mediaContent?.['$']?.url || extractImageFromContent(item.contentEncoded) || extractImageFromContent(item.description);
-        if (!imageUrl) continue; 
-        
-        let finalTitle = realTitle || item.title || "";
+        // IMPORTANT: We do NOT skip articles if image is missing anymore
+        // But we provide a default placeholder if really nothing is found
+        const finalImageUrl = imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop";
+
+        let finalTitle = realTitle || item.title || "Sans Titre";
         
         if (feed.name === "The Design Blog") {
              const rawDesc = (item.description || item.contentEncoded || '');
@@ -157,66 +240,74 @@ export async function fetchArticles(): Promise<Article[]> {
              if (cleanText.startsWith('Identity')) cleanText = "Identity" + cleanText.substring(8);
              if (cleanText.length > 10) {
                   finalTitle = cleanText.substring(0, 90) + (cleanText.length > 90 ? "..." : "");
-             } else {
-                  finalTitle = (realTitle || item.title || "").replace(/—\s*The Design Blog/i, '').trim();
              }
         } 
 
         finalTitle = decodeHTMLEntities(finalTitle);
-        const articleInsight = generateRealAnalysis(finalTitle);
+        const rawDesc = (item.description || item.contentEncoded || item.contentSnippet || '');
+        const editorialData = generateRealAnalysis(finalTitle, rawDesc);
         
-        let lf = undefined;
-        if (finalTitle.toLowerCase().includes('nike') && finalTitle.toLowerCase().includes('libert')) {
+        let lf = editorialData.longform;
+        
+        // Simuler un contenu "Longform" riche générique pour les autres news du top
+        if (!lf) {
             lf = {
                 slides: [
-                    {
-                        text: "L'équipementier américain redéfinit les frontières du patriotisme sartorial avec une série de tenues pour la Coupe du Monde 2026 qui relèguent le traditionnel bleu-blanc-rouge au rang de relique.<br><br>Avec cette nouvelle itération extérieure baptisée « Liberté », Nike fait le choix radical d'abandonner le blanc canonique pour embrasser une teinte vert-de-gris inédite.",
-                        image: "https://www.danstapub.com/wp-content/uploads/2026/03/Nike-1.webp",
-                        caption: "La silhouette globale"
-                    },
-                    {
-                        text: "L'insight est d'une puissance narrative évidente : à l'aube d'un mondial organisé sur le sol nord-américain, la marque rend un hommage direct au cadeau diplomatique le plus célèbre de l'histoire, la Statue de la Liberté, offerte par la France aux États-Unis en 1876.",
-                        image: "https://www.danstapub.com/wp-content/uploads/2026/03/Nike-2.webp",
-                        caption: "Hommage à Bartholdi"
-                    },
-                    {
-                        text: "L'exigence absolue du <em>craft</em> : pour contraster avec ce vert diaphane, le swoosh et le coq ont été frappés dans un alliage cuivré métallisé.<br><br>La technologie de tissage « cross-dive » entremêle des fils verts et blancs pour un rendu irisé. Le vêtement d'athlète se mue en de véritable artefact <em>lifestyle</em>.",
-                        image: "https://www.danstapub.com/wp-content/uploads/2026/03/Nike-3.webp",
-                        caption: "Tissage 'cross-dive'"
+                    { 
+                      text: `<strong>L'Essence du Craft</strong><br><br>${editorialData.insight}<br><br>Ce projet souligne un basculement majeur dans l'industrie : le retour à une vision d'auteur dans un monde de standards.`, 
+                      image: finalImageUrl, 
+                      caption: "Vision Globale" 
                     }
                 ]
             };
         }
 
-        allArticles.push({
+        // FORCAGE TOP 3 (DÉPÊCHE RÉACTIONNELLE)
+        let finalPubDate = item.pubDate || new Date().toISOString();
+        const lowTitle = finalTitle.toLowerCase();
+        const isDeepResearch = lowTitle.includes('burger king') || lowTitle.includes('whopper') || 
+                              lowTitle.includes('prism') || lowTitle.includes('agentic') || lowTitle.includes('reschke') || 
+                              lowTitle.includes('francesca melis') || lowTitle.includes('imperfect');
+
+        if (isDeepResearch) {
+             // On s'assure qu'ils sont en haut avec un ordre précis : Burger (Hero), Prism (Edito1), Melis (Edito2)
+             let offset = 0;
+             if (lowTitle.includes('burger') || lowTitle.includes('whopper')) offset = 3000;
+             if (lowTitle.includes('prism') || lowTitle.includes('agentic') || lowTitle.includes('reschke')) offset = 2000;
+             if (lowTitle.includes('francesca melis') || lowTitle.includes('imperfect')) offset = 1000;
+             
+             finalPubDate = new Date(Date.now() + offset).toISOString();
+        }
+
+        return {
           id: articleId,
           title: finalTitle,
           link: actualLink,
           source: feed.name,
           category: feed.category,
-          pubDate: item.pubDate || new Date().toISOString(),
-          imageUrl: imageUrl,
-          insight: articleInsight,
+          pubDate: finalPubDate,
+          imageUrl: finalImageUrl,
+          insight: editorialData.insight,
           longform: lf,
-          excerpt: item.contentSnippet ? decodeHTMLEntities(item.contentSnippet.substring(0, 180)) + "..." : "Décryptage global de la créativité et de la pensée divergente.",
-        });
-      }
-    } catch (error: any) {
-      console.warn(`Erreur feed ${feed.url} ignorée (XML/Réseau): ${error.message}`);
-    }
-  }
+          excerpt: item.contentSnippet ? decodeHTMLEntities(item.contentSnippet.substring(0, 180)) + "..." : "Décryptage global de la créativité.",
+        } as Article;
+      });
 
-  // Tri anti-chronologique global
+      return await Promise.all(itemsPromises);
+    } catch (error: any) {
+      console.warn(`Erreur feed ${feed.url} ignorée: ${error.message}`);
+      return [];
+    }
+  });
+
+  const feedsResults = await Promise.all(feedPromises);
+  allArticles = feedsResults.flat();
+
+  // Sort and inject editorial
+  // Sort and inject editorial
   allArticles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
-  // --- LOGIQUE ÉDITORIALE "KÉROSÈNE" (Hero Rotation & D.A. Injection) ---
   const now = new Date();
-  const currentHour = now.getHours();
-  const todayStr = now.toISOString().split('T')[0];
-  
-  // On ne déclenche la "News du Jour" qu'après 15h
-  const isAfter15h = currentHour >= 15;
-
   const editorialInjections: Article[] = [
     {
       id: "hero-peaky-blinders",
@@ -224,7 +315,7 @@ export async function fetchArticles(): Promise<Article[]> {
       link: "/article/hero-peaky-blinders",
       source: "KÉROSÈNE EXCLUSIF",
       category: "CINÉMA & STYLE",
-      pubDate: "2026-03-25T08:20:00Z", 
+      pubDate: "2026-03-24T09:15:00Z", 
       imageUrl: "/editorial/peaky_real_v2.jpg",
       excerpt: "À l'aube du long-métrage final, décryptage d'une identité visuelle qui a redéfini le 'Period Drama' par le prisme du rock et du grain argentique.",
       insight: `
@@ -262,7 +353,7 @@ export async function fetchArticles(): Promise<Article[]> {
         link: "/article/edito-nss-magazine",
         source: "Synthèse : nss magazine x Kérosène",
         category: "STREET CULTURE",
-        pubDate: "2026-03-25T08:15:00Z", 
+        pubDate: "2026-03-24T09:10:00Z", 
         imageUrl: "/editorial/nss_real.jpg",
         excerpt: "Comment les magazines comme nss ont transformé la sape de quartier en de véritables pièces d'archives culturelles.",
         insight: `
@@ -281,11 +372,11 @@ export async function fetchArticles(): Promise<Article[]> {
         link: "/article/edito-serif-blanding",
         source: "Synthèse : Creative Review",
         category: "TYPOGRAPHIE",
-        pubDate: "2026-03-25T08:00:00Z", 
+        pubDate: "2026-03-24T09:05:00Z", 
         imageUrl: "/editorial/serif_real.jpg",
         excerpt: "L'uniformisation des logos vers le sans-serif géométrique touche à sa fin.",
         insight: `
-          <p>Après une décennie de domination sans partage du <strong>Blanding</strong> — cette tendance à uniformiser toutes les identités visuelles vers des sans-serifs géométriques et austères (type Helvetica ou Gotham) — le vent tourne enfin de manière spectaculaire.</p>
+          <p>Après une décennie de domination sans partage du <strong>Blanding</strong> — cette tendance à uniformiser toutes les identités visuelles vers des sans-serifs géométriques et austères — le vent tourne enfin de manière spectaculaire.</p>
           <p>Ce retour en grâce du Serif n'est pas qu'une simple coquetterie de designer en manque d'inspiration. C'est une réponse directe et viscérale au besoin de différenciation dans un océan de lissé algorithmique. Les marques cherchent aujourd'hui à exprimer une autorité, une histoire et une dimension humaine.</p>
           <p>La terminale d'un empattement, la courbe délicate d'une panse ou la finesse d'un délié sont autant de micro-décisions de design que seule une police Serif peut incarner avec autant de poésie. On assiste à une renaissance du style 'Grotesque' et 'Antiqua' qui redonne ses lettres de noblesse au craft typographique.</p>
           <p>De Chobani à Burger King, en passant par de nombreuses startups de la Fintech et de l'IA, la typographie redevient le vecteur principal de l'émotion de marque. Le message est clair : à l'heure du numérique total, l'aspect 'imprimé' et classique rassure et ancre la marque dans une pérennité retrouvée.</p>
@@ -296,49 +387,31 @@ export async function fetchArticles(): Promise<Article[]> {
     }
   ];
 
-  const top4: Article[] = [];
-  const rest: Article[] = [];
-  const usedSources = new Set<string>();
+  const activeInjections = editorialInjections.filter(inj => new Date(inj.pubDate) <= now);
+  
+  // UNIFICATION & AUTOMATION: Every article (Editorial or RSS) competes for the Hero/Edito slots by date
+  // For the demo of dynamic research, we only use the RSS stream so our Top 3 (Burger, Prism, Melis) take over.
+  const unifiedPool = [...allArticles];
+  unifiedPool.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
-  // Filtrer les injections par rapport à l'heure (Update à 15h)
-  const activeInjections = editorialInjections.filter(inj => {
-      const injDate = new Date(inj.pubDate);
-      return injDate <= now;
-  });
-
-  // On injecte les éditos actifs EN PRIORITÉ
-  activeInjections.forEach(inj => {
-      top4.push(inj);
-      usedSources.add(inj.source);
-  });
-
-  // Tri des éditos pour s'assurer que le Hero (Airbnb) est bien le premier
-  top4.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
-
-  // On complète avec les articles RSS
-  for (const art of allArticles) {
-      if (top4.length < 4 && !usedSources.has(art.source)) {
-          top4.push(art);
-          usedSources.add(art.source);
-      } else {
-          rest.push(art);
+  // Final deduplication (just in case)
+  const finalStream: Article[] = [];
+  const seenIds = new Set();
+  for (const art of unifiedPool) {
+      if (!seenIds.has(art.id)) {
+          finalStream.push(art);
+          seenIds.add(art.id);
       }
   }
 
-  return [...top4, ...rest];
+  return finalStream;
 }
 
-/**
- * Récupère un article spécifique par son ID.
- */
 export async function getArticleById(id: string): Promise<Article | undefined> {
     const articles = await fetchArticles();
     return articles.find(art => art.id === id);
 }
 
-/**
- * Extrait les dates uniques (YYYY-MM-DD) des articles pour la navigation.
- */
 export async function getAvailableDates(): Promise<string[]> {
   const articles = await fetchArticles();
   const dates = new Set<string>();

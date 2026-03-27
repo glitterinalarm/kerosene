@@ -8,10 +8,10 @@ interface HomeProps {
   searchParams: Promise<{ date?: string }>;
 }
 
-function getArticleHref(id: string, link: string): string {
-  // Les articles éditoriaux ont un link qui commence par '/' (ex: /article/hero-peaky-blinders)
-  // Les articles RSS ont un link externe (ex: https://...)
-  // Pour les deux, on navigue vers notre page article interne
+function getArticleHref(id: string, link: string, isHeadline: boolean = false): string {
+  if (!isHeadline && link.startsWith('http')) {
+    return link;
+  }
   return `/article/${encodeURIComponent(id)}`;
 }
 
@@ -38,14 +38,13 @@ export default async function Home({ searchParams }: HomeProps) {
   }
 
   // La hiérarchie visuelle (Entonnoir de lecture)
-  const mainArticle = articles[0];            // 100% Largeur
-  const dossierArticles = articles.slice(1, 3); // Top 2 : L'Édito (50% de la largeur chacun)
-  const brefArticles = articles.slice(3);     // Le reste : Le fil dense et asymétrique
+  const mainArticle = articles[0];            // 100% Largeur (Hero)
+  const brefArticles = articles.slice(1);     // Le reste : Le fil dense et asymétrique (Redirection directe)
 
   return (
     <>
       {/* 1. HERO BENTO BOX (CLICKABLE) */}
-      <Link href={getArticleHref(mainArticle.id, mainArticle.link)} className="bento-hero-link">
+      <Link href={getArticleHref(mainArticle.id, mainArticle.link, true)} className="bento-hero-link">
         <section className="bento-hero container">
           <div className="bento-visuals">
              <span className="bento-visual-label">{mainArticle.category}</span>
@@ -65,8 +64,8 @@ export default async function Home({ searchParams }: HomeProps) {
              <div className="bento-insight-layer">
                 <div className="bento-insight-text">
                   {mainArticle.insight 
-                    ? mainArticle.insight.replace(/<[^>]*>?/gm, '').substring(0, 240) + "..."
-                    : (mainArticle.excerpt || "").substring(0, 240) + "..."
+                    ? mainArticle.insight.replace(/<[^>]*>?/gm, '').substring(0, 320) + "..."
+                    : (mainArticle.excerpt || "").substring(0, 320) + "..."
                   }
                 </div>
                 <div className="bento-cta">LIRE LA SUITE —</div>
@@ -75,35 +74,24 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
       </Link>
 
-      {/* 2. L'ÉDITO : 2 News majeures poussées par le D.A. */}
-      {dossierArticles.length > 0 && (
-        <section className="edito-section container">
-          <div className="edito-grid">
-            {dossierArticles.map((art) => (
-                <Link href={getArticleHref(art.id, art.link)} className="edito-card" key={art.id}>
-                  <div className="edito-image-wrapper">
-                      <span className="edito-label">{art.category}</span>
-                      <img src={art.imageUrl} alt={art.title} className="edito-card-image" />
-                      <div className="edito-title-overlay">
-                          <h3 className="edito-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
-                          <span className="edito-source-tag">{art.source}</span>
-                      </div>
-                  </div>
-                </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 3. LE FIL : Bento dense asymétrique */}
+      {/* 2. LE FIL : Bento dense asymétrique */}
       {brefArticles.length > 0 && (
         <section className="fil-section container">
           <h2 className="section-title">Le Fil Créatif.</h2>
           <div className="fil-grid">
             {brefArticles.map((art, i) => {
                 const isWide = i % 5 === 0;
+                const href = getArticleHref(art.id, art.link, false);
+                const isExternal = href.startsWith('http');
+                
                 return (
-                <Link href={getArticleHref(art.id, art.link)} className={`fil-card ${isWide ? 'fil-card-wide' : ''}`} key={art.id}>
+                <Link 
+                  href={href} 
+                  className={`fil-card ${isWide ? 'fil-card-wide' : ''}`} 
+                  key={art.id}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                >
                   {art.imageUrl && (
                       <div className="fil-image-wrapper">
                           <img src={art.imageUrl} alt={art.title} />
