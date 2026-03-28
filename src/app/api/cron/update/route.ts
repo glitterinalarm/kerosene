@@ -26,33 +26,17 @@ export async function GET(request: Request) {
 
     // 2. Demander à Gemini de rédiger les 3 articles de fond (Editorial)
     const prompt = `
-      Tu es le Rédacteur en Chef de KÉROSÈNE, un webzine créatif brutaliste, radical et technique.
-      Ta mission est de rédiger les 3 analyses majeures du jour basées sur les actualités suivantes :
-      ${headlines}
-
-      INSTRUCTIONS STRICTES :
-      - Ton : Expert, critique, passionné, référencé.
-      - Politique Visuelle : AUCUNE IMAGE GÉNÉRÉE PAR IA. Suggère UNIQUEMENT des visuels presse réels.
-      - Sortie attendue : Un objet JSON STRICT avec cette structure : { "articles": [...] }
+      Tu es le Rédacteur en Chef de KÉROSÈNE.
+      Rédige 3 analyses créatives basées sur : ${headlines}
+      Sortie JSON: { "articles": [...] }
     `;
 
-    let result;
-    const modelCandidates = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro", "gemini-pro"];
-    
-    let lastError = null;
-    for (const modelName of modelCandidates) {
-      try {
-        console.log(`Trying model: ${modelName}`);
-        const model = genAI.getGenerativeModel({ model: modelName });
-        result = await model.generateContent(prompt);
-        if (result) break;
-      } catch (e) {
-        lastError = e;
-        console.warn(`Model ${modelName} failed, trying next...`);
-      }
-    }
+    // VERSION 1.2 (LOGGING)
+    console.log("Using model: gemini-pro");
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(prompt);
 
-    if (!result) throw lastError || new Error("All Gemini models failed");
+    if (!result) throw new Error("Gemini Pro failed to respond");
     
     const responseText = result.response.text();
     
