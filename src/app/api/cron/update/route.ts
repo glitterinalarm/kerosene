@@ -25,47 +25,35 @@ export async function GET(request: Request) {
     const headlines = recentArticles.slice(0, 15).map((a: any) => `- ${a.title}: ${a.summary}`).join('\n');
 
     // 2. Demander à Gemini de rédiger les 3 articles de fond (Editorial)
-    // On essaie plusieurs alias de modèles pour éviter l'erreur 404
-    let model;
-    try {
-      model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    } catch (e) {
-      model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    }
-
     const prompt = `
       Tu es le Rédacteur en Chef de KÉROSÈNE, un webzine créatif brutaliste, radical et technique.
       Ta mission est de rédiger les 3 analyses majeures du jour basées sur les actualités suivantes :
       ${headlines}
 
       INSTRUCTIONS STRICTES :
-      - Ton : Expert, critique, passionné, référencé (cite le Club des D.A, les agences réelles, les tendances typographiques).
-      - Style : Brutaliste, sans fioritures, phrases courtes et percutantes.
-      - Politique Visuelle : AUCUNE IMAGE GÉNÉRÉE PAR IA. Suggère UNIQUEMENT des visuels presse réels (ex: Campagnes OOH, Packshots, Stills de films).
-      - Langue : Français (France).
-      - Sortie attendue : Un objet JSON STRICT avec cette structure :
-      {
-        "articles": [
-          {
-            "id": "slug-unique",
-            "title": "Titre percutant",
-            "category": "BRANDING|DIGITAL|CRAFT|DESIGN",
-            "summary": "Résumé de l'analyse (300 caractères max)",
-            "content": "Analyse de fond détaillée (3 minutes de lecture réelle). Utilise des balises <strong> et <br> pour structurer.",
-            "imageUrl": "URL d'un visuel presse réel si tu le connais, sinon laisse vide.",
-            "caption": "Légende technique du visuel",
-            "slides": [
-               { "image": "URL image 1", "text": "Analyse slide 1", "caption": "Légende 1" },
-               { "image": "URL image 2", "text": "Analyse slide 2", "caption": "Légende 2" }
-            ]
-          }
-        ]
-      }
-      
-      Génère exactement 3 articles de fond. Sois précis sur les faits (agences impliquées, typographies utilisées).
+      - Ton : Expert, critique, passionné, référencé.
+      - Politique Visuelle : AUCUNE IMAGE GÉNÉRÉE PAR IA. Suggère UNIQUEMENT des visuels presse réels.
+      - Sortie attendue : Un objet JSON STRICT avec cette structure : { "articles": [...] }
     `;
 
-    const result = await model.generateContent(prompt);
+    let result;
+    const modelCandidates = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro", "gemini-pro"];
+    
+    let lastError = null;
+    for (const modelName of modelCandidates) {
+      try {
+        console.log(`Trying model: ${modelName}`);
+        const model = genAI.getGenerativeModel({ model: modelName });
+        result = await model.generateContent(prompt);
+        if (result) break;
+      } catch (e) {
+        lastError = e;
+        console.warn(`Model ${modelName} failed, trying next...`);
+      }
+    }
+
+    if (!result) throw lastError || new Error("All Gemini models failed");
+    
     const responseText = result.response.text();
     
     // Nettoyer le JSON si Gemini ajoute des backticks ```json
