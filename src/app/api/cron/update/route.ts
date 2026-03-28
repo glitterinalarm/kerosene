@@ -25,7 +25,13 @@ export async function GET(request: Request) {
     const headlines = recentArticles.slice(0, 15).map((a: any) => `- ${a.title}: ${a.summary}`).join('\n');
 
     // 2. Demander à Gemini de rédiger les 3 articles de fond (Editorial)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // On essaie plusieurs alias de modèles pour éviter l'erreur 404
+    let model;
+    try {
+      model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    } catch (e) {
+      model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    }
 
     const prompt = `
       Tu es le Rédacteur en Chef de KÉROSÈNE, un webzine créatif brutaliste, radical et technique.
