@@ -4,6 +4,7 @@ import { put } from '@vercel/blob';
 import { fetchArticles } from '@/lib/rss';
 
 // IMPORTANT: Set GEMINI_API_KEY in Vercel Env
+// FORCE API VERSION v1 to fix 404 errors
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function GET(request: Request) {
@@ -31,12 +32,16 @@ export async function GET(request: Request) {
       Sortie JSON: { "articles": [...] }
     `;
 
-    // VERSION 1.2 (LOGGING)
-    console.log("Using model: gemini-pro");
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // VERSION 1.3 (STABLE API v1)
+    console.log("Using model: gemini-1.5-flash with v1 API");
+    const model = genAI.getGenerativeModel(
+      { model: "gemini-1.5-flash" },
+      { apiVersion: "v1" }
+    );
+    
     const result = await model.generateContent(prompt);
 
-    if (!result) throw new Error("Gemini Pro failed to respond");
+    if (!result) throw new Error("Gemini v1 failed to respond");
     
     const responseText = result.response.text();
     
