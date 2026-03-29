@@ -18,8 +18,9 @@ export async function GET(request: Request) {
 
   try {
     const recentArticles = await fetchArticles();
+    const rawArticles = recentArticles.filter(a => !a.source?.includes('IA') && a.link);
     // Augmentation du pool pour permettre une sélection plus variée par thématique (100 articles)
-    const headlinesContext = recentArticles.slice(0, 100).map((a: Article) => ({
+    const headlinesContext = rawArticles.slice(0, 100).map((a: Article) => ({
       title: a.title,
       source: a.source,
       category: a.category,
@@ -51,7 +52,7 @@ export async function GET(request: Request) {
       - Style "Club des D.A." (exigeant, technique, sans langue de bois, analyse journalistique pointue pour le HERO).
       - Le HERO doit avoir la catégorie "HERO".
 
-      RÈGLE D'OR POUR LES IMAGES : Tu n'as pas accès à internet. Tu DOIS obligatoirement réutiliser la propriété "imageUrl" exacte qui est fournie pour chaque article dans la variable SOURCES JSON ci-dessus. Ne l'invente pas.
+      RÈGLE D'OR POUR LES ASSETS : Tu n'as pas accès à internet. Tu DOIS obligatoirement réutiliser la propriété "imageUrl" exacte ET la propriété "link" exacte qui sont fournies pour chaque article dans la variable SOURCES JSON. Ne les invente surtout pas (pas de liens relatifs).
       
       FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, soit 21 objets max) :
       {
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
           {
             "id": "slug-unique",
             "title": "Titre Impactant",
-            "link": "URL_ORIGINALE_EXACTE",
+            "link": "URL_COMPLETE_COPIEE_DE_LA_SOURCE",
             "excerpt": "Résumé incisif",
             "category": "HERO|GRAPHISME|PUBLICITÉ|ACTIVATION DIGITALE|DROP|TREND",
             "insight": "Contenu HTML formaté (p, strong) très détaillé pour le HERO, plus concis pour les autres.",
