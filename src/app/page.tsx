@@ -75,13 +75,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <section className="bento-hero container">
             <div className="bento-visuals">
                <span className="bento-visual-label">À LA UNE</span>
-               {mainArticle.longform && mainArticle.longform.slides && mainArticle.longform.slides.length > 0 ? (
-                   mainArticle.longform.slides.map((slide, i) => (
-                       slide.image && <img key={i} src={slide.image} alt={`Slide ${i}`} />
-                   ))
-               ) : (
-                   <img src={mainArticle.imageUrl} alt={mainArticle.title} />
-               )}
+               <img src={mainArticle.imageUrl} alt={mainArticle.title} />
             </div>
             
             <div className="bento-text-block">
@@ -91,11 +85,11 @@ export default async function Home({ searchParams }: HomeProps) {
                <div className="bento-insight-layer">
                   <div className="bento-insight-text">
                     {mainArticle.insight 
-                      ? <div dangerouslySetInnerHTML={{ __html: mainArticle.insight.substring(0, 500) + "..." }}></div>
-                      : <p>{(mainArticle.excerpt || "").substring(0, 320)}...</p>
+                      ? <div dangerouslySetInnerHTML={{ __html: mainArticle.insight }}></div>
+                      : <p>{mainArticle.excerpt}</p>
                     }
                   </div>
-                  <div className="bento-cta">LIRE L'ANALYSE —</div>
+                  <div className="bento-cta">ALLER À LA SOURCE —</div>
                </div>
             </div>
           </section>
@@ -129,7 +123,10 @@ export default async function Home({ searchParams }: HomeProps) {
                       <div className="theme-card-info">
                         <span className="theme-card-category">{art.category}</span>
                         <h3 className="theme-card-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
-                        <span className="theme-card-source">{art.source}</span>
+                        <div className="theme-card-insight" dangerouslySetInnerHTML={{ 
+                           __html: art.insight ? (art.insight.substring(0, 180) + '...') : (art.excerpt || "") 
+                        }}></div>
+                        <span className="theme-card-source">➔ {art.source}</span>
                       </div>
                     </a>
                   );

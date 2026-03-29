@@ -59,6 +59,7 @@ export async function GET(request: Request) {
           {
             "id": "slug-unique",
             "title": "Titre Impactant",
+            "link": "URL_ORIGINALE_EXACTE",
             "excerpt": "Résumé incisif",
             "category": "HERO|GRAPHISME|PUBLICITÉ|ACTIVATION DIGITALE|DROP|TREND",
             "insight": "Contenu HTML formaté (p, strong) très détaillé pour le HERO, plus concis pour les autres.",

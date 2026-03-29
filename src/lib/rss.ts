@@ -157,7 +157,7 @@ export async function fetchArticles(): Promise<Article[]> {
     if (data && data.articles) {
         aiArticles = (data.articles as Article[]).map((a) => ({
             ...a,
-            link: `/article/${a.id}`,
+            link: a.link || `/article/${a.id}`,
             source: "KÉROSÈNE ÉDITORIAL (IA)",
             pubDate: data.date || new Date().toISOString(),
             // FALLBACKS RÉSILIENTS
