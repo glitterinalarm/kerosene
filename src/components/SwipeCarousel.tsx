@@ -27,7 +27,7 @@ export default function SwipeCarousel({ children, className = '' }: SwipeCarouse
     <div className={`carousel-wrapper ${className}`}>
       <button className="nav-arrow left-arrow" onClick={scrollLeft} aria-label="Défiler à gauche">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 12 L12 0 V8 H24 V16 H12 V24 L0 12 Z"/>
+          <path d="M22 8 H12 V2 L2 12 L12 22 V16 H22 Z"/>
         </svg>
       </button>
       
@@ -37,7 +37,7 @@ export default function SwipeCarousel({ children, className = '' }: SwipeCarouse
 
       <button className="nav-arrow right-arrow" onClick={scrollRight} aria-label="Défiler à droite">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M24 12 L12 0 V8 H0 V16 H12 V24 L24 12 Z"/>
+          <path d="M2 8 H12 V2 L22 12 L12 22 V16 H2 Z"/>
         </svg>
       </button>
     </div>
