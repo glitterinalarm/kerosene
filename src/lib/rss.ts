@@ -273,46 +273,16 @@ export async function fetchArticles(): Promise<Article[]> {
         
         let lf = editorialData.longform;
         
-        // Simuler un contenu "Longform" riche générique pour les autres news du top
-        if (!lf) {
-            lf = {
-                slides: [
-                    { 
-                      text: `<strong>L'Essence du Craft</strong><br><br>${editorialData.insight}<br><br>Ce projet souligne un basculement majeur dans l'industrie : le retour à une vision d'auteur dans un monde de standards.`, 
-                      image: finalImageUrl, 
-                      caption: "Vision Globale" 
-                    }
-                ]
-            };
-        }
-
-        // FORCAGE TOP 3 (DÉPÊCHE RÉACTIONNELLE)
-        let finalPubDate = item.pubDate || new Date().toISOString();
-        const lowTitle = finalTitle.toLowerCase();
-        const isDeepResearch = lowTitle.includes('burger king') || lowTitle.includes('whopper') || 
-                              lowTitle.includes('prism') || lowTitle.includes('agentic') || lowTitle.includes('reschke') || 
-                              lowTitle.includes('francesca melis') || lowTitle.includes('imperfect');
-
-        if (isDeepResearch) {
-             // On s'assure qu'ils sont en haut avec un ordre précis : Burger (Hero), Prism (Edito1), Melis (Edito2)
-             let offset = 0;
-             if (lowTitle.includes('burger') || lowTitle.includes('whopper')) offset = 3000;
-             if (lowTitle.includes('prism') || lowTitle.includes('agentic') || lowTitle.includes('reschke')) offset = 2000;
-             if (lowTitle.includes('francesca melis') || lowTitle.includes('imperfect')) offset = 1000;
-             
-             finalPubDate = new Date(Date.now() + offset).toISOString();
-        }
-
         return {
           id: articleId,
           title: finalTitle,
           link: actualLink,
           source: feed.name,
           category: feed.category,
-          pubDate: finalPubDate,
+          pubDate: item.pubDate || new Date().toISOString(),
           imageUrl: finalImageUrl,
           insight: editorialData.insight,
-          longform: lf,
+          longform: editorialData.longform || { slides: [{ text: editorialData.insight, image: finalImageUrl }] },
           excerpt: item.contentSnippet ? decodeHTMLEntities(item.contentSnippet.substring(0, 180)) + "..." : "Décryptage global de la créativité.",
         } as Article;
       });
@@ -327,9 +297,19 @@ export async function fetchArticles(): Promise<Article[]> {
   const feedsResults = await Promise.all(feedPromises);
   allArticles = feedsResults.flat();
 
-  // Fusionner avec les articles IA (Prioritaires au sommet via la date)
+  // Fusionner avec les articles IA (Prioritaires au sommet via la date ou source)
   const finalPool = [...aiArticles, ...allArticles];
-  finalPool.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+  finalPool.sort((a, b) => {
+    // PRIORITÉ ABSOLUE AU CONTENU IA (SOURCE: IA)
+    const isAIA = a.source?.includes('IA');
+    const isBIA = b.source?.includes('IA');
+    
+    if (isAIA && !isBIA) return -1;
+    if (!isAIA && isBIA) return 1;
+    
+    // Sinon tri chronologique normal
+    return new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime();
+  });
 
   // Final deduplication
   const finalStream: Article[] = [];
