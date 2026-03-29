@@ -28,11 +28,14 @@ export async function GET(request: Request) {
     }));
 
     // 2. Initialiser Gemini avec Recherche Google (Grounding)
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-pro",
-      // @ts-ignore - Supporté par l'API mais parfois non typé dans les vieux SDK
-      tools: [{ googleSearchRetrieval: {} }]
-    });
+    const model = genAI.getGenerativeModel(
+      { 
+        model: "gemini-1.5-pro-002",
+        // @ts-ignore
+        tools: [{ googleSearchRetrieval: {} }] 
+      },
+      { apiVersion: "v1beta" }
+    );
 
     const visualLibrary = {
       branding: "photo-1558655146-d09347e92766", // Brutalist Graphic
