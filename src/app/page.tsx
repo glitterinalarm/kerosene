@@ -1,6 +1,7 @@
 import React from 'react';
 import { fetchArticles } from '@/lib/rss';
 import Link from 'next/link';
+import SwipeCarousel from '@/components/SwipeCarousel';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -72,7 +73,7 @@ export default async function Home({ searchParams }: HomeProps) {
     <>
       {mainArticle && (
         <section className="bento-hero container">
-          <div className="carousel-container hero-carousel">
+          <SwipeCarousel className="hero-carousel bento-hero-wrapper">
             <div className="carousel-slide">
               <div className="bento-visuals">
                  <span className="bento-visual-label">SWIPE ➔ À LA UNE</span>
@@ -111,7 +112,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 </div>
               </div>
             )}
-          </div>
+          </SwipeCarousel>
         </section>
       )}
 
@@ -128,7 +129,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <div className="theme-grid">
               {group.articles.length > 0 ? (
                 group.articles.map((art) => (
-                  <div className="theme-card carousel-container" key={art.id}>
+                  <SwipeCarousel className="theme-card" key={art.id}>
                     {/* SLIDE 1: VISUAL + TITLE */}
                     <div className="carousel-slide card-front">
                       <div className="theme-card-image">
@@ -149,7 +150,7 @@ export default async function Home({ searchParams }: HomeProps) {
                         ➔ LIRE LA SOURCE : {art.source}
                       </a>
                     </div>
-                  </div>
+                  </SwipeCarousel>
                 ))
               ) : (
                 <div style={{ opacity: 0.3, padding: '2rem 0', gridColumn: 'span 3' }}>
