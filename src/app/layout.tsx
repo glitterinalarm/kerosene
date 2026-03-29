@@ -22,7 +22,7 @@ export default async function RootLayout({
         <header className="site-header">
           <div className="header-top">
             <span className="header-date">{new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            <span className="header-label">Directeur Artistique</span>
+
           </div>
           <h1 className="site-title">
             {"KÉROSÈNE".split('').map((char, i) => (
