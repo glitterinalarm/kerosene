@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     // 2. Initialiser Gemini avec Recherche Google (Grounding)
     const model = genAI.getGenerativeModel(
       { 
-        model: "gemini-1.5-flash",
+        model: "gemini-1.5-flash-latest",
         // @ts-ignore
         tools: [{ googleSearchRetrieval: {} }] 
       },
