@@ -76,7 +76,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <SwipeCarousel className="hero-carousel bento-hero-wrapper">
             <div className="carousel-slide">
               <div className="bento-visuals">
-                 <span className="bento-visual-label">SWIPE ➔ À LA UNE</span>
+                 <span className="bento-visual-label">À LA UNE</span>
                  <img src={mainArticle.imageUrl} alt={mainArticle.title} />
               </div>
               <div className="bento-text-block">
@@ -133,7 +133,6 @@ export default async function Home({ searchParams }: HomeProps) {
                     {/* SLIDE 1: VISUAL + TITLE */}
                     <div className="carousel-slide card-front">
                       <div className="theme-card-image">
-                         <div className="swipe-hint">SWIPE ➔</div>
                          <img src={art.imageUrl} alt={art.title} />
                       </div>
                       <div className="theme-card-info">
