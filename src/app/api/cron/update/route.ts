@@ -28,11 +28,8 @@ export async function GET(request: Request) {
       imageUrl: a.imageUrl
     }));
 
-    // ACTIVATION DU GROUNDING (GOOGLE SEARCH)
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        // @ts-expect-error - googleSearch is a valid tool
-        tools: [{ googleSearch: {} }] 
+        model: "gemini-2.5-flash"
     });
 
     const prompt = `
@@ -44,18 +41,17 @@ export async function GET(request: Request) {
       1. SÉLECTIONNE L'ARTICLE "HERO" (À LA UNE) : Choisis le sujet le plus riche et impactant du jour, toutes catégories confondues.
       2. POUR CET ARTICLE HERO : Rédige un contenu "longform" (insight) ultra-bien construit, journalistique, qui a du fond, des arguments, un développement, et une ouverture sur le sujet (pas juste une brève). C'est ta pièce maîtresse.
       3. ENSUITE, sélectionne 4 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 5 thématiques suivantes :
-         - GRAPHISME (Branding, Typographie, Motion, Print)
-         - PUBLICITÉ (Campagnes majeures, Films, Prints, Innovation média)
-         - ACTIVATION DIGITALE (Expériences web, AR/VR, Installation interactive, Web3)
-         - DROP (Street culture, Sneakers, Collabs, Fashion drops)
-         - TREND (Phénomènes de société, Esthétiques émergentes, Signaux forts des réseaux X/Insta)
+         - GRAPHISME
+         - PUBLICITÉ
+         - ACTIVATION DIGITALE
+         - DROP
+         - TREND
 
       CONTRAINTES :
       - Style "Club des D.A." (exigeant, technique, sans langue de bois, analyse journalistique pointue pour le HERO).
-      - Effectue une recherche web (Grounding) pour CHAQUE sujet afin de trouver des détails techniques exclusifs et SURTOUT des URLS d'IMAGES RÉELLES (assets de campagne, vidéos, photos de presse).
       - Le HERO doit avoir la catégorie "HERO".
 
-      RÈGLE D'OR : Remplace toute image générique par une URL directe provenant de ta recherche web.
+      RÈGLE D'OR POUR LES IMAGES : Tu n'as pas accès à internet. Tu DOIS obligatoirement réutiliser la propriété "imageUrl" exacte qui est fournie pour chaque article dans la variable SOURCES JSON ci-dessus. Ne l'invente pas.
       
       FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, soit 21 objets max) :
       {
