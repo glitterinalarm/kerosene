@@ -214,7 +214,8 @@ export async function fetchArticles(): Promise<Article[]> {
                 // FALLBACKS RÉSILIENTS
                 insight: a.insight || a.content || a.summary || "Analyse en cours...",
                 excerpt: a.excerpt || a.summary || "Décryptage technique.",
-                longform: a.longform || (a.content ? { slides: [{ text: a.content, image: a.imageUrl }] } : undefined)
+                imageUrl: (a.imageUrl || "").replace(/\s/g, '').trim() || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop",
+                longform: a.longform || (a.content ? { slides: [{ text: a.content, image: a.imageUrl }] } : { slides: [] })
             }));
             console.log(`[RSS] ${aiArticles.length} AI articles injected from Blob (Resilient Mode).`);
         }

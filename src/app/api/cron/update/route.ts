@@ -34,6 +34,15 @@ export async function GET(request: Request) {
         { apiVersion: "v1" }
     );
 
+    const visualLibrary = {
+      branding: "photo-1558655146-d09347e92766", // Brutalist Graphic
+      tech: "photo-1550684848-fac1c5b4e853",      // Abstract Dark Tech
+      digital: "photo-1518770660439-4636190af475", // Circuit/Dark
+      craft: "photo-1561070791-2526d30994b5",    // Minimal typography
+      architecture: "photo-1485628390555-1e7fa503f9fe", // Concrete/Brutalist
+      editorial: "photo-1557683316-973673baf926"  // Dark Gradient/Texture
+    };
+
     const prompt = `
       Tu es le Rédacteur en Chef de KÉROSÈNE, un média créatif radical et technique.
       Ta mission : Sélectionner les 3 news les plus fortes et en faire des analyses de fond.
@@ -46,9 +55,14 @@ export async function GET(request: Request) {
       - Parle de typographie, de layout, d'audace créative.
       - Langue : Français (France).
 
-      RÈGLE D'OR POUR L'ICONOGRAPHIE (CRITIQUE) :
-      - Pour chaque article que tu rédiges, TU DOIS REPRENDRE l'URL 'imageUrl' indiquée dans la news source ci-dessus. 
-      - N'invente JAMAIS d'image. Si l'URL de la source est absente, utilise une image thématique Unsplash : https://images.unsplash.com/photo-[ID]?auto=format&fit=crop&q=80&w=1200 (Choisis un ID cohérent avec le design/architecture).
+      RÈGLE D'OR ICONOGRAPHIE (QUALITÉ SUPÉRIEURE) :
+      - Pour chaque article, TU DOIS utiliser une URL d'image haute performance.
+      - PRIORITÉ 1: L'URL 'imageUrl' de la news source (si elle semble valide).
+      - PRIORITÉ 2: Si l'image source est absente ou suspecte (Creative Review), utilise un ID de notre BIBLIOTHÈQUE KÉROSÈNE ci-dessous :
+        Format: https://images.unsplash.com/ [ID] ?auto=format&fit=crop&q=80&w=1600
+        IDS DISPONIBLES : ${JSON.stringify(visualLibrary)}
+      
+      CHOISIS l'ID le plus cohérent avec le sujet (ex: 'architecture' pour un projet spatial, 'branding' pour un logo).
 
       FORMAT DE SORTIE (JSON STRICT) :
       {
@@ -59,12 +73,12 @@ export async function GET(request: Request) {
             "category": "BRANDING|DIGITAL|CRAFT|DESIGN",
             "excerpt": "Accroche radicale (150 char max).",
             "insight": "Analyse de fond (300-500 mots). HTML autorisé: <strong>, <p>, <br>.",
-            "imageUrl": "L'URL DE L'IMAGE SOURCE QUE JE T'AI DONNÉE PLUS HAUT",
+            "imageUrl": "L'URL LA PLUS QUALITATIVE (Source ou Bibliothèque)",
             "longform": {
               "slides": [
                  { 
                    "text": "Analyse visuelle déconstruite (100 mots)", 
-                   "image": "L'URL DE L'IMAGE SOURCE (identique ou une autre de la liste si cohérente)", 
+                   "image": "L'URL DE L'IMAGE (ou une autre de la bibliothèque)", 
                    "caption": "Crédit technique" 
                  }
               ]
