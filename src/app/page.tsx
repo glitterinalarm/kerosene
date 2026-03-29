@@ -2,7 +2,8 @@ import React from 'react';
 import { fetchArticles } from '@/lib/rss';
 import Link from 'next/link';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 interface HomeProps {
   searchParams: Promise<{ date?: string }>;
