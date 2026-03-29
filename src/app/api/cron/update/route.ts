@@ -44,18 +44,25 @@ export async function GET(request: Request) {
         "articles": [
           {
             "id": "slug-unique",
-            "title": "Titre Impactant",
+            "title": "Titre Impactant (Capitales si possible)",
             "category": "BRANDING|DIGITAL|CRAFT|DESIGN",
-            "summary": "Résumé technique (300 char max)",
-            "content": "Analyse de fond (3 min lecture). Utilise <strong> et <br>.",
-            "imageUrl": "URL d'une image presse réelle (si disponible) ou une URL valide de Creative Review.",
-            "caption": "Crédits techniques",
-            "slides": [
-               { "image": "URL image 1", "text": "Analyse visuelle", "caption": "Légende 1" }
-            ]
+            "excerpt": "Accroche brutale et rapide (150 char max).",
+            "insight": "Analyse de fond radicale (300-500 mots). Utilise obligatoirement des balises HTML : <strong>, <p>, <br>.",
+            "imageUrl": "URL d'une image haute résolution (Préfère Unsplash via source.unsplash.com/featured/?keyword ou des URLs presse REELLES et STABLES).",
+            "longform": {
+              "slides": [
+                 { 
+                   "text": "Analyse visuelle déconstruite du projet (100 mots)", 
+                   "image": "URL d'une autre image liée au projet", 
+                   "caption": "Crédit technique" 
+                 }
+              ]
+            }
           }
         ]
       }
+      
+      IMPORTANT: N'utilise JAMAIS d'image générée par IA. Sourcing réel uniquement.
     `;
 
     const result = await model.generateContent(prompt);
