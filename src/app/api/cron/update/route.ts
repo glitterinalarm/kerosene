@@ -19,41 +19,52 @@ export async function GET(request: Request) {
   try {
     console.log('--- KEROSENE ENGINE: STARTING DAILY EDITORIAL ---');
 
-    // 1. Récupérer les sources d'inspiration
+    // 1. Récupérer les sources d'inspiration (avec leurs images réelles)
     const recentArticles = await fetchArticles();
-    const headlines = recentArticles.slice(0, 15).map((a: any) => `- ${a.title}: ${a.summary}`).join('\n');
+    const headlinesContext = recentArticles.slice(0, 12).map((a: any) => ({
+      title: a.title,
+      source: a.source,
+      imageUrl: a.imageUrl,
+      excerpt: a.excerpt || ""
+    }));
 
-    // 2. Initialiser Gemini 2.5 Flash (Modèle stable en 2026)
+    // 2. Initialiser Gemini 2.5 Flash
     const model = genAI.getGenerativeModel(
         { model: "gemini-2.5-flash" },
         { apiVersion: "v1" }
     );
 
     const prompt = `
-      Tu es le Rédacteur en Chef de KÉROSÈNE, un webzine créatif brutaliste, radical et technique.
-      Ta mission : Rédiger les 3 analyses majeures du jour basées sur cette veille :
-      ${headlines}
+      Tu es le Rédacteur en Chef de KÉROSÈNE, un média créatif radical et technique.
+      Ta mission : Sélectionner les 3 news les plus fortes et en faire des analyses de fond.
+      
+      VOICI LA VEILLE DU JOUR (SOURCES RÉELLES + IMAGES) :
+      ${JSON.stringify(headlinesContext, null, 2)}
 
       TON & STYLE :
-      - Radical, expert, sans fioritures (Brutaliste).
-      - Cite des agences réelles, des typographies, des concepts de "craft".
+      - Expert, disruptif, brutaliste.
+      - Parle de typographie, de layout, d'audace créative.
       - Langue : Français (France).
+
+      RÈGLE D'OR POUR L'ICONOGRAPHIE (CRITIQUE) :
+      - Pour chaque article que tu rédiges, TU DOIS REPRENDRE l'URL 'imageUrl' indiquée dans la news source ci-dessus. 
+      - N'invente JAMAIS d'image. Si l'URL de la source est absente, utilise une image thématique Unsplash : https://images.unsplash.com/photo-[ID]?auto=format&fit=crop&q=80&w=1200 (Choisis un ID cohérent avec le design/architecture).
 
       FORMAT DE SORTIE (JSON STRICT) :
       {
         "articles": [
           {
             "id": "slug-unique",
-            "title": "Titre Impactant (Capitales si possible)",
+            "title": "TITRE IMPACTANT EN CAPITALES",
             "category": "BRANDING|DIGITAL|CRAFT|DESIGN",
-            "excerpt": "Accroche brutale et rapide (150 char max).",
-            "insight": "Analyse de fond radicale (300-500 mots). Utilise obligatoirement des balises HTML : <strong>, <p>, <br>.",
-            "imageUrl": "URL d'une image haute résolution (Préfère Unsplash via source.unsplash.com/featured/?keyword ou des URLs presse REELLES et STABLES).",
+            "excerpt": "Accroche radicale (150 char max).",
+            "insight": "Analyse de fond (300-500 mots). HTML autorisé: <strong>, <p>, <br>.",
+            "imageUrl": "L'URL DE L'IMAGE SOURCE QUE JE T'AI DONNÉE PLUS HAUT",
             "longform": {
               "slides": [
                  { 
-                   "text": "Analyse visuelle déconstruite du projet (100 mots)", 
-                   "image": "URL d'une autre image liée au projet", 
+                   "text": "Analyse visuelle déconstruite (100 mots)", 
+                   "image": "L'URL DE L'IMAGE SOURCE (identique ou une autre de la liste si cohérente)", 
                    "caption": "Crédit technique" 
                  }
               ]
@@ -61,8 +72,6 @@ export async function GET(request: Request) {
           }
         ]
       }
-      
-      IMPORTANT: N'utilise JAMAIS d'image générée par IA. Sourcing réel uniquement.
     `;
 
     const result = await model.generateContent(prompt);
