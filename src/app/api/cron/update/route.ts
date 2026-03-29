@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
     // ACTIVATION DU GROUNDING (GOOGLE SEARCH) - MODÈLE PRO RECOMMANDÉ POUR LE GROUNDING
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         // @ts-expect-error - googleSearch is a valid tool in latest SDK but might not be in the current type definitions
         tools: [{ googleSearch: {} }] 
     });
