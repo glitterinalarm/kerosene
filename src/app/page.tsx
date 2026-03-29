@@ -71,29 +71,48 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <>
       {mainArticle && (
-        <a href={`/article/${mainArticle.id}`} className="bento-hero-link">
-          <section className="bento-hero container">
-            <div className="bento-visuals">
-               <span className="bento-visual-label">À LA UNE</span>
-               <img src={mainArticle.imageUrl} alt={mainArticle.title} />
+        <section className="bento-hero container">
+          <div className="carousel-container hero-carousel">
+            <div className="carousel-slide">
+              <div className="bento-visuals">
+                 <span className="bento-visual-label">SWIPE ➔ À LA UNE</span>
+                 <img src={mainArticle.imageUrl} alt={mainArticle.title} />
+              </div>
+              <div className="bento-text-block">
+                 <div className="bento-title-layer">
+                    <h2 className="bento-title" dangerouslySetInnerHTML={{ __html: mainArticle.title }}></h2>
+                 </div>
+              </div>
             </div>
             
-            <div className="bento-text-block">
-               <div className="bento-title-layer">
-                  <h2 className="bento-title" dangerouslySetInnerHTML={{ __html: mainArticle.title }}></h2>
-               </div>
-               <div className="bento-insight-layer">
-                  <div className="bento-insight-text">
-                    {mainArticle.insight 
-                      ? <div dangerouslySetInnerHTML={{ __html: mainArticle.insight }}></div>
-                      : <p>{mainArticle.excerpt}</p>
-                    }
+            {/* HERO TEXT SLIDE(S) */}
+            {mainArticle.longform?.slides?.length ? (
+              mainArticle.longform.slides.map((slide, i) => (
+                <div key={i} className="carousel-slide slide-text-content">
+                  <div className="slide-inner-scroll">
+                    <div dangerouslySetInnerHTML={{ __html: slide.text || "" }} />
+                    {i === mainArticle.longform!.slides.length - 1 && mainArticle.link && (
+                      <a href={mainArticle.link} target="_blank" rel="noopener noreferrer" className="bento-cta source-float">
+                        ALLER À LA SOURCE ➔
+                      </a>
+                    )}
                   </div>
-                  <div className="bento-cta">LIRE L'ANALYSE —</div>
-               </div>
-            </div>
-          </section>
-        </a>
+                </div>
+              ))
+            ) : (
+              <div className="carousel-slide slide-text-content">
+                <div className="slide-inner-scroll">
+                  <div dangerouslySetInnerHTML={{ __html: mainArticle.insight || mainArticle.excerpt || "" }} />
+                  {mainArticle.link && (
+                    <a href={mainArticle.link} target="_blank" rel="noopener noreferrer" className="bento-cta source-float">
+                      ALLER À LA SOURCE ➔
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
       )}
 
       <section className="themes-section container">
@@ -108,26 +127,30 @@ export default async function Home({ searchParams }: HomeProps) {
             
             <div className="theme-grid">
               {group.articles.length > 0 ? (
-                group.articles.map((art) => {
-                  return (
-                    <div className="theme-card" key={art.id}>
+                group.articles.map((art) => (
+                  <div className="theme-card carousel-container" key={art.id}>
+                    {/* SLIDE 1: VISUAL + TITLE */}
+                    <div className="carousel-slide card-front">
                       <div className="theme-card-image">
+                         <div className="swipe-hint">SWIPE ➔</div>
                          <img src={art.imageUrl} alt={art.title} />
                       </div>
                       <div className="theme-card-info">
                         <span className="theme-card-category">{art.category}</span>
                         <h3 className="theme-card-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
-                        <div className="theme-card-insight" dangerouslySetInnerHTML={{ 
-                           __html: art.insight || art.excerpt || "" 
-                        }}></div>
-                        
-                        <a href={art.link} target="_blank" rel="noopener noreferrer" className="theme-card-source">
-                          ➔ LIRE LA SOURCE : {art.source}
-                        </a>
                       </div>
                     </div>
-                  );
-                })
+                    {/* SLIDE 2: FULL TEXT + LINK */}
+                    <div className="carousel-slide card-back scrollable-insight">
+                      <div className="theme-card-insight" dangerouslySetInnerHTML={{ 
+                         __html: art.insight || art.excerpt || "" 
+                      }}></div>
+                      <a href={art.link} target="_blank" rel="noopener noreferrer" className="theme-card-source">
+                        ➔ LIRE LA SOURCE : {art.source}
+                      </a>
+                    </div>
+                  </div>
+                ))
               ) : (
                 <div style={{ opacity: 0.3, padding: '2rem 0', gridColumn: 'span 3' }}>
                   Analyse en cours pour cette thématique...

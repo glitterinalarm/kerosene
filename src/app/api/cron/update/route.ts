@@ -63,7 +63,7 @@ export async function GET(request: Request) {
             "link": "URL_COMPLETE_COPIEE_DE_LA_SOURCE",
             "excerpt": "Résumé incisif",
             "category": "HERO|GRAPHISME|PUBLICITÉ|ACTIVATION DIGITALE|DROP|TREND",
-            "insight": "Contenu HTML formaté (p, strong) très détaillé pour le HERO, plus concis pour les autres.",
+            "insight": "Contenu HTML (p, strong) très détaillé, argumenté et exhaustif pour TOUS les articles. Ne jamais tronquer l'analyse.",
             "imageUrl": "URL_IMAGE_AUTHENTIQUE",
             "longform": {
               "slides": [
