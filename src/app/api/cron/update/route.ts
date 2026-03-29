@@ -19,20 +19,20 @@ export async function GET(request: Request) {
   try {
     console.log('--- KEROSENE ENGINE: STARTING DAILY EDITORIAL ---');
 
-    // 1. Récupérer les sources d'inspiration (avec leurs images réelles)
+    // 1. Récupérer les sources d'inspiration
     const recentArticles = await fetchArticles();
-    const headlinesContext = recentArticles.slice(0, 12).map((a: any) => ({
+    const headlinesContext = recentArticles.slice(0, 15).map((a: any) => ({
       title: a.title,
-      source: a.source,
-      imageUrl: a.imageUrl,
-      excerpt: a.excerpt || ""
+      summary: a.excerpt || a.insight || "News créative",
+      url: a.link
     }));
 
-    // 2. Initialiser Gemini 2.5 Flash
-    const model = genAI.getGenerativeModel(
-        { model: "gemini-2.5-flash" },
-        { apiVersion: "v1" }
-    );
+    // 2. Initialiser Gemini avec Recherche Google (Grounding)
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-pro",
+      // @ts-ignore - Supporté par l'API mais parfois non typé dans les vieux SDK
+      tools: [{ googleSearchRetrieval: {} }]
+    });
 
     const visualLibrary = {
       branding: "photo-1558655146-d09347e92766", // Brutalist Graphic
@@ -44,25 +44,21 @@ export async function GET(request: Request) {
     };
 
     const prompt = `
-      Tu es le Rédacteur en Chef de KÉROSÈNE, un média créatif radical et technique.
-      Ta mission : Sélectionner les 3 news les plus fortes et en faire des analyses de fond.
+      Tu es le Rédacteur en Chef de KÉROSÈNE, média expert en craft et design radical.
       
-      VOICI LA VEILLE DU JOUR (SOURCES RÉELLES + IMAGES) :
-      ${JSON.stringify(headlinesContext, null, 2)}
-
-      TON & STYLE :
-      - Expert, disruptif, brutaliste.
-      - Parle de typographie, de layout, d'audace créative.
-      - Langue : Français (France).
-
-      RÈGLE D'OR ICONOGRAPHIE (QUALITÉ SUPÉRIEURE) :
-      - Pour chaque article, TU DOIS utiliser une URL d'image haute performance.
-      - PRIORITÉ 1: L'URL 'imageUrl' de la news source (si elle semble valide).
-      - PRIORITÉ 2: Si l'image source est absente ou suspecte (Creative Review), utilise un ID de notre BIBLIOTHÈQUE KÉROSÈNE ci-dessous :
-        Format: https://images.unsplash.com/ [ID] ?auto=format&fit=crop&q=80&w=1600
-        IDS DISPONIBLES : ${JSON.stringify(visualLibrary)}
+      ÉCHÉANCIER DE PRODUCTION :
+      1. ANALYSE : Examine la veille du jour : ${JSON.stringify(headlinesContext)}
+      2. SÉLECTION : Choisis 3 sujets à fort impact visuel (Marques, Edition, Activation, Digital).
+      3. SOURCING RÉEL (CRITIQUE) :
+         - Pour chaque sujet, utilise l'outil Recherche Google pour trouver l'iconographie RÉELLE.
+         - Cherche les photos de campagne, les visuels de presse ou les réalisations concrètes (ex: pour "Spillll", cherche les visuels du magazine).
+         - Revenir avec des URLs d'images stables et qualitatives.
       
-      CHOISIS l'ID le plus cohérent avec le sujet (ex: 'architecture' pour un projet spatial, 'branding' pour un logo).
+      RÈGLE D'OR ICONOGRAPHIE :
+      - Si tu trouves une image RÉELLE du sujet -> UTILISE-LA.
+      - Si le sujet est abstrait ou si la recherche échoue -> UTILISE un ID de notre BIBLIOTHÈQUE KÉROSÈNE (Unsplash) : 
+        IDs: ${JSON.stringify(visualLibrary)}
+        Format: https://images.unsplash.com/[ID]?auto=format&fit=crop&q=80&w=1600
 
       FORMAT DE SORTIE (JSON STRICT) :
       {
@@ -71,14 +67,14 @@ export async function GET(request: Request) {
             "id": "slug-unique",
             "title": "TITRE IMPACTANT EN CAPITALES",
             "category": "BRANDING|DIGITAL|CRAFT|DESIGN",
-            "excerpt": "Accroche radicale (150 char max).",
-            "insight": "Analyse de fond (300-500 mots). HTML autorisé: <strong>, <p>, <br>.",
-            "imageUrl": "L'URL LA PLUS QUALITATIVE (Source ou Bibliothèque)",
+            "excerpt": "Accroche brute (150 char max).",
+            "insight": "Analyse de fond radicale (300-500 mots). HTML: <strong>, <p>, <br>.",
+            "imageUrl": "L'URL LA PLUS RÉELLE ET QUALITATIVE (TROUVÉE SUR GOOGLE OU BIBLIOTHÈQUE)",
             "longform": {
               "slides": [
                  { 
                    "text": "Analyse visuelle déconstruite (100 mots)", 
-                   "image": "L'URL DE L'IMAGE (ou une autre de la bibliothèque)", 
+                   "image": "URL image réelle du projet", 
                    "caption": "Crédit technique" 
                  }
               ]
