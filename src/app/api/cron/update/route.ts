@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { put } from '@vercel/blob';
 import { fetchArticles } from '@/lib/rss';
 
-// Utilisation de la version stable v1 (plus compatible en 2026)
+// Utilisation de la version stable v1 (compatible 100% Vercel)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function GET(request: Request) {
@@ -19,23 +19,16 @@ export async function GET(request: Request) {
   try {
     console.log('--- KEROSENE ENGINE: STARTING DAILY EDITORIAL ---');
 
-    // 1. Récupérer les sources d'inspiration
+    // 1. Récupérer les sources d'inspiration (avec leurs images réelles)
     const recentArticles = await fetchArticles();
     const headlinesContext = recentArticles.slice(0, 15).map((a: any) => ({
       title: a.title,
       summary: a.excerpt || a.insight || "News créative",
-      url: a.link
+      sourceImageUrl: a.imageUrl
     }));
 
-    // 2. Initialiser Gemini avec Recherche Google (Grounding)
-    const model = genAI.getGenerativeModel(
-      { 
-        model: "gemini-1.5-flash",
-        // @ts-ignore
-        tools: [{ googleSearchRetrieval: {} }] 
-      },
-      { apiVersion: "v1beta" }
-    );
+    // 2. Initialiser Gemini 1.5 PRO (Le plus capable pour le sourcing réel)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
     const visualLibrary = {
       branding: "photo-1558655146-d09347e92766", // Brutalist Graphic
@@ -47,19 +40,15 @@ export async function GET(request: Request) {
     };
 
     const prompt = `
-      Tu es le Rédacteur en Chef de KÉROSÈNE, média expert en craft et design radical.
+      Tu es le Rédacteur en Chef de KÉROSÈNE, expert en détection de tendances.
+      Ta mission : Sélectionner les 3 news les plus fortes et en faire des analyses de fond.
       
-      ÉCHÉANCIER DE PRODUCTION :
-      1. ANALYSE : Examine la veille du jour : ${JSON.stringify(headlinesContext)}
-      2. SÉLECTION : Choisis 3 sujets à fort impact visuel (Marques, Edition, Activation, Digital).
-      3. SOURCING RÉEL (CRITIQUE) :
-         - Pour chaque sujet, utilise l'outil Recherche Google pour trouver l'iconographie RÉELLE.
-         - Cherche les photos de campagne, les visuels de presse ou les réalisations concrètes (ex: pour "Spillll", cherche les visuels du magazine).
-         - Revenir avec des URLs d'images stables et qualitatives.
-      
+      VEILLE DU JOUR (AVEC IMAGES SOURCES) :
+      ${JSON.stringify(headlinesContext, null, 2)}
+
       RÈGLE D'OR ICONOGRAPHIE :
-      - Si tu trouves une image RÉELLE du sujet -> UTILISE-LA.
-      - Si le sujet est abstrait ou si la recherche échoue -> UTILISE un ID de notre BIBLIOTHÈQUE KÉROSÈNE (Unsplash) : 
+      - Utilise l'image source fournie dans la veille si elle est pertinente.
+      - Si le sujet est abstrait ou si l'image manque -> UTILISE un ID de notre BIBLIOTHÈQUE KÉROSÈNE (Unsplash) : 
         IDs: ${JSON.stringify(visualLibrary)}
         Format: https://images.unsplash.com/[ID]?auto=format&fit=crop&q=80&w=1600
 
