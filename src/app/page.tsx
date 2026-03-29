@@ -50,7 +50,19 @@ export default async function Home({ searchParams }: HomeProps) {
   const groupedArticles = themes.map(theme => {
     return {
       name: theme,
-      articles: articles.filter(a => a.category?.toUpperCase().includes(theme) || theme.includes(a.category?.toUpperCase())).slice(0, 6)
+      articles: articles.filter(a => {
+        const cat = a.category?.toUpperCase() || "";
+        const t = theme.toUpperCase();
+        if (cat.includes(t) || t.includes(cat)) return true;
+        
+        // MAPPING DE RÉSILLIENCE
+        if (t === "PUBLICITÉ" && (cat.includes("AD") || cat.includes("PUB"))) return true;
+        if (t === "ACTIVATION DIGITALE" && (cat.includes("DIGITAL") || cat.includes("EXPERIENCE") || cat.includes("WEB"))) return true;
+        if (t === "GRAPHISME" && (cat.includes("DESIGN") || cat.includes("BRANDING") || cat.includes("LOGO"))) return true;
+        if (t === "DROP" && (cat.includes("STREET") || cat.includes("FASHION") || cat.includes("SNEAKER"))) return true;
+        
+        return false;
+      }).slice(0, 6)
     };
   });
 
