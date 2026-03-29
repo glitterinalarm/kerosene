@@ -5,8 +5,8 @@ import NavigationMenu from '@/components/NavigationMenu';
 import { getAvailableDates } from '@/lib/rss';
 
 export const metadata: Metadata = {
-  title: 'KÉROSÈNE — Veille Créative',
-  description: 'Le carburant visuel des directeurs artistiques.',
+  title: 'KÉROSÈNE — Daily Creative Releases',
+  description: 'Le top 3 quotidien des sorties Graphisme, Publicité, Digital, Drop, Trend et Musique.',
 };
 
 export default async function RootLayout({

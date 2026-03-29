@@ -38,77 +38,61 @@ export default async function Home({ searchParams }: HomeProps) {
     );
   }
 
-  // La hiérarchie visuelle (Entonnoir de lecture)
-  const mainArticle = articles[0];            // 100% Largeur (Hero)
-  const brefArticles = articles.slice(1);     // Le reste : Le fil dense et asymétrique (Redirection directe)
+  const themes = [
+    "GRAPHISME",
+    "PUBLICITÉ",
+    "ACTIVATION DIGITALE",
+    "DROP",
+    "TREND",
+    "MUSIQUE"
+  ];
+
+  const groupedArticles = themes.map(theme => {
+    return {
+      name: theme,
+      articles: articles.filter(a => a.category?.toUpperCase().includes(theme) || theme.includes(a.category?.toUpperCase())).slice(0, 3)
+    };
+  });
 
   return (
     <>
-      {/* 1. HERO BENTO BOX (CLICKABLE) */}
-      <Link href={getArticleHref(mainArticle.id, mainArticle.link, true)} className="bento-hero-link">
-        <section className="bento-hero container">
-          <div className="bento-visuals">
-             <span className="bento-visual-label">{mainArticle.category}</span>
-             {mainArticle.longform && mainArticle.longform.slides.length > 0 ? (
-                 mainArticle.longform.slides.map((slide, i) => (
-                     slide.image && <img key={i} src={slide.image} alt={`Slide ${i}`} />
-                 ))
-             ) : (
-                 <img src={mainArticle.imageUrl} alt={mainArticle.title} />
-             )}
-          </div>
-          
-          <div className="bento-text-block">
-             <div className="bento-title-layer">
-                <h2 className="bento-title" dangerouslySetInnerHTML={{ __html: mainArticle.title }}></h2>
-             </div>
-             <div className="bento-insight-layer">
-                <div className="bento-insight-text">
-                  {mainArticle.insight 
-                    ? mainArticle.insight.replace(/<[^>]*>?/gm, '').substring(0, 320) + "..."
-                    : (mainArticle.excerpt || "").substring(0, 320) + "..."
-                  }
-                </div>
-                <div className="bento-cta">LIRE LA SUITE —</div>
-             </div>
-          </div>
-        </section>
-      </Link>
-
-      {/* 2. LE FIL : Bento dense asymétrique */}
-      {brefArticles.length > 0 && (
-        <section className="fil-section container">
-          <h2 className="section-title">Le Fil Créatif.</h2>
-          <div className="fil-grid">
-            {brefArticles.map((art, i) => {
-                const isWide = i % 5 === 0;
-                const href = getArticleHref(art.id, art.link, false);
-                const isExternal = href.startsWith('http');
-                
-                return (
-                <Link 
-                  href={href} 
-                  className={`fil-card ${isWide ? 'fil-card-wide' : ''}`} 
-                  key={art.id}
-                  target={isExternal ? "_blank" : undefined}
-                  rel={isExternal ? "noopener noreferrer" : undefined}
-                >
-                  {art.imageUrl && (
-                      <div className="fil-image-wrapper">
-                          <img src={art.imageUrl} alt={art.title} />
+      <section className="themes-section container">
+        {groupedArticles.map((group, idx) => (
+          <div key={idx} className="theme-block">
+            <div className="theme-header">
+              <div className="theme-title-wrapper">
+                <div className="theme-live-dot"></div>
+                <h2 className="theme-title">{group.name}</h2>
+              </div>
+              <span className="theme-count">03 sujets</span>
+            </div>
+            
+            <div className="theme-grid">
+              {group.articles.length > 0 ? (
+                group.articles.map((art) => {
+                  const href = `/article/${encodeURIComponent(art.id)}`;
+                  return (
+                    <Link href={href} className="theme-card" key={art.id}>
+                      <div className="theme-card-image">
+                         <img src={art.imageUrl} alt={art.title} />
                       </div>
-                  )}
-                  <div>
-                      <span className="fil-category">{art.category}</span>
-                      <h4 dangerouslySetInnerHTML={{ __html: art.title }}></h4>
-                      <span className="fil-source">{art.source}</span>
-                  </div>
-                </Link>
-                );
-            })}
+                      <div className="theme-card-info">
+                        <span className="theme-card-category">{art.category}</span>
+                        <h3 className="theme-card-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
+                        <span className="theme-card-source">{art.source}</span>
+                      </div>
+                    </Link>
+                  );
+                })
+              ) : (
+                <div style={{ opacity: 0.3, padding: '2rem 0', gridColumn: 'span 3' }}>
+                  Analyse en cours pour cette thématique...
+                </div>
+              )}
+            </div>
           </div>
-        </section>
-      )}
+        ))}
+      </section>
       
       {/* MANIFESTO FOOTER */}
       <section className="manifesto container">

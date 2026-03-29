@@ -18,51 +18,58 @@ export async function GET(request: Request) {
 
   try {
     const recentArticles = await fetchArticles();
-    // On passe un peu plus de contexte pour que Gemini choisisse bien
-    const headlinesContext = recentArticles.slice(0, 15).map((a: Article) => ({
+    // On passe plus de contexte pour que Gemini puisse ventiler par thématique
+    const headlinesContext = recentArticles.slice(0, 60).map((a: Article) => ({
       title: a.title,
       source: a.source,
+      category: a.category,
       link: a.link,
       summary: a.excerpt || "",
       imageUrl: a.imageUrl
     }));
 
-    // ACTIVATION DU GROUNDING (GOOGLE SEARCH) - MODÈLE PRO RECOMMANDÉ POUR LE GROUNDING
+    // ACTIVATION DU GROUNDING (GOOGLE SEARCH)
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.0-flash",
-        // @ts-expect-error - googleSearch is a valid tool in latest SDK but might not be in the current type definitions
+        model: "gemini-1.5-flash",
+        // @ts-expect-error - googleSearch is a valid tool
         tools: [{ googleSearch: {} }] 
     });
 
     const prompt = `
-      Tu es le Rédacteur en Chef de KÉROSÈNE, une revue digitale de design radical et de publicité d'avant-garde.
+      Tu es le Rédacteur en Chef de KÉROSÈNE, une revue digitale de design radical et d'avant-culture.
       
       ANALYSE CES SOURCES : ${JSON.stringify(headlinesContext)}.
       
       TA MISSION :
-      1. Choisis les 3 sujets les plus forts stratégiquement ou visuellement pour l'édition du jour.
-      2. POUR CHAQUE SUJET CHOISI :
-         - Effectue une recherche web approfondie (Grounding) pour trouver :
-           a) Des détails exclusifs non présents dans le résumé (contingences techniques, agences impliquées, vision créative).
-           b) DES URLS D'IMAGES RÉELLES : Cherche des liens directs vers les assets de campagne, photos de presse, ou images haute définition sur les sites officiels/sources de confiance (Creativereview, It's Nice That, LBB, etc.).
-         - Rédige un "Insight" radical dans un style "Club des D.A." (exigeant, technique, sans langue de bois).
-         - Crée un article "longform" structuré en 4 slides minimum. Chaque slide doit avoir un texte court et percutant, et une URL d'IMAGE SOURCE vérifiée via ta recherche.
+      Sélectionne les 3 sorties/sujets les PLUS MARQUANTS du jour pour CHACUNE des 6 thématiques suivantes :
+      1. GRAPHISME (Branding, Typographie, Motion, Print)
+      2. PUBLICITÉ (Campagnes majeures, Films, Prints, Innovation média)
+      3. ACTIVATION DIGITALE (Expériences web, AR/VR, Installation interactive, Web3)
+      4. DROP (Street culture, Sneakers, Collabs, Fashion drops)
+      5. TREND (Phénomènes de société, Esthétiques émergentes, Signaux faibles)
+      6. MUSIQUE (Sorties d'albums, Clips marquants, Direction artistique musicale)
+
+      CONTRAINTES :
+      - EXACTEMENT 3 SUJETS par thématique (soit 18 articles au total).
+      - Style "Club des D.A." (exigeant, technique, sans langue de bois).
+      - Effectue une recherche web (Grounding) pour CHAQUE sujet afin de trouver des détails techniques exclusifs et SURTOUT des URLS d'IMAGES RÉELLES (assets de campagne, photos de presse).
+      - Crée un article pour chaque sujet avec un "insight" radical et une structure "longform" (4 slides).
       
-      RÈGLE D'OR : Remplace les images génériques par des URLS directes trouvées lors de ta recherche web. Ne pas utiliser d'autres fallbacks si tu trouves de l'authentique.
+      RÈGLE D'OR : Remplace toute image générique par une URL directe provenant de ta recherche web.
       
-      FORMAT JSON STRICT :
+      FORMAT JSON STRICT (un seul tableau "articles" contenant les 18 objets) :
       {
         "articles": [
           {
             "id": "slug-unique",
             "title": "Titre Impactant",
             "excerpt": "Résumé incisif",
-            "category": "BRANDING|ADVERTISING|DESIGN|CULTURE",
+            "category": "GRAPHISME|PUBLICITÉ|ACTIVATION DIGITALE|DROP|TREND|MUSIQUE",
             "insight": "Contenu HTML formaté (p, strong) de l'analyse radicale",
-            "imageUrl": "URL_IMAGE_AUTHENTIQUE_SOURCEE",
+            "imageUrl": "URL_IMAGE_AUTHENTIQUE",
             "longform": {
               "slides": [
-                { "text": "Texte slide 1", "image": "URL_SLIDE_1", "caption": "Légende technique" }
+                { "text": "Analyse technique slide 1", "image": "URL_SLIDE_1", "caption": "Légende technique" }
               ]
             }
           }

@@ -33,15 +33,36 @@ const parser = new Parser({
 });
 
 const feeds = [
-  { name: "It's Nice That", url: "https://www.itsnicethat.com/articles.rss", category: "Graphic Design" },
-  { name: "Ads of the World", url: "https://www.adsoftheworld.com/feed", category: "Advertising" },
-  { name: "The Drum", url: "https://www.thedrum.com/news/feed", category: "Advertising" },
-  { name: "Highsnobiety", url: "https://www.highsnobiety.com/feeds/rss", category: "Style & Culture" },
-  { name: "Creative Review", url: "https://www.creativereview.co.uk/feed/", category: "Review" },
-  { name: "Graphéine", url: "https://www.grapheine.com/feed", category: "Design" },
-  { name: "The Design Blog", url: "https://thedsgnblog.com/rss", category: "Branding" },
-  { name: "Brand Magazine", url: "https://www.brandingmag.com/feed/", category: "Branding" },
-  { name: "AdAge", url: "https://adage.com/rss.xml", category: "Advertising" },
+  // GRAPHISME
+  { name: "It's Nice That", url: "https://www.itsnicethat.com/articles.rss", category: "GRAPHISME" },
+  { name: "Creative Review", url: "https://www.creativereview.co.uk/feed/", category: "GRAPHISME" },
+  { name: "Graphéine", url: "https://www.grapheine.com/feed", category: "GRAPHISME" },
+  
+  // PUBLICITÉ
+  { name: "Ads of the World", url: "https://www.adsoftheworld.com/feed", category: "PUBLICITÉ" },
+  { name: "AdAge", url: "https://adage.com/rss.xml", category: "PUBLICITÉ" },
+  { name: "The Drum", url: "https://www.thedrum.com/news/feed", category: "PUBLICITÉ" },
+  { name: "LBB Online", url: "https://www.lbbonline.com/news/feed/", category: "PUBLICITÉ" },
+
+  // ACTIVATION DIGITALE
+  { name: "Contagious", url: "https://www.contagious.com/rss/news", category: "ACTIVATION DIGITALE" },
+  { name: "Marketing Week", url: "https://www.marketingweek.com/feed/", category: "ACTIVATION DIGITALE" },
+  { name: "Campaign Live", url: "https://www.campaignlive.co.uk/rss/news", category: "ACTIVATION DIGITALE" },
+
+  // DROP
+  { name: "Highsnobiety", url: "https://www.highsnobiety.com/feeds/rss", category: "DROP" },
+  { name: "Hypebeast", url: "https://hypebeast.com/feed", category: "DROP" },
+  { name: "Complex", url: "https://www.complex.com/feeds/rss/all", category: "DROP" },
+
+  // TREND
+  { name: "Dazed", url: "https://www.dazeddigital.com/rss", category: "TREND" },
+  { name: "i-D", url: "https://i-d.vice.com/en_uk/rss", category: "TREND" },
+  { name: "The Business of Fashion", url: "https://www.businessoffashion.com/site/rss", category: "TREND" },
+
+  // MUSIQUE
+  { name: "Pitchfork", url: "https://pitchfork.com/feed/rss", category: "MUSIQUE" },
+  { name: "Rolling Stone", url: "https://www.rollingstone.com/feed/", category: "MUSIQUE" },
+  { name: "NME", url: "https://www.nme.com/feed", category: "MUSIQUE" },
 ];
 
 function decodeHTMLEntities(text: string): string {
