@@ -3,12 +3,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { put } from '@vercel/blob';
 import { fetchArticles } from '@/lib/rss';
 
-// IMPORTANT: Set GEMINI_API_KEY in Vercel Env
-// FORCE API VERSION v1 to fix 404 errors
+// Utilisation de la version stable v1 (plus compatible en 2026)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function GET(request: Request) {
-  // Optionnel: Vérification d'un token secret pour sécuriser la route
   const { searchParams } = new URL(request.url);
   const authHeader = request.headers.get('authorization');
   
@@ -19,54 +17,74 @@ export async function GET(request: Request) {
   }
 
   try {
-    console.log('--- STARTING KEROSENE CRON UPDATE ---');
+    console.log('--- KEROSENE ENGINE: STARTING DAILY EDITORIAL ---');
 
-    // 1. Récupérer les dernières news (pour inspiration)
+    // 1. Récupérer les sources d'inspiration
     const recentArticles = await fetchArticles();
     const headlines = recentArticles.slice(0, 15).map((a: any) => `- ${a.title}: ${a.summary}`).join('\n');
 
-    // 2. Demander à Gemini de rédiger les 3 articles de fond (Editorial)
+    // 2. Initialiser Gemini 2.5 Flash (Modèle stable en 2026)
+    const model = genAI.getGenerativeModel(
+        { model: "gemini-2.5-flash" },
+        { apiVersion: "v1" }
+    );
+
     const prompt = `
-      Tu es le Rédacteur en Chef de KÉROSÈNE.
-      Rédige 3 analyses créatives basées sur : ${headlines}
-      Sortie JSON: { "articles": [...] }
+      Tu es le Rédacteur en Chef de KÉROSÈNE, un webzine créatif brutaliste, radical et technique.
+      Ta mission : Rédiger les 3 analyses majeures du jour basées sur cette veille :
+      ${headlines}
+
+      TON & STYLE :
+      - Radical, expert, sans fioritures (Brutaliste).
+      - Cite des agences réelles, des typographies, des concepts de "craft".
+      - Langue : Français (France).
+
+      FORMAT DE SORTIE (JSON STRICT) :
+      {
+        "articles": [
+          {
+            "id": "slug-unique",
+            "title": "Titre Impactant",
+            "category": "BRANDING|DIGITAL|CRAFT|DESIGN",
+            "summary": "Résumé technique (300 char max)",
+            "content": "Analyse de fond (3 min lecture). Utilise <strong> et <br>.",
+            "imageUrl": "URL d'une image presse réelle (si disponible) ou une URL valide de Creative Review.",
+            "caption": "Crédits techniques",
+            "slides": [
+               { "image": "URL image 1", "text": "Analyse visuelle", "caption": "Légende 1" }
+            ]
+          }
+        ]
+      }
     `;
 
-    // VERSION 1.3 (STABLE API v1)
-    console.log("Using model: gemini-1.5-flash with v1 API");
-    const model = genAI.getGenerativeModel(
-      { model: "gemini-1.5-flash" },
-      { apiVersion: "v1" }
-    );
-    
     const result = await model.generateContent(prompt);
-
-    if (!result) throw new Error("Gemini v1 failed to respond");
-    
     const responseText = result.response.text();
     
-    // Nettoyer le JSON si Gemini ajoute des backticks ```json
+    // Nettoyage JSON
     const cleanedJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     const editorialData = JSON.parse(cleanedJson);
 
-    // 3. Sauvegarder dans Vercel Blob (Écrase le précédent)
+    // 3. Sauvegarder dans Vercel Blob
     const { url } = await put('editorial/daily.json', JSON.stringify({
       date: new Date().toISOString(),
       ...editorialData
     }), {
       access: 'public',
-      addRandomSuffix: false // Pour avoir une URL fixe ou prévisible
+      addRandomSuffix: false
     });
+
+    console.log('--- KEROSENE ENGINE: SUCCESS ---');
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Kérosène Editorial Updated',
+      message: 'Kérosène Editorial Updated (Gemini 2.5 Flash)',
       blobUrl: url,
-      articlesCount: editorialData.articles.length
+      articles: editorialData.articles.map((a: any) => a.title)
     });
 
   } catch (error: any) {
-    console.error('Cron Error:', error);
+    console.error('Kerosene Engine Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
