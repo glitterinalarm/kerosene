@@ -72,48 +72,29 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <>
       {mainArticle && (
-        <section className="bento-hero container">
-          <SwipeCarousel className="hero-carousel bento-hero-wrapper">
-            <div className="carousel-slide">
-              <div className="bento-visuals">
-                 <span className="bento-visual-label">À LA UNE</span>
-                 <img src={mainArticle.imageUrl} alt={mainArticle.title} />
-              </div>
-              <div className="bento-text-block">
-                 <div className="bento-title-layer">
-                    <h2 className="bento-title" dangerouslySetInnerHTML={{ __html: mainArticle.title }}></h2>
-                 </div>
-              </div>
+        <a href={`/article/${mainArticle.id}`} className="bento-hero-link">
+          <section className="bento-hero container">
+            <div className="bento-visuals">
+               <span className="bento-visual-label">À LA UNE</span>
+               <img src={mainArticle.imageUrl} alt={mainArticle.title} />
             </div>
             
-            {/* HERO TEXT SLIDE(S) */}
-            {mainArticle.longform?.slides?.length ? (
-              mainArticle.longform.slides.map((slide, i) => (
-                <div key={i} className="carousel-slide slide-text-content">
-                  <div className="slide-inner-scroll">
-                    <div dangerouslySetInnerHTML={{ __html: slide.text || "" }} />
-                    {i === mainArticle.longform!.slides.length - 1 && mainArticle.link && (
-                      <a href={mainArticle.link} target="_blank" rel="noopener noreferrer" className="bento-cta source-float">
-                        ALLER À LA SOURCE ➔
-                      </a>
-                    )}
+            <div className="bento-text-block">
+               <div className="bento-title-layer">
+                  <h2 className="bento-title" dangerouslySetInnerHTML={{ __html: mainArticle.title }}></h2>
+               </div>
+               <div className="bento-insight-layer">
+                  <div className="bento-insight-text">
+                    {mainArticle.insight 
+                      ? <div dangerouslySetInnerHTML={{ __html: mainArticle.insight }}></div>
+                      : <p>{mainArticle.excerpt}</p>
+                    }
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="carousel-slide slide-text-content">
-                <div className="slide-inner-scroll">
-                  <div dangerouslySetInnerHTML={{ __html: mainArticle.insight || mainArticle.excerpt || "" }} />
-                  {mainArticle.link && (
-                    <a href={mainArticle.link} target="_blank" rel="noopener noreferrer" className="bento-cta source-float">
-                      ALLER À LA SOURCE ➔
-                    </a>
-                  )}
-                </div>
-              </div>
-            )}
-          </SwipeCarousel>
-        </section>
+                  <div className="bento-cta">LIRE L'ANALYSE —</div>
+               </div>
+            </div>
+          </section>
+        </a>
       )}
 
       <section className="themes-section container">
