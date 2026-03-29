@@ -59,10 +59,10 @@ const feeds = [
   { name: "i-D", url: "https://i-d.vice.com/en_uk/rss", category: "TREND" },
   { name: "The Business of Fashion", url: "https://www.businessoffashion.com/site/rss", category: "TREND" },
 
-  // MUSIQUE
-  { name: "Pitchfork", url: "https://pitchfork.com/feed/rss", category: "MUSIQUE" },
-  { name: "Rolling Stone", url: "https://www.rollingstone.com/feed/", category: "MUSIQUE" },
-  { name: "NME", url: "https://www.nme.com/feed", category: "MUSIQUE" },
+  // SOCIAL MEDIA & TWEETS (PROXY RSSHUB / AGGREGATEURS)
+  { name: "We Are Social", url: "https://wearesocial.com/fr/feed/", category: "TREND" },
+  { name: "Social Media Today", url: "https://www.socialmediatoday.com/feeds/news/", category: "TREND" },
+  { name: "Niche Trends", url: "https://trendwatching.com/feed/", category: "TREND" },
 ];
 
 function decodeHTMLEntities(text: string): string {
@@ -135,29 +135,41 @@ export async function fetchArticles(): Promise<Article[]> {
 
   // 1. TENTATIVE DE RÉCUPÉRATION DU BLOB (CONTENU IA DU JOUR)
   try {
-    // On utilise un Timestamp pour casser le cache du navigateur/Vercel
-    const blobUrl = "https://2vfzwmqqws8h2xfv.public.blob.vercel-storage.com/editorial/daily.json";
-    const res = await fetch(`${blobUrl}?t=${Date.now()}`, { cache: 'no-store' });
+    let data;
     
-    if (res.ok) {
-        const data = await res.json();
-        if (data && data.articles) {
-            aiArticles = (data.articles as Article[]).map((a) => ({
-                ...a,
-                link: `/article/${a.id}`,
-                source: "KÉROSÈNE ÉDITORIAL (IA)",
-                pubDate: data.date || new Date().toISOString(),
-                // FALLBACKS RÉSILIENTS
-                insight: a.insight || a.content || a.summary || "Analyse en cours...",
-                excerpt: a.excerpt || a.summary || "Décryptage technique.",
-                imageUrl: (a.imageUrl || "").replace(/\s/g, '').trim() || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop",
-                longform: a.longform || (a.content ? { slides: [{ text: a.content, image: a.imageUrl }] } : { slides: [] })
-            }));
-            console.log(`[RSS] ${aiArticles.length} AI articles injected from Blob (Resilient Mode).`);
+    if (process.env.NODE_ENV === "development") {
+        const fs = require('fs');
+        const path = require('path');
+        const localPath = path.join(process.cwd(), 'public', 'editorial', 'daily.json');
+        if (fs.existsSync(localPath)) {
+            const fileContent = fs.readFileSync(localPath, 'utf8');
+            data = JSON.parse(fileContent);
+        }
+    } else {
+        // PRODUCTION: On utilise un Timestamp pour casser le cache du navigateur/Vercel
+        const blobUrl = "https://2vfzwmqqws8h2xfv.public.blob.vercel-storage.com/editorial/daily.json";
+        const res = await fetch(`${blobUrl}?t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+            data = await res.json();
         }
     }
+    
+    if (data && data.articles) {
+        aiArticles = (data.articles as Article[]).map((a) => ({
+            ...a,
+            link: `/article/${a.id}`,
+            source: "KÉROSÈNE ÉDITORIAL (IA)",
+            pubDate: data.date || new Date().toISOString(),
+            // FALLBACKS RÉSILIENTS
+            insight: a.insight || a.content || a.summary || "Analyse en cours...",
+            excerpt: a.excerpt || a.summary || "Décryptage technique.",
+            imageUrl: (a.imageUrl || "").replace(/\s/g, '').trim() || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop",
+            longform: a.longform || (a.content ? { slides: [{ text: a.content, image: a.imageUrl }] } : { slides: [] })
+        }));
+        console.log(`[RSS] ${aiArticles.length} AI articles injected (Resilient Mode).`);
+    }
   } catch (e) {
-    console.warn("[RSS] Erreur lecture Blob:", e);
+    console.warn("[RSS] Erreur lecture Éditorial IA:", e);
   }
 
   // 2. Fetching all feeds in parallel for speed

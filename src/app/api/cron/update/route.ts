@@ -38,38 +38,38 @@ export async function GET(request: Request) {
     const prompt = `
       Tu es le Rédacteur en Chef de KÉROSÈNE, une revue digitale de design radical et d'avant-culture.
       
-      ANALYSE CES SOURCES : ${JSON.stringify(headlinesContext)}.
+      ANALYSE CES SOURCES (dont de nombreux flux X/Twitter et Instagram) : ${JSON.stringify(headlinesContext)}.
       
       TA MISSION :
-      Sélectionne les 6 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 6 thématiques suivantes :
-      1. GRAPHISME (Branding, Typographie, Motion, Print)
-      2. PUBLICITÉ (Campagnes majeures, Films, Prints, Innovation média)
-      3. ACTIVATION DIGITALE (Expériences web, AR/VR, Installation interactive, Web3)
-      4. DROP (Street culture, Sneakers, Collabs, Fashion drops)
-      5. TREND (Phénomènes de société, Esthétiques émergentes, Signaux faibles)
-      6. MUSIQUE (Sorties d'albums, Clips marquants, Direction artistique musicale)
+      1. SÉLECTIONNE L'ARTICLE "HERO" (À LA UNE) : Choisis le sujet le plus riche et impactant du jour, toutes catégories confondues.
+      2. POUR CET ARTICLE HERO : Rédige un contenu "longform" (insight) ultra-bien construit, journalistique, qui a du fond, des arguments, un développement, et une ouverture sur le sujet (pas juste une brève). C'est ta pièce maîtresse.
+      3. ENSUITE, sélectionne 4 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 5 thématiques suivantes :
+         - GRAPHISME (Branding, Typographie, Motion, Print)
+         - PUBLICITÉ (Campagnes majeures, Films, Prints, Innovation média)
+         - ACTIVATION DIGITALE (Expériences web, AR/VR, Installation interactive, Web3)
+         - DROP (Street culture, Sneakers, Collabs, Fashion drops)
+         - TREND (Phénomènes de société, Esthétiques émergentes, Signaux forts des réseaux X/Insta)
 
       CONTRAINTES :
-      - EXACTEMENT 6 SUJETS par thématique (soit 36 articles au total).
-      - Style "Club des D.A." (exigeant, technique, sans langue de bois).
-      - Effectue une recherche web (Grounding) pour CHAQUE sujet afin de trouver des détails techniques exclusifs et SURTOUT des URLS d'IMAGES RÉELLES (assets de campagne, photos de presse).
-      - Crée un article pour chaque sujet avec un "insight" radical et une structure "longform" (4 slides).
-      
+      - Style "Club des D.A." (exigeant, technique, sans langue de bois, analyse journalistique pointue pour le HERO).
+      - Effectue une recherche web (Grounding) pour CHAQUE sujet afin de trouver des détails techniques exclusifs et SURTOUT des URLS d'IMAGES RÉELLES (assets de campagne, vidéos, photos de presse).
+      - Le HERO doit avoir la catégorie "HERO".
+
       RÈGLE D'OR : Remplace toute image générique par une URL directe provenant de ta recherche web.
       
-      FORMAT JSON STRICT (un seul tableau "articles" contenant les 36 objets) :
+      FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, soit 21 objets max) :
       {
         "articles": [
           {
             "id": "slug-unique",
             "title": "Titre Impactant",
             "excerpt": "Résumé incisif",
-            "category": "GRAPHISME|PUBLICITÉ|ACTIVATION DIGITALE|DROP|TREND|MUSIQUE",
-            "insight": "Contenu HTML formaté (p, strong) de l'analyse radicale",
+            "category": "HERO|GRAPHISME|PUBLICITÉ|ACTIVATION DIGITALE|DROP|TREND",
+            "insight": "Contenu HTML formaté (p, strong) très détaillé pour le HERO, plus concis pour les autres.",
             "imageUrl": "URL_IMAGE_AUTHENTIQUE",
             "longform": {
               "slides": [
-                { "text": "Analyse technique slide 1", "image": "URL_SLIDE_1", "caption": "Légende technique" }
+                { "text": "Analyse technique slide 1", "image": "URL_SLIDE_1", "caption": "Légende" }
               ]
             }
           }
@@ -96,17 +96,42 @@ export async function GET(request: Request) {
     const cleanedJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     const editorialData = JSON.parse(cleanedJson);
 
-    const { url } = await put('editorial/daily.json', JSON.stringify({
+    const dataToSave = JSON.stringify({
       date: new Date().toISOString(),
       ...editorialData,
       grounded: true
-    }), { access: 'public', addRandomSuffix: false, allowOverwrite: true });
+    });
+
+    let savedUrl = "local";
+
+    if (process.env.NODE_ENV === "development") {
+      // OFFLINE MODE / LOCAL DEV
+      const fs = require('fs');
+      const path = require('path');
+      const dirPath = path.join(process.cwd(), 'public', 'editorial');
+      if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+      }
+      fs.writeFileSync(path.join(dirPath, 'daily.json'), dataToSave);
+      console.log("[CRON] Fichier sauvegardé localement dans public/editorial/daily.json");
+    } else {
+      // PRODUCTION MODE (VERCEL BLOB)
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        throw new Error("Missing BLOB_READ_WRITE_TOKEN for production deployment.");
+      }
+      const { url } = await put('editorial/daily.json', dataToSave, { 
+        access: 'public', 
+        addRandomSuffix: false, 
+        allowOverwrite: true 
+      });
+      savedUrl = url;
+    }
 
     return NextResponse.json({ 
         success: true, 
         message: 'Kérosène Grounded & Updated', 
-        articlesCount: editorialData.articles.length,
-        blobUrl: url 
+        articlesCount: editorialData.articles?.length || 0,
+        blobUrl: savedUrl 
     });
 
   } catch (error: unknown) {

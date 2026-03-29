@@ -38,19 +38,21 @@ export default async function Home({ searchParams }: HomeProps) {
     );
   }
 
+  const mainArticle = articles[0]; // The top story
+  const restArticles = articles.slice(1);
+
   const themes = [
     "GRAPHISME",
     "PUBLICITÉ",
     "ACTIVATION DIGITALE",
     "DROP",
-    "TREND",
-    "MUSIQUE"
+    "TREND"
   ];
 
   const groupedArticles = themes.map(theme => {
     return {
       name: theme,
-      articles: articles.filter(a => {
+      articles: restArticles.filter(a => {
         const cat = a.category?.toUpperCase() || "";
         const t = theme.toUpperCase();
         if (cat.includes(t) || t.includes(cat)) return true;
@@ -68,6 +70,38 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <>
+      {mainArticle && (
+        <a href={mainArticle.link} target="_blank" rel="noopener noreferrer" className="bento-hero-link">
+          <section className="bento-hero container">
+            <div className="bento-visuals">
+               <span className="bento-visual-label">À LA UNE</span>
+               {mainArticle.longform && mainArticle.longform.slides && mainArticle.longform.slides.length > 0 ? (
+                   mainArticle.longform.slides.map((slide, i) => (
+                       slide.image && <img key={i} src={slide.image} alt={`Slide ${i}`} />
+                   ))
+               ) : (
+                   <img src={mainArticle.imageUrl} alt={mainArticle.title} />
+               )}
+            </div>
+            
+            <div className="bento-text-block">
+               <div className="bento-title-layer">
+                  <h2 className="bento-title" dangerouslySetInnerHTML={{ __html: mainArticle.title }}></h2>
+               </div>
+               <div className="bento-insight-layer">
+                  <div className="bento-insight-text">
+                    {mainArticle.insight 
+                      ? <div dangerouslySetInnerHTML={{ __html: mainArticle.insight.substring(0, 500) + "..." }}></div>
+                      : <p>{(mainArticle.excerpt || "").substring(0, 320)}...</p>
+                    }
+                  </div>
+                  <div className="bento-cta">LIRE L'ANALYSE —</div>
+               </div>
+            </div>
+          </section>
+        </a>
+      )}
+
       <section className="themes-section container">
         {groupedArticles.map((group, idx) => (
           <div key={idx} className="theme-block">
@@ -81,7 +115,6 @@ export default async function Home({ searchParams }: HomeProps) {
             <div className="theme-grid">
               {group.articles.length > 0 ? (
                 group.articles.map((art) => {
-                  const isExternal = art.link?.startsWith('http');
                   return (
                     <a 
                       href={art.link} 
