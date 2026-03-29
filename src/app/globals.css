@@ -1047,9 +1047,9 @@ img { display: block; max-width: 100%; height: auto; }
   box-shadow: none;
 }
 .nav-arrow svg {
-  width: 32px;
-  height: 32px;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8)); /* Assure la lisibilité du SVG */
+  width: 18px;
+  height: 18px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); /* Assure la lisibilité du SVG */
   transition: transform 0.2s ease;
 }
 .nav-arrow:hover { 
