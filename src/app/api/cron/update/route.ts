@@ -78,7 +78,8 @@ export async function GET(request: Request) {
       ...editorialData
     }), {
       access: 'public',
-      addRandomSuffix: false
+      addRandomSuffix: false,
+      allowOverwrite: true
     });
 
     console.log('--- KEROSENE ENGINE: SUCCESS ---');

@@ -210,9 +210,13 @@ export async function fetchArticles(): Promise<Article[]> {
                 ...a,
                 link: `/article/${a.id}`,
                 source: "KÉROSÈNE ÉDITORIAL (IA)",
-                pubDate: data.date || new Date().toISOString()
+                pubDate: data.date || new Date().toISOString(),
+                // FALLBACKS RÉSILIENTS
+                insight: a.insight || a.content || a.summary || "Analyse en cours...",
+                excerpt: a.excerpt || a.summary || "Décryptage technique.",
+                longform: a.longform || (a.content ? { slides: [{ text: a.content, image: a.imageUrl }] } : undefined)
             }));
-            console.log(`[RSS] ${aiArticles.length} AI articles injected from Blob.`);
+            console.log(`[RSS] ${aiArticles.length} AI articles injected from Blob (Resilient Mode).`);
         }
     }
   } catch (e) {
