@@ -1,3 +1,4 @@
+// VERSION 1.1.2 - FORCE REDEPLOYMENT FOR STABLE GROUNDING
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { put } from '@vercel/blob';
