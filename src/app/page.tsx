@@ -71,7 +71,7 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <>
       {mainArticle && (
-        <a href={mainArticle.link} target="_blank" rel="noopener noreferrer" className="bento-hero-link">
+        <a href={`/article/${mainArticle.id}`} className="bento-hero-link">
           <section className="bento-hero container">
             <div className="bento-visuals">
                <span className="bento-visual-label">À LA UNE</span>
@@ -89,7 +89,7 @@ export default async function Home({ searchParams }: HomeProps) {
                       : <p>{mainArticle.excerpt}</p>
                     }
                   </div>
-                  <div className="bento-cta">ALLER À LA SOURCE —</div>
+                  <div className="bento-cta">LIRE L'ANALYSE —</div>
                </div>
             </div>
           </section>
@@ -110,13 +110,7 @@ export default async function Home({ searchParams }: HomeProps) {
               {group.articles.length > 0 ? (
                 group.articles.map((art) => {
                   return (
-                    <a 
-                      href={art.link} 
-                      className="theme-card" 
-                      key={art.id} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                    >
+                    <div className="theme-card" key={art.id}>
                       <div className="theme-card-image">
                          <img src={art.imageUrl} alt={art.title} />
                       </div>
@@ -124,11 +118,14 @@ export default async function Home({ searchParams }: HomeProps) {
                         <span className="theme-card-category">{art.category}</span>
                         <h3 className="theme-card-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
                         <div className="theme-card-insight" dangerouslySetInnerHTML={{ 
-                           __html: art.insight ? (art.insight.substring(0, 180) + '...') : (art.excerpt || "") 
+                           __html: art.insight || art.excerpt || "" 
                         }}></div>
-                        <span className="theme-card-source">➔ {art.source}</span>
+                        
+                        <a href={art.link} target="_blank" rel="noopener noreferrer" className="theme-card-source">
+                          ➔ LIRE LA SOURCE : {art.source}
+                        </a>
                       </div>
-                    </a>
+                    </div>
                   );
                 })
               ) : (

@@ -18,7 +18,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const wordCount = (article.insight || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
   const readingTime = Math.max(3, Math.ceil(wordCount / 200));
-  const isEditorial = article.link.startsWith('/');
 
   return (
     <article className="article-page">
@@ -71,10 +70,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <span className="info-label">LECTURE</span>
             <p className="info-value">{readingTime} MIN</p>
           </div>
-          {!isEditorial && (
+          {article.link && (
             <div className="info-item">
               <a href={article.link} target="_blank" rel="noopener noreferrer" className="article-source-link">
-                SOURCE →
+                SOURCE OFFICIELLE →
               </a>
             </div>
           )}
@@ -102,9 +101,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <Link href="/" className="article-footer-back">
                 ← RETOUR À LA UNE
               </Link>
-              {!isEditorial && (
+              {article.link && (
                 <a href={article.link} target="_blank" rel="noopener noreferrer" className="article-footer-source">
-                  LIRE L&apos;ARTICLE ORIGINAL →
+                  LIRE L'ARTICLE ORIGINAL →
                 </a>
               )}
             </div>
