@@ -18,8 +18,8 @@ export async function GET(request: Request) {
 
   try {
     const recentArticles = await fetchArticles();
-    // On passe plus de contexte pour que Gemini puisse ventiler par thématique
-    const headlinesContext = recentArticles.slice(0, 60).map((a: Article) => ({
+    // Augmentation du pool pour permettre une sélection plus variée par thématique (100 articles)
+    const headlinesContext = recentArticles.slice(0, 100).map((a: Article) => ({
       title: a.title,
       source: a.source,
       category: a.category,
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
       ANALYSE CES SOURCES : ${JSON.stringify(headlinesContext)}.
       
       TA MISSION :
-      Sélectionne les 3 sorties/sujets les PLUS MARQUANTS du jour pour CHACUNE des 6 thématiques suivantes :
+      Sélectionne les 6 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 6 thématiques suivantes :
       1. GRAPHISME (Branding, Typographie, Motion, Print)
       2. PUBLICITÉ (Campagnes majeures, Films, Prints, Innovation média)
       3. ACTIVATION DIGITALE (Expériences web, AR/VR, Installation interactive, Web3)
@@ -50,14 +50,14 @@ export async function GET(request: Request) {
       6. MUSIQUE (Sorties d'albums, Clips marquants, Direction artistique musicale)
 
       CONTRAINTES :
-      - EXACTEMENT 3 SUJETS par thématique (soit 18 articles au total).
+      - EXACTEMENT 6 SUJETS par thématique (soit 36 articles au total).
       - Style "Club des D.A." (exigeant, technique, sans langue de bois).
       - Effectue une recherche web (Grounding) pour CHAQUE sujet afin de trouver des détails techniques exclusifs et SURTOUT des URLS d'IMAGES RÉELLES (assets de campagne, photos de presse).
       - Crée un article pour chaque sujet avec un "insight" radical et une structure "longform" (4 slides).
       
       RÈGLE D'OR : Remplace toute image générique par une URL directe provenant de ta recherche web.
       
-      FORMAT JSON STRICT (un seul tableau "articles" contenant les 18 objets) :
+      FORMAT JSON STRICT (un seul tableau "articles" contenant les 36 objets) :
       {
         "articles": [
           {
@@ -77,7 +77,21 @@ export async function GET(request: Request) {
       }
     `;
 
-    const result = await model.generateContent(prompt);
+    let result;
+    try {
+        result = await model.generateContent(prompt);
+    } catch (apiError: any) {
+        if (apiError.message?.includes("429") || apiError.message?.includes("Quota")) {
+            console.error("[GEMINI QUOTA ERROR] Votre clé API a atteint sa limite ou n'a pas accès à ce modèle.");
+            return NextResponse.json({ 
+                success: false, 
+                error: "QUOTA_EXCEEDED", 
+                details: "La limite de l'API Gemini est atteinte (Limit 0). Veuillez vérifier votre clé API dans le dashboard Vercel." 
+            }, { status: 429 });
+        }
+        throw apiError;
+    }
+
     const responseText = result.response.text();
     const cleanedJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     const editorialData = JSON.parse(cleanedJson);
@@ -91,13 +105,17 @@ export async function GET(request: Request) {
     return NextResponse.json({ 
         success: true, 
         message: 'Kérosène Grounded & Updated', 
-        articles: editorialData.articles.length,
+        articlesCount: editorialData.articles.length,
         blobUrl: url 
     });
 
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[CRON ERROR]", error);
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    return NextResponse.json({ 
+        success: false, 
+        error: "INTERNAL_ERROR", 
+        message: message 
+    }, { status: 500 });
   }
 }

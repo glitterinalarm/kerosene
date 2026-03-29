@@ -50,7 +50,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const groupedArticles = themes.map(theme => {
     return {
       name: theme,
-      articles: articles.filter(a => a.category?.toUpperCase().includes(theme) || theme.includes(a.category?.toUpperCase())).slice(0, 3)
+      articles: articles.filter(a => a.category?.toUpperCase().includes(theme) || theme.includes(a.category?.toUpperCase())).slice(0, 6)
     };
   });
 
@@ -64,15 +64,20 @@ export default async function Home({ searchParams }: HomeProps) {
                 <div className="theme-live-dot"></div>
                 <h2 className="theme-title">{group.name}</h2>
               </div>
-              <span className="theme-count">03 sujets</span>
             </div>
             
             <div className="theme-grid">
               {group.articles.length > 0 ? (
                 group.articles.map((art) => {
-                  const href = `/article/${encodeURIComponent(art.id)}`;
+                  const isExternal = art.link?.startsWith('http');
                   return (
-                    <Link href={href} className="theme-card" key={art.id}>
+                    <a 
+                      href={art.link} 
+                      className="theme-card" 
+                      key={art.id} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
                       <div className="theme-card-image">
                          <img src={art.imageUrl} alt={art.title} />
                       </div>
@@ -81,7 +86,7 @@ export default async function Home({ searchParams }: HomeProps) {
                         <h3 className="theme-card-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
                         <span className="theme-card-source">{art.source}</span>
                       </div>
-                    </Link>
+                    </a>
                   );
                 })
               ) : (
