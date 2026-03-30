@@ -45,7 +45,8 @@ export default async function Home({ searchParams }: HomeProps) {
   const themes = [
     "GRAPHISME",
     "PUBLICITÉ",
-    "ACTIVATION DIGITALE",
+    "SOCIAL MEDIA",
+    "INNOVATION",
     "DROP",
     "TREND"
   ];
@@ -60,7 +61,8 @@ export default async function Home({ searchParams }: HomeProps) {
         
         // MAPPING DE RÉSILLIENCE
         if (t === "PUBLICITÉ" && (cat.includes("AD") || cat.includes("PUB"))) return true;
-        if (t === "ACTIVATION DIGITALE" && (cat.includes("DIGITAL") || cat.includes("EXPERIENCE") || cat.includes("WEB"))) return true;
+        if (t === "SOCIAL MEDIA" && (cat.includes("SOCIAL") || cat.includes("TWEET") || cat.includes("ACTIVATION"))) return true;
+        if (t === "INNOVATION" && (cat.includes("TECH") || cat.includes("DIGITAL") || cat.includes("WEB"))) return true;
         if (t === "GRAPHISME" && (cat.includes("DESIGN") || cat.includes("BRANDING") || cat.includes("LOGO"))) return true;
         if (t === "DROP" && (cat.includes("STREET") || cat.includes("FASHION") || cat.includes("SNEAKER"))) return true;
         

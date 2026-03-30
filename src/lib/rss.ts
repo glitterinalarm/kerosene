@@ -46,10 +46,10 @@ const feeds = [
   { name: "J'ai un pote dans la com", url: "https://jai-un-pote-dans-la.com/feed/", category: "PUBLICITÉ" },
   { name: "LBB Online", url: "https://www.lbbonline.com/news/feed/", category: "PUBLICITÉ" },
 
-  // ACTIVATION DIGITALE
-  { name: "Contagious", url: "https://www.contagious.com/rss/news", category: "ACTIVATION DIGITALE" },
-  { name: "Creapills", url: "https://creapills.com/feed", category: "ACTIVATION DIGITALE" },
-  { name: "Marketing Week", url: "https://www.marketingweek.com/feed/", category: "ACTIVATION DIGITALE" },
+  // INNOVATION
+  { name: "Contagious", url: "https://www.contagious.com/rss/news", category: "INNOVATION" },
+  { name: "Creapills", url: "https://creapills.com/feed", category: "INNOVATION" },
+  { name: "Marketing Week", url: "https://www.marketingweek.com/feed/", category: "INNOVATION" },
 
   // DROP
   { name: "Highsnobiety", url: "https://www.highsnobiety.com/feeds/rss", category: "DROP" },
@@ -61,10 +61,10 @@ const feeds = [
   { name: "i-D", url: "https://i-d.vice.com/en_uk/rss", category: "TREND" },
   { name: "The Business of Fashion", url: "https://www.businessoffashion.com/site/rss", category: "TREND" },
 
-  // SOCIAL MEDIA & TWEETS (PROXY RSSHUB / AGGREGATEURS)
-  { name: "We Are Social", url: "https://wearesocial.com/fr/feed/", category: "TREND" },
-  { name: "Social Media Today", url: "https://www.socialmediatoday.com/feeds/news/", category: "TREND" },
-  { name: "Niche Trends", url: "https://trendwatching.com/feed/", category: "TREND" },
+  // SOCIAL MEDIA & TWEETS
+  { name: "We Are Social", url: "https://wearesocial.com/fr/feed/", category: "SOCIAL MEDIA" },
+  { name: "Social Media Today", url: "https://www.socialmediatoday.com/feeds/news/", category: "SOCIAL MEDIA" },
+  { name: "Niche Trends", url: "https://trendwatching.com/feed/", category: "SOCIAL MEDIA" },
 ];
 
 function decodeHTMLEntities(text: string): string {

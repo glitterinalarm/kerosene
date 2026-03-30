@@ -18,7 +18,10 @@ export async function GET(request: Request) {
 
   try {
     const recentArticles = await fetchArticles();
-    const rawArticles = recentArticles.filter(a => !a.source?.includes('IA') && a.link);
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+    const rawArticles = recentArticles.filter(a => !a.source?.includes('IA') && a.link && new Date(a.pubDate) >= fiveDaysAgo);
+    
     // Augmentation du pool pour permettre une sélection plus variée par thématique (100 articles)
     const headlinesContext = rawArticles.slice(0, 100).map((a: Article) => ({
       title: a.title,
@@ -43,10 +46,11 @@ export async function GET(request: Request) {
       TA MISSION :
       1. SÉLECTIONNE L'ARTICLE "HERO" (À LA UNE) : Choisis OBLIGATOIREMENT une actualité ULTRA-FRAÎCHE (analyse le champ "pubDate" pour prendre une des news les plus récentes) qui est visuellement et éditorialement la plus impactante de la journée. 
       2. POUR CET ARTICLE HERO : Rédige un contenu "longform" journalistique très fouillé.
-      3. SÉLECTIONNE 4 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 5 thématiques, en veillant à l'actualité.
+      3. SÉLECTIONNE 4 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 6 thématiques, en veillant à l'actualité.
          - GRAPHISME
          - PUBLICITÉ
-         - ACTIVATION DIGITALE
+         - SOCIAL MEDIA
+         - INNOVATION
          - DROP
          - TREND
 
@@ -56,11 +60,11 @@ export async function GET(request: Request) {
 
       RÈGLES D'OR ABSOLUES (ÉCHEC INTERDIT) :
       - AUCUN DOUBLON DE SUJET : Si deux sources parlent de la même campagne, de la même marque, ou du même projet (ex: la même identité visuelle, la même pub l'un en français l'autre en anglais), TU NE DOIS EN SÉLECTIONNER QU'UN SEUL. Chaque carte Kérosène doit parler d'un sujet 100% unique.
-      - FRAÎCHEUR EXTRÊME : Élimine les vieilles actualités de plus de 5 jours. Kérosène exige la primeur. Le Hero DOIT être une nouvelle très chaude (hier ou aujourd'hui selon pubDate).
+      - FRAÎCHEUR EXTRÊME : Kérosène exige la primeur. Le Hero DOIT être une nouvelle très chaude (hier ou aujourd'hui selon pubDate).
       - VARIATION VISUELLE : La propriété "allImages" contient plusieurs visuels de la campagne. Tu DOIS ABSOLUMENT distribuer des images DIFFÉRENTES issues de "allImages" pour chaque slide de ton "longform". Ne répète JAMAIS "imageUrl" en boucle sur tous les slides.
       - ASSETS : Ne génère aucun lien d'image externe, n'invente rien. Utilise exclusivement les URLs exactes livrées dans "imageUrl" et "allImages".
 
-      FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, soit 21 objets max) :
+      FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, soit 25 objets max) :
       {
         "articles": [
           {
@@ -68,7 +72,7 @@ export async function GET(request: Request) {
             "title": "Titre Impactant",
             "link": "URL_COMPLETE_COPIEE_DE_LA_SOURCE",
             "excerpt": "Résumé incisif",
-            "category": "HERO|GRAPHISME|PUBLICITÉ|ACTIVATION DIGITALE|DROP|TREND",
+            "category": "HERO|GRAPHISME|PUBLICITÉ|SOCIAL MEDIA|INNOVATION|DROP|TREND",
             "insight": "Contenu HTML (p, strong) très détaillé, argumenté et exhaustif pour TOUS les articles. Ne jamais tronquer l'analyse.",
             "imageUrl": "URL_IMAGE_AUTHENTIQUE",
             "longform": {
