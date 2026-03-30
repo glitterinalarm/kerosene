@@ -22,17 +22,15 @@ export async function GET(request: Request) {
     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
     const rawArticles = recentArticles.filter(a => !a.source?.includes('IA') && a.link && new Date(a.pubDate) >= fiveDaysAgo);
     
-    // Augmentation du pool pour permettre une sélection plus variée par thématique (100 articles)
-    const headlinesContext = rawArticles.slice(0, 100).map((a: Article) => ({
+    // Limitation du pool pour prévenir l'erreur "fetch failed" (timeout liés à une requête trop lourde)
+    const headlinesContext = rawArticles.slice(0, 45).map((a: Article) => ({
       id: a.id,
       title: a.title,
       source: a.source,
       category: a.category,
-      link: a.link,
       pubDate: a.pubDate,
       summary: a.excerpt || "",
-      imageUrl: a.imageUrl,
-      allImages: a.allImages || []
+      // Retrait des très longues urls (images, allImages) qui font exploser la taille du payload
     }));
 
     const model = genAI.getGenerativeModel({ 
@@ -59,7 +57,6 @@ export async function GET(request: Request) {
                                                 type: SchemaType.OBJECT,
                                                 properties: {
                                                     text: { type: SchemaType.STRING },
-                                                    image: { type: SchemaType.STRING },
                                                     caption: { type: SchemaType.STRING }
                                                 }
                                             }
@@ -98,7 +95,7 @@ export async function GET(request: Request) {
       - UTILISATION DES IDs : Tu ne dois sélectionner que des articles existants dans SOURCES et utiliser EXACTEMENT leur champ "id". Ne génère AUCUN article factice.
       - AUCUN DOUBLON DE SUJET : Ne choisis jamais deux fois la même campagne ou le même projet. Chaque "id" doit être unique.
       - FRAÎCHEUR EXTRÊME : Kérosène exige la primeur.
-      - VARIATION VISUELLE : La propriété "allImages" contient plusieurs visuels de la campagne. Tu DOIS ABSOLUMENT distribuer des images DIFFÉRENTES (si disponibles) pour chaque slide de ton "longform" pour illustrer ton propos technique.
+      - ANALYSE PROFONDE : Écris un longform avec de vrais slides techniques.
 
       FORMAT JSON STRICT (un seul tableau "articles" contenant maximum 13 objets: 1 hero + 1 à 2 max par thématique) :
       {
@@ -109,7 +106,7 @@ export async function GET(request: Request) {
             "insight": "Contenu HTML (p, strong) très détaillé, argumenté et exhaustif. Ne tronque jamais l'analyse.",
             "longform": {
               "slides": [
-                { "text": "Analyse technique slide 1", "image": "URL_PIOCHÉE_DANS_ALLIMAGES", "caption": "Légende" }
+                { "text": "Analyse technique slide 1", "caption": "Légende" }
               ]
             }
           }
@@ -152,11 +149,27 @@ export async function GET(request: Request) {
         const sourceArt = rawArticlesArray.find(r => r.id === aiArt.id);
         if (!sourceArt) return null; // ID halluciné ou invalide
         
+        let computedSlides = [];
+        if (aiArt.longform?.slides && Array.isArray(aiArt.longform.slides)) {
+             computedSlides = aiArt.longform.slides.map((aiSlide: any, index: number) => {
+                 const srcImages = sourceArt.allImages || [];
+                 const fallbackImage = sourceArt.imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000";
+                 const assignedImage = srcImages.length > 0 ? (srcImages[index % srcImages.length]) : fallbackImage;
+                 return {
+                     text: aiSlide.text || "",
+                     image: assignedImage,
+                     caption: aiSlide.caption || ""
+                 };
+             });
+        } else {
+             computedSlides = [{ text: aiArt.insight || sourceArt.excerpt || "", image: sourceArt.imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000" }];
+        }
+        
         return {
             ...sourceArt, // Titre, link, imageUrl, pubDate 100% authentiques
             category: aiArt.category && aiArt.category !== "HERO" ? aiArt.category : "HERO",
             insight: aiArt.insight || sourceArt.excerpt || "Aucune analyse disponible pour le moment.",
-            longform: aiArt.longform || { slides: [{ text: aiArt.insight || sourceArt.excerpt || "", image: sourceArt.imageUrl }] }
+            longform: { slides: computedSlides }
         };
     }).filter(Boolean);
 
