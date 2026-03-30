@@ -25,6 +25,7 @@ export async function GET(request: Request) {
       source: a.source,
       category: a.category,
       link: a.link,
+      pubDate: a.pubDate,
       summary: a.excerpt || "",
       imageUrl: a.imageUrl
     }));
@@ -36,12 +37,12 @@ export async function GET(request: Request) {
     const prompt = `
       Tu es le Rédacteur en Chef de KÉROSÈNE, une revue digitale de design radical et d'avant-culture.
       
-      ANALYSE CES SOURCES (dont de nombreux flux X/Twitter et Instagram) : ${JSON.stringify(headlinesContext)}.
+      ANALYSE CES SOURCES : ${JSON.stringify(headlinesContext)}.
       
       TA MISSION :
-      1. SÉLECTIONNE L'ARTICLE "HERO" (À LA UNE) : Choisis le sujet le plus riche et impactant du jour, toutes catégories confondues.
-      2. POUR CET ARTICLE HERO : Rédige un contenu "longform" (insight) ultra-bien construit, journalistique, qui a du fond, des arguments, un développement, et une ouverture sur le sujet (pas juste une brève). C'est ta pièce maîtresse.
-      3. ENSUITE, sélectionne 4 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 5 thématiques suivantes :
+      1. SÉLECTIONNE L'ARTICLE "HERO" (À LA UNE) : Choisis OBLIGATOIREMENT une actualité ULTRA-FRAÎCHE (analyse le champ "pubDate" pour prendre une des news les plus récentes) qui est visuellement et éditorialement la plus impactante de la journée. 
+      2. POUR CET ARTICLE HERO : Rédige un contenu "longform" journalistique très fouillé.
+      3. SÉLECTIONNE 4 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 5 thématiques, en veillant à l'actualité.
          - GRAPHISME
          - PUBLICITÉ
          - ACTIVATION DIGITALE
@@ -50,10 +51,13 @@ export async function GET(request: Request) {
 
       CONTRAINTES :
       - Style "Club des D.A." (exigeant, technique, sans langue de bois, analyse journalistique pointue pour le HERO).
-      - Le HERO doit avoir la catégorie "HERO".
+      - Le HERO doit obligatoirement avoir la catégorie "HERO".
 
-      RÈGLE D'OR POUR LES ASSETS : Tu n'as pas accès à internet. Tu DOIS obligatoirement réutiliser la propriété "imageUrl" exacte ET la propriété "link" exacte qui sont fournies pour chaque article dans la variable SOURCES JSON. Ne les invente surtout pas (pas de liens relatifs).
-      
+      RÈGLES D'OR ABSOLUES (ÉCHEC INTERDIT) :
+      - AUCUN DOUBLON DE SUJET : Si deux sources parlent de la même campagne, de la même marque, ou du même projet (ex: la même identité visuelle, la même pub l'un en français l'autre en anglais), TU NE DOIS EN SÉLECTIONNER QU'UN SEUL. Chaque carte Kérosène doit parler d'un sujet 100% unique.
+      - FRAÎCHEUR EXTRÊME : Élimine les vieilles actualités de plus de 5 jours. Kérosène exige la primeur. Le Hero DOIT être une nouvelle très chaude (hier ou aujourd'hui selon pubDate).
+      - ASSETS : Tu DOIS réutiliser la propriété "imageUrl" exacte et "link" exacte fournies.
+
       FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, soit 21 objets max) :
       {
         "articles": [
