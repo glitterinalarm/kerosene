@@ -41,14 +41,15 @@ const feeds = [
   
   // PUBLICITÉ
   { name: "Ads of the World", url: "https://www.adsoftheworld.com/feed", category: "PUBLICITÉ" },
-  { name: "AdAge", url: "https://adage.com/rss.xml", category: "PUBLICITÉ" },
-  { name: "The Drum", url: "https://www.thedrum.com/news/feed", category: "PUBLICITÉ" },
+  { name: "La Réclame", url: "https://lareclame.fr/feed", category: "PUBLICITÉ" },
+  { name: "Muse by Clio", url: "https://musebycl.io/rss.xml", category: "PUBLICITÉ" },
+  { name: "J'ai un pote dans la com", url: "https://jai-un-pote-dans-la.com/feed/", category: "PUBLICITÉ" },
   { name: "LBB Online", url: "https://www.lbbonline.com/news/feed/", category: "PUBLICITÉ" },
 
   // ACTIVATION DIGITALE
   { name: "Contagious", url: "https://www.contagious.com/rss/news", category: "ACTIVATION DIGITALE" },
+  { name: "Creapills", url: "https://creapills.com/feed", category: "ACTIVATION DIGITALE" },
   { name: "Marketing Week", url: "https://www.marketingweek.com/feed/", category: "ACTIVATION DIGITALE" },
-  { name: "Campaign Live", url: "https://www.campaignlive.co.uk/rss/news", category: "ACTIVATION DIGITALE" },
 
   // DROP
   { name: "Highsnobiety", url: "https://www.highsnobiety.com/feeds/rss", category: "DROP" },
