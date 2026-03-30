@@ -1,6 +1,6 @@
 // VERSION 1.2.0 - GROUNDED EDITORIAL ENGINE
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 import { put } from '@vercel/blob';
 import { fetchArticles, type Article } from '@/lib/rss';
 
@@ -37,7 +37,41 @@ export async function GET(request: Request) {
 
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash",
-        generationConfig: { responseMimeType: "application/json" }
+        generationConfig: { 
+            responseMimeType: "application/json",
+            responseSchema: {
+                type: SchemaType.OBJECT,
+                properties: {
+                    articles: {
+                        type: SchemaType.ARRAY,
+                        items: {
+                            type: SchemaType.OBJECT,
+                            properties: {
+                                id: { type: SchemaType.STRING },
+                                category: { type: SchemaType.STRING },
+                                insight: { type: SchemaType.STRING },
+                                longform: {
+                                    type: SchemaType.OBJECT,
+                                    properties: {
+                                        slides: {
+                                            type: SchemaType.ARRAY,
+                                            items: {
+                                                type: SchemaType.OBJECT,
+                                                properties: {
+                                                    text: { type: SchemaType.STRING },
+                                                    image: { type: SchemaType.STRING },
+                                                    caption: { type: SchemaType.STRING }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     });
 
     const prompt = `
