@@ -217,9 +217,15 @@ export async function fetchArticles(): Promise<Article[]> {
 
         // IMPORTANT: We do NOT skip articles if image is missing anymore
         // But we provide a default placeholder if really nothing is found
+        if (imageUrl && !imageUrl.startsWith('http')) {
+            imageUrl = null;
+        }
         const finalImageUrl = imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop";
 
-        let finalTitle = realTitle || item.title || "Sans Titre";
+        let finalTitle = item.title || realTitle || "Sans Titre";
+        if (finalTitle.includes("Attention Required") || finalTitle.includes("Access Denied")) {
+            finalTitle = item.title || "Actualité";
+        }
         
         if (feed.name === "The Design Blog") {
              const rawDesc = (item.description || item.contentEncoded || '');

@@ -47,7 +47,7 @@ export async function GET(request: Request) {
       TA MISSION :
       1. SÉLECTIONNE L'ARTICLE "HERO" (À LA UNE) : Choisis OBLIGATOIREMENT une actualité ULTRA-FRAÎCHE (analyse le champ "pubDate" pour prendre une des news les plus récentes) qui est visuellement et éditorialement la plus impactante de la journée. 
       2. POUR CET ARTICLE HERO : Rédige un contenu "longform" journalistique très fouillé.
-      3. SÉLECTIONNE les sujets les PLUS MARQUANTS du jour pertinents pour CHACUNE des 6 thématiques (entre 1 et 5 par thématique selon la richesse de l'actualité).
+      3. SÉLECTIONNE LES MEILLEURS SUJETS pour CHACUNE des 6 thématiques (uniquement 1 à 2 sujets pertinents par thématique). Privilégie une sélection hyper stricte (moins long, mais beaucoup plus qualitatif).
          - GRAPHISME
          - PUBLICITÉ
          - SOCIAL MEDIA
@@ -56,16 +56,16 @@ export async function GET(request: Request) {
          - TREND
 
       CONTRAINTES :
-      - Style "Club des D.A." (exigeant, technique, sans langue de bois, analyse journalistique pointue pour le HERO).
+      - Style "Club des D.A." (exigeant, technique, sans langue de bois, analyse journalistique pointue).
       - Le HERO doit obligatoirement avoir la catégorie "HERO".
 
       RÈGLES D'OR ABSOLUES (ÉCHEC INTERDIT) :
       - UTILISATION DES IDs : Tu ne dois sélectionner que des articles existants dans SOURCES et utiliser EXACTEMENT leur champ "id". Ne génère AUCUN article factice.
       - AUCUN DOUBLON DE SUJET : Ne choisis jamais deux fois la même campagne ou le même projet. Chaque "id" doit être unique.
-      - FRAÎCHEUR EXTRÊME : Kérosène exige la primeur. Le Hero DOIT être une nouvelle très chaude (hier ou aujourd'hui selon pubDate).
-      - VARIATION VISUELLE : La propriété "allImages" contient plusieurs visuels de la campagne. Tu DOIS ABSOLUMENT distribuer des images DIFFÉRENTES issues de "allImages" pour chaque slide de ton "longform". Ne répète JAMAIS "imageUrl" en boucle sur tous les slides.
+      - FRAÎCHEUR EXTRÊME : Kérosène exige la primeur.
+      - VARIATION VISUELLE : La propriété "allImages" contient plusieurs visuels de la campagne. Tu DOIS ABSOLUMENT distribuer des images DIFFÉRENTES (si disponibles) pour chaque slide de ton "longform" pour illustrer ton propos technique.
 
-      FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, pas de title, ni de fields inutiles) :
+      FORMAT JSON STRICT (un seul tableau "articles" contenant maximum 13 objets: 1 hero + 1 à 2 max par thématique) :
       {
         "articles": [
           {
