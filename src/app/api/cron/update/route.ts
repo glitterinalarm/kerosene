@@ -36,7 +36,8 @@ export async function GET(request: Request) {
     }));
 
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.5-flash"
+        model: "gemini-2.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
     });
 
     const prompt = `
@@ -98,11 +99,18 @@ export async function GET(request: Request) {
     }
 
     const responseText = result.response.text();
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error(`Aucun JSON valide trouvé dans la réponse. Extrait: ${responseText.substring(0, 100)}...`);
+    let editorialData;
+    try {
+        // Since we enforced application/json, it should parse natively
+        editorialData = JSON.parse(responseText.trim());
+    } catch (parseError) {
+        console.warn("Direct JSON parse failed, trying regex fallback...");
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          throw new Error(`Aucun JSON valide trouvé dans la réponse. Extrait: ${responseText.substring(0, 100)}...`);
+        }
+        editorialData = JSON.parse(jsonMatch[0]);
     }
-    const editorialData = JSON.parse(jsonMatch[0]);
 
     // MAPPING SÉCURISÉ : Reconstruire l'article à partir de la source brute pour interdire les hallucinations
     const rawArticlesArray = Array.from(rawArticles) as any[];
