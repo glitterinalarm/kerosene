@@ -112,9 +112,9 @@ export async function GET(request: Request) {
         
         return {
             ...sourceArt, // Titre, link, imageUrl, pubDate 100% authentiques
-            category: aiArt.category !== "HERO" ? aiArt.category : "HERO",
-            insight: aiArt.insight,
-            longform: aiArt.longform || { slides: [{ text: aiArt.insight, image: sourceArt.imageUrl }] }
+            category: aiArt.category && aiArt.category !== "HERO" ? aiArt.category : "HERO",
+            insight: aiArt.insight || sourceArt.excerpt || "Aucune analyse disponible pour le moment.",
+            longform: aiArt.longform || { slides: [{ text: aiArt.insight || sourceArt.excerpt || "", image: sourceArt.imageUrl }] }
         };
     }).filter(Boolean);
 

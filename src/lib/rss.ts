@@ -98,10 +98,7 @@ function extractImageFromContent(content: string = ''): string | null {
  */
 function generateRealAnalysis(_title: string): { insight: string; longform?: Article['longform'] } {
     return {
-        insight: `
-            <p>Un signal créatif fort qui mérite notre attention. Dans un flux saturé, cette approche se distingue par sa justesse d'exécution et sa capacité à bousculer les codes établis de son segment.</p>
-            <p>L'analyse approfondie de ce cas est disponible dans l'édition quotidienne de KÉROSÈNE, où nos modèles de grounding identifient les assets réels et les enjeux stratégiques.</p>
-        `,
+        insight: "",
     };
 }
 
