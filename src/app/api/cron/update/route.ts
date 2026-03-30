@@ -91,8 +91,11 @@ export async function GET(request: Request) {
     }
 
     const responseText = result.response.text();
-    const cleanedJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    const editorialData = JSON.parse(cleanedJson);
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error(`Aucun JSON valide trouvé dans la réponse. Extrait: ${responseText.substring(0, 100)}...`);
+    }
+    const editorialData = JSON.parse(jsonMatch[0]);
 
     const dataToSave = JSON.stringify({
       date: new Date().toISOString(),
