@@ -27,7 +27,8 @@ export async function GET(request: Request) {
       link: a.link,
       pubDate: a.pubDate,
       summary: a.excerpt || "",
-      imageUrl: a.imageUrl
+      imageUrl: a.imageUrl,
+      allImages: a.allImages || []
     }));
 
     const model = genAI.getGenerativeModel({ 
@@ -56,7 +57,8 @@ export async function GET(request: Request) {
       RÈGLES D'OR ABSOLUES (ÉCHEC INTERDIT) :
       - AUCUN DOUBLON DE SUJET : Si deux sources parlent de la même campagne, de la même marque, ou du même projet (ex: la même identité visuelle, la même pub l'un en français l'autre en anglais), TU NE DOIS EN SÉLECTIONNER QU'UN SEUL. Chaque carte Kérosène doit parler d'un sujet 100% unique.
       - FRAÎCHEUR EXTRÊME : Élimine les vieilles actualités de plus de 5 jours. Kérosène exige la primeur. Le Hero DOIT être une nouvelle très chaude (hier ou aujourd'hui selon pubDate).
-      - ASSETS : Tu DOIS réutiliser la propriété "imageUrl" exacte et "link" exacte fournies.
+      - VARIATION VISUELLE : La propriété "allImages" contient plusieurs visuels de la campagne. Tu DOIS ABSOLUMENT distribuer des images DIFFÉRENTES issues de "allImages" pour chaque slide de ton "longform". Ne répète JAMAIS "imageUrl" en boucle sur tous les slides.
+      - ASSETS : Ne génère aucun lien d'image externe, n'invente rien. Utilise exclusivement les URLs exactes livrées dans "imageUrl" et "allImages".
 
       FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, soit 21 objets max) :
       {

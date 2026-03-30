@@ -8,6 +8,7 @@ export type Article = {
   category: string;
   pubDate: string;
   imageUrl?: string;
+  allImages?: string[];
   excerpt?: string;
   insight?: string | null;
   content?: string;
@@ -103,7 +104,7 @@ function generateRealAnalysis(_title: string): { insight: string; longform?: Art
     };
 }
 
-async function fetchOgData(url: string): Promise<{ image: string | null; title: string | null }> {
+async function fetchOgData(url: string): Promise<{ image: string | null; title: string | null; allImages: string[] }> {
   try {
     const res = await fetch(url, { next: { revalidate: 86400 } });
     const html = await res.text();
@@ -120,12 +121,16 @@ async function fetchOgData(url: string): Promise<{ image: string | null; title: 
         title = title.split(' | ')[0].split(' - ')[0].trim();
     }
 
+    const allImagesMatch = [...html.matchAll(/<img[^>]+src=["'](https:\/\/[^"'>]+\.(?:jpg|jpeg|png|webp))["']/gi)];
+    const validImages = [...new Set(allImagesMatch.map(m => m[1]))].filter(url => !url.match(/icon|logo|avatar|spinner/i)).slice(0, 10);
+
     return { 
         image: imgMatch ? imgMatch[1] : null,
-        title: title
+        title: title,
+        allImages: validImages
     };
   } catch {
-    return { image: null, title: null };
+    return { image: null, title: null, allImages: [] };
   }
 }
 
@@ -195,11 +200,17 @@ export async function fetchArticles(): Promise<Article[]> {
         const feedImageUrl = item.mediaContent?.['$']?.url || extractImageFromContent(item.contentEncoded) || extractImageFromContent(item.description);
 
         // If we have no image from feed, AND we have a link, try to fetch OG data
-        if (!feedImageUrl && actualLink !== '#' && actualLink.startsWith('http')) {
+        let allImages: string[] = [];
+        if (actualLink !== '#' && actualLink.startsWith('http')) {
             const ogData = await fetchOgData(actualLink);
-            imageUrl = ogData.image;
+            if (!feedImageUrl) {
+                imageUrl = ogData.image;
+            }
             realTitle = ogData.title;
-        } else {
+            allImages = ogData.allImages;
+        }
+
+        if (!imageUrl) {
             imageUrl = feedImageUrl;
         }
 
@@ -230,6 +241,7 @@ export async function fetchArticles(): Promise<Article[]> {
           category: feed.category,
           pubDate: item.pubDate || new Date().toISOString(),
           imageUrl: finalImageUrl,
+          allImages: allImages.length > 0 ? allImages : [finalImageUrl],
           insight: editorialData.insight,
           longform: editorialData.longform || { slides: [{ text: editorialData.insight, image: finalImageUrl }] },
           excerpt: item.contentSnippet ? decodeHTMLEntities(item.contentSnippet.substring(0, 180)) + "..." : "Décryptage global de la créativité.",
