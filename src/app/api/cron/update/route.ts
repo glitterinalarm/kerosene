@@ -24,6 +24,7 @@ export async function GET(request: Request) {
     
     // Augmentation du pool pour permettre une sélection plus variée par thématique (100 articles)
     const headlinesContext = rawArticles.slice(0, 100).map((a: Article) => ({
+      id: a.id,
       title: a.title,
       source: a.source,
       category: a.category,
@@ -46,7 +47,7 @@ export async function GET(request: Request) {
       TA MISSION :
       1. SÉLECTIONNE L'ARTICLE "HERO" (À LA UNE) : Choisis OBLIGATOIREMENT une actualité ULTRA-FRAÎCHE (analyse le champ "pubDate" pour prendre une des news les plus récentes) qui est visuellement et éditorialement la plus impactante de la journée. 
       2. POUR CET ARTICLE HERO : Rédige un contenu "longform" journalistique très fouillé.
-      3. SÉLECTIONNE 4 sujets/sorties les PLUS MARQUANTS du jour pour CHACUNE des 6 thématiques, en veillant à l'actualité.
+      3. SÉLECTIONNE les sujets les PLUS MARQUANTS du jour pertinents pour CHACUNE des 6 thématiques (entre 1 et 5 par thématique selon la richesse de l'actualité).
          - GRAPHISME
          - PUBLICITÉ
          - SOCIAL MEDIA
@@ -59,25 +60,21 @@ export async function GET(request: Request) {
       - Le HERO doit obligatoirement avoir la catégorie "HERO".
 
       RÈGLES D'OR ABSOLUES (ÉCHEC INTERDIT) :
-      - AUCUN DOUBLON DE SUJET : Si deux sources parlent de la même campagne, de la même marque, ou du même projet (ex: la même identité visuelle, la même pub l'un en français l'autre en anglais), TU NE DOIS EN SÉLECTIONNER QU'UN SEUL. Chaque carte Kérosène doit parler d'un sujet 100% unique.
+      - UTILISATION DES IDs : Tu ne dois sélectionner que des articles existants dans SOURCES et utiliser EXACTEMENT leur champ "id". Ne génère AUCUN article factice.
+      - AUCUN DOUBLON DE SUJET : Ne choisis jamais deux fois la même campagne ou le même projet. Chaque "id" doit être unique.
       - FRAÎCHEUR EXTRÊME : Kérosène exige la primeur. Le Hero DOIT être une nouvelle très chaude (hier ou aujourd'hui selon pubDate).
       - VARIATION VISUELLE : La propriété "allImages" contient plusieurs visuels de la campagne. Tu DOIS ABSOLUMENT distribuer des images DIFFÉRENTES issues de "allImages" pour chaque slide de ton "longform". Ne répète JAMAIS "imageUrl" en boucle sur tous les slides.
-      - ASSETS : Ne génère aucun lien d'image externe, n'invente rien. Utilise exclusivement les URLs exactes livrées dans "imageUrl" et "allImages".
 
-      FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, soit 25 objets max) :
+      FORMAT JSON STRICT (un seul tableau "articles" contenant le HERO suivi des autres, pas de title, ni de fields inutiles) :
       {
         "articles": [
           {
-            "id": "slug-unique",
-            "title": "Titre Impactant",
-            "link": "URL_COMPLETE_COPIEE_DE_LA_SOURCE",
-            "excerpt": "Résumé incisif",
+            "id": "EXACT_ID_FOURNI_DANS_LES_SOURCES",
             "category": "HERO|GRAPHISME|PUBLICITÉ|SOCIAL MEDIA|INNOVATION|DROP|TREND",
-            "insight": "Contenu HTML (p, strong) très détaillé, argumenté et exhaustif pour TOUS les articles. Ne jamais tronquer l'analyse.",
-            "imageUrl": "URL_IMAGE_AUTHENTIQUE",
+            "insight": "Contenu HTML (p, strong) très détaillé, argumenté et exhaustif. Ne tronque jamais l'analyse.",
             "longform": {
               "slides": [
-                { "text": "Analyse technique slide 1", "image": "URL_SLIDE_1", "caption": "Légende" }
+                { "text": "Analyse technique slide 1", "image": "URL_PIOCHÉE_DANS_ALLIMAGES", "caption": "Légende" }
               ]
             }
           }
@@ -107,9 +104,41 @@ export async function GET(request: Request) {
     }
     const editorialData = JSON.parse(jsonMatch[0]);
 
+    // MAPPING SÉCURISÉ : Reconstruire l'article à partir de la source brute pour interdire les hallucinations
+    const rawArticlesArray = Array.from(rawArticles) as any[];
+    const validatedArticles = (editorialData.articles || []).map((aiArt: any) => {
+        const sourceArt = rawArticlesArray.find(r => r.id === aiArt.id);
+        if (!sourceArt) return null; // ID halluciné ou invalide
+        
+        return {
+            ...sourceArt, // Titre, link, imageUrl, pubDate 100% authentiques
+            category: aiArt.category !== "HERO" ? aiArt.category : "HERO",
+            insight: aiArt.insight,
+            longform: aiArt.longform || { slides: [{ text: aiArt.insight, image: sourceArt.imageUrl }] }
+        };
+    }).filter(Boolean);
+
+    // DÉDUPLICATION BLINDÉE (par ID, Link, et Similitude du Titre court)
+    const dedupedArticles: any[] = [];
+    const seenIds = new Set();
+    const seenLinks = new Set();
+    const seenTitles = new Set();
+    
+    for (const art of validatedArticles) {
+        // Titre simplifié pour repérer 2 flux parlant de la même chose
+        const simTitle = art.title.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 25);
+        
+        if (!seenIds.has(art.id) && !seenLinks.has(art.link) && !seenTitles.has(simTitle)) {
+            dedupedArticles.push(art);
+            seenIds.add(art.id);
+            seenLinks.add(art.link);
+            seenTitles.add(simTitle);
+        }
+    }
+
     const dataToSave = JSON.stringify({
       date: new Date().toISOString(),
-      ...editorialData,
+      articles: dedupedArticles,
       grounded: true
     });
 
