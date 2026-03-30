@@ -920,10 +920,10 @@ img { display: block; max-width: 100%; height: auto; }
   flex-direction: column;
   text-decoration: none;
   color: var(--text-color);
-  transition: opacity 0.3s ease;
+  position: relative;
 }
 
-.theme-card:hover { opacity: 0.7; }
+
 
 .theme-card-image {
   width: 100%;
@@ -932,6 +932,7 @@ img { display: block; max-width: 100%; height: auto; }
   margin-bottom: 1.5rem;
   background: var(--card-bg);
   border: 1px solid rgba(0,0,0,0.05);
+  position: relative;
 }
 
 .theme-card-image img {
@@ -943,6 +944,54 @@ img { display: block; max-width: 100%; height: auto; }
 
 .theme-card:hover .theme-card-image img {
   transform: scale(1.05);
+}
+
+.theme-card-hover-layer {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 14, 14, 0.85); /* brutalist dark */
+  color: #fff;
+  padding: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  overflow-y: auto;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Scrollbar for the hover layer */
+.theme-card-hover-layer::-webkit-scrollbar {
+  width: 4px;
+}
+.theme-card-hover-layer::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 4px;
+}
+
+.theme-card:hover .theme-card-hover-layer {
+  opacity: 1;
+}
+
+.theme-card-hover-content {
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.theme-card-hover-content p {
+  margin: 0 0 0.75rem 0;
+  padding: 0;
+}
+.theme-card-hover-content p:last-child {
+  margin-bottom: 0;
+}
+.theme-card-hover-content strong {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.8em;
+  color: var(--accent-color, #E8312B);
 }
 
 .theme-card-info {
@@ -969,31 +1018,6 @@ img { display: block; max-width: 100%; height: auto; }
   letter-spacing: -0.01em;
 }
 
-.theme-card-insight {
-  font-family: var(--font-secondary);
-  font-size: 0.85rem;
-  line-height: 1.4;
-  opacity: 0.7;
-  margin-top: 0.5rem;
-}
-.theme-card-insight p { margin: 0; padding: 0; }
-
-.theme-card-source {
-  font-family: var(--font-condensed);
-  font-size: 0.7rem;
-  opacity: 0.5;
-  margin-top: 0.5rem;
-  text-transform: uppercase;
-  color: var(--text-color);
-  text-decoration: none;
-  display: inline-block;
-  font-weight: 700;
-  transition: opacity 0.2s ease;
-}
-
-.theme-card-source:hover {
-  opacity: 1;
-}
 
 /* --- INSTA-STYLE CAROUSEL SYSTEM --- */
 .carousel-wrapper {

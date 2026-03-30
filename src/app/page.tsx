@@ -110,27 +110,21 @@ export default async function Home({ searchParams }: HomeProps) {
             <div className="theme-grid">
               {group.articles.length > 0 ? (
                 group.articles.map((art) => (
-                  <SwipeCarousel className="theme-card" key={art.id}>
-                    {/* SLIDE 1: VISUAL + TITLE */}
-                    <div className="carousel-slide card-front">
-                      <div className="theme-card-image">
-                         <img src={art.imageUrl} alt={art.title} />
-                      </div>
-                      <div className="theme-card-info">
-                        <span className="theme-card-category">{art.category}</span>
-                        <h3 className="theme-card-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
-                      </div>
+                  <a href={art.link} target="_blank" rel="noopener noreferrer" className="theme-card hover-reveal" key={art.id}>
+                    <div className="theme-card-image">
+                       <img src={art.imageUrl} alt={art.title} />
+                       <div className="theme-card-hover-layer">
+                          <div className="theme-card-hover-content" dangerouslySetInnerHTML={{ 
+                             __html: art.insight || art.excerpt || "" 
+                          }}></div>
+                       </div>
                     </div>
-                    {/* SLIDE 2: FULL TEXT + LINK */}
-                    <div className="carousel-slide card-back scrollable-insight">
-                      <div className="theme-card-insight" dangerouslySetInnerHTML={{ 
-                         __html: art.insight || art.excerpt || "" 
-                      }}></div>
-                      <a href={art.link} target="_blank" rel="noopener noreferrer" className="theme-card-source">
-                        ➔ LIRE LA SOURCE : {art.source}
-                      </a>
+                    
+                    <div className="theme-card-info">
+                      <span className="theme-card-category">{art.category}</span>
+                      <h3 className="theme-card-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
                     </div>
-                  </SwipeCarousel>
+                  </a>
                 ))
               ) : (
                 <div style={{ opacity: 0.3, padding: '2rem 0', gridColumn: 'span 3' }}>
