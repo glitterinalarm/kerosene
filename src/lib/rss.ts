@@ -61,10 +61,10 @@ const feeds = [
   { name: "i-D", url: "https://i-d.vice.com/en_uk/rss", category: "TREND" },
   { name: "The Business of Fashion", url: "https://www.businessoffashion.com/site/rss", category: "TREND" },
 
-  // SOCIAL MEDIA & TWEETS
-  { name: "We Are Social", url: "https://wearesocial.com/fr/feed/", category: "SOCIAL MEDIA" },
-  { name: "Social Media Today", url: "https://www.socialmediatoday.com/feeds/news/", category: "SOCIAL MEDIA" },
-  { name: "Niche Trends", url: "https://trendwatching.com/feed/", category: "SOCIAL MEDIA" },
+  // SOCIAL MEDIA & DIGITAL — Flux vérifiés accessibles (sans Cloudflare)
+  { name: "Sprout Social", url: "https://sproutsocial.com/insights/feed/", category: "SOCIAL MEDIA" },
+  { name: "Social Media Examiner", url: "https://www.socialmediaexaminer.com/feed/", category: "SOCIAL MEDIA" },
+  { name: "Later Blog", url: "https://later.com/blog/feed/", category: "SOCIAL MEDIA" },
 ];
 
 function decodeHTMLEntities(text: string): string {
@@ -235,8 +235,10 @@ export async function fetchArticles(): Promise<Article[]> {
         const finalImageUrl = imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop";
 
         let finalTitle = item.title || realTitle || "Sans Titre";
-        if (finalTitle.includes("Attention Required") || finalTitle.includes("Access Denied")) {
-            finalTitle = item.title || "Actualité";
+        const CLOUDFLARE_NOISE = ["Attention Required", "Access Denied", "Just a moment", "403 Forbidden", "503 Service"];
+        // Skip complètement les articles bloqués par Cloudflare
+        if (CLOUDFLARE_NOISE.some(s => finalTitle.includes(s))) {
+            return null;
         }
         
         if (feed.name === "The Design Blog") {
@@ -263,11 +265,14 @@ export async function fetchArticles(): Promise<Article[]> {
           allImages: allImages.length > 0 ? allImages : [finalImageUrl],
           insight: editorialData.insight,
           longform: editorialData.longform || { slides: [{ text: editorialData.insight, image: finalImageUrl }] },
-          excerpt: item.contentSnippet ? decodeHTMLEntities(item.contentSnippet.substring(0, 180)) + "..." : "Décryptage global de la créativité.",
+          excerpt: item.contentSnippet 
+            ? decodeHTMLEntities(item.contentSnippet.substring(0, 220))
+            : (item.description ? decodeHTMLEntities(item.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 220)) : ""),
         } as Article;
       });
 
-      return await Promise.all(itemsPromises);
+      const results = await Promise.all(itemsPromises);
+      return results.filter((a): a is Article => a !== null);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Feed error";
       console.warn(`Erreur feed ${feed.url} ignorée: ${message}`);
@@ -276,7 +281,7 @@ export async function fetchArticles(): Promise<Article[]> {
   });
 
   const feedsResults = await Promise.all(feedPromises);
-  allArticles = feedsResults.flat();
+  allArticles = feedsResults.flat().filter((a): a is Article => a !== null);
 
   // Fusionner avec les articles IA (Prioritaires au sommet via la date ou source)
   const finalPool = [...aiArticles, ...allArticles];
