@@ -158,18 +158,33 @@ export async function fetchArticles(): Promise<Article[]> {
     }
     
     if (data && data.articles) {
-        aiArticles = (data.articles as Article[]).map((a) => ({
-            ...a,
-            link: a.link || `/article/${a.id}`,
-            source: "KÉROSÈNE ÉDITORIAL (IA)",
-            pubDate: data.date || new Date().toISOString(),
-            // FALLBACKS RÉSILIENTS
-            insight: a.insight || a.content || a.summary || "Analyse en cours...",
-            excerpt: a.excerpt || a.summary || "Décryptage technique.",
-            imageUrl: (a.imageUrl || "").replace(/\s/g, '').trim() || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop",
-            longform: a.longform || (a.content ? { slides: [{ text: a.content, image: a.imageUrl }] } : { slides: [] })
-        }));
-        console.log(`[RSS] ${aiArticles.length} AI articles injected (Resilient Mode).`);
+        const BLACKLIST = [
+            "Un signal créatif fort",
+            "L'analyse approfondie",
+            "Analyse en cours",
+            "Décryptage technique",
+            "Aucune analyse disponible",
+            "Attention Required"
+        ];
+
+        aiArticles = (data.articles as Article[])
+            .filter((a) => {
+                // Virer tout article dont l'insight contient un vieux texte générique
+                if (!a.insight) return true;
+                return !BLACKLIST.some(bad => a.insight!.includes(bad));
+            })
+            .map((a) => ({
+                ...a,
+                link: a.link || `/article/${a.id}`,
+                source: "KÉROSÈNE ÉDITORIAL (IA)",
+                pubDate: data.date || new Date().toISOString(),
+                // insight = vrai texte IA seulement, sinon vide (le front affichera l'excerpt)
+                insight: a.insight || "",
+                excerpt: a.excerpt || "",
+                imageUrl: (a.imageUrl || "").replace(/\s/g, '').trim() || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop",
+                longform: a.longform || { slides: [] }
+            }));
+        console.log(`[RSS] ${aiArticles.length} AI articles injected (clean mode).`);
     }
   } catch (e) {
     console.warn("[RSS] Erreur lecture Éditorial IA:", e);

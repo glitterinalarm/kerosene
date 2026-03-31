@@ -168,7 +168,7 @@ export async function GET(request: Request) {
         return {
             ...sourceArt, // Titre, link, imageUrl, pubDate 100% authentiques
             category: aiArt.category && aiArt.category !== "HERO" ? aiArt.category : "HERO",
-            insight: aiArt.insight || sourceArt.excerpt || "Aucune analyse disponible pour le moment.",
+            insight: aiArt.insight || sourceArt.excerpt || "",
             longform: { slides: computedSlides }
         };
     }).filter(Boolean);
