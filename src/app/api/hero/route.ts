@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const HERO_PATH = path.join(process.cwd(), 'public', 'editorial', 'hero.json');
-const ARCHIVES_DIR = path.join(process.cwd(), 'public', 'editorial', 'archives');
+import { put, list, del } from '@vercel/blob';
 
 function slugify(text: string): string {
   return text
@@ -16,10 +12,19 @@ function slugify(text: string): string {
 
 export async function GET() {
   try {
-    const fileContent = fs.readFileSync(HERO_PATH, 'utf8');
-    const data = JSON.parse(fileContent);
+    // Chercher le fichier hero.json dans le blob storage
+    const { blobs } = await list({ prefix: 'editorial/hero.json' });
+    const heroBlob = blobs.find(b => b.pathname === 'editorial/hero.json');
+
+    if (!heroBlob) {
+      return NextResponse.json({ enabled: false, blocks: [] });
+    }
+
+    const response = await fetch(heroBlob.url);
+    const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
+    console.error('[API Hero GET] Error:', error);
     return NextResponse.json({ error: 'Failed to read hero data' }, { status: 500 });
   }
 }
@@ -29,29 +34,42 @@ export async function POST(request: Request) {
     const newData = await request.json();
     newData.updatedAt = new Date().toISOString();
 
-    // Archiver l'article actuel avant d'écraser
-    if (fs.existsSync(HERO_PATH)) {
+    // 1. Récupérer l'actuel pour archivage
+    const { blobs } = await list({ prefix: 'editorial/hero.json' });
+    const existingBlob = blobs.find(b => b.pathname === 'editorial/hero.json');
+
+    if (existingBlob) {
       try {
-        const existing = JSON.parse(fs.readFileSync(HERO_PATH, 'utf8'));
-        // N'archiver que si l'article a un titre et des données différentes du nouveau
+        const response = await fetch(existingBlob.url);
+        const existing = await response.json();
+
+        // 2. Archiver si titre différent et activé
         if (existing?.title && existing.title !== newData.title && existing.enabled) {
-          if (!fs.existsSync(ARCHIVES_DIR)) {
-            fs.mkdirSync(ARCHIVES_DIR, { recursive: true });
-          }
           const datePrefix = (existing.updatedAt || new Date().toISOString()).split('T')[0];
           const slug = slugify(existing.title);
-          const archivePath = path.join(ARCHIVES_DIR, `${datePrefix}-${slug}.json`);
-          fs.writeFileSync(archivePath, JSON.stringify(existing, null, 2));
-          console.log(`[Admin] Article archivé: ${datePrefix}-${slug}.json`);
+          const archivePath = `editorial/archives/${datePrefix}-${slug}.json`;
+          
+          await put(archivePath, JSON.stringify(existing, null, 2), {
+            access: 'public',
+            addRandomSuffix: false
+          });
+          console.log(`[Admin] Article archivé sur Blob: ${archivePath}`);
         }
       } catch (e) {
-        console.warn('[Admin] Erreur archivage:', e);
+        console.warn('[Admin] Erreur archivage Blob:', e);
       }
     }
 
-    fs.writeFileSync(HERO_PATH, JSON.stringify(newData, null, 2));
-    return NextResponse.json({ success: true, data: newData });
+    // 3. Sauvegarder le nouveau Hero
+    const { url } = await put('editorial/hero.json', JSON.stringify(newData, null, 2), {
+      access: 'public',
+      addRandomSuffix: false,
+      allowOverwrite: true
+    });
+
+    return NextResponse.json({ success: true, data: newData, url });
   } catch (error) {
+    console.error('[API Hero POST] Error:', error);
     return NextResponse.json({ error: 'Failed to save hero data' }, { status: 500 });
   }
 }

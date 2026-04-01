@@ -84,21 +84,48 @@ export default async function RubriquePage({ params }: PageProps) {
   // Pour la rubrique KÉROSÈNE : articles manuels + archives
   let keroArchives: any[] = [];
   if (slug === 'kerosene') {
-    try {
-      const archivesDir = path.join(process.cwd(), 'public', 'editorial', 'archives');
-      if (fs.existsSync(archivesDir)) {
-        const files = fs.readdirSync(archivesDir).filter(f => f.endsWith('.json'));
-        keroArchives = files
-          .map(f => {
+    // A. Tentative via Vercel Blob (PROD)
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        const { list } = require('@vercel/blob');
+        const { blobs } = await list({ prefix: 'editorial/archives/' });
+        
+        const archivePromises = blobs
+          .filter((b: any) => b.pathname.endsWith('.json'))
+          .map(async (b: any) => {
             try {
-              const data = JSON.parse(fs.readFileSync(path.join(archivesDir, f), 'utf8'));
-              return { ...data, id: f.replace('.json', ''), _isArchive: true };
+              const res = await fetch(b.url);
+              const data = await res.json();
+              return { ...data, id: b.pathname.split('/').pop().replace('.json', ''), _isArchive: true };
             } catch { return null; }
-          })
+          });
+        
+        keroArchives = (await Promise.all(archivePromises))
           .filter(Boolean)
           .sort((a, b) => new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime());
+      } catch (e) {
+        console.warn("[Rubrique] Erreur lecture archives Blob:", e);
       }
-    } catch {}
+    }
+
+    // B. Fallback via FS (Si pas de Blob ou vide)
+    if (keroArchives.length === 0) {
+      try {
+        const archivesDir = path.join(process.cwd(), 'public', 'editorial', 'archives');
+        if (fs.existsSync(archivesDir)) {
+          const files = fs.readdirSync(archivesDir).filter(f => f.endsWith('.json'));
+          keroArchives = files
+            .map(f => {
+              try {
+                const data = JSON.parse(fs.readFileSync(path.join(archivesDir, f), 'utf8'));
+                return { ...data, id: f.replace('.json', ''), _isArchive: true };
+              } catch { return null; }
+            })
+            .filter(Boolean)
+            .sort((a, b) => new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime());
+        }
+      } catch {}
+    }
   }
 
   // Filtrage des articles RSS

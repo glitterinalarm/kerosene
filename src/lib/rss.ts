@@ -154,34 +154,60 @@ export async function fetchArticles(): Promise<Article[]> {
 
   // 0. CHARGEMENT DU HERO MANUEL (PRIORITÉ ABSOLUE)
   try {
-    const fs = require('fs');
-    const path = require('path');
-    const heroPath = path.join(process.cwd(), 'public', 'editorial', 'hero.json');
-    if (fs.existsSync(heroPath)) {
-      const data = JSON.parse(fs.readFileSync(heroPath, 'utf8'));
-      if (data.enabled) {
-        const blocks = data.blocks || [];
-        const firstMediaBlock = blocks.find((b: any) => b.type !== 'text') || {};
-        const ytId = extractYouTubeId(firstMediaBlock.content);
+    let data: any = null;
 
-        manualHero = {
-          id: 'manual-hero',
-          title: data.title,
-          excerpt: data.excerpt,
-          insight: data.excerpt,
-          imageUrl: firstMediaBlock.type === 'image' ? firstMediaBlock.content : undefined,
-          videoUrl: firstMediaBlock.type === 'video' ? firstMediaBlock.content : (firstMediaBlock.type === 'youtube' || ytId ? ytId : undefined),
-          category: data.category,
-          source: data.sourceName ? `${data.sourceName}` : 'ÉDITORIAL KÉROSÈNE',
-          pubDate: data.updatedAt || new Date().toISOString(),
-          link: data.sourceUrl || '#',
-          blocks: blocks
-        } as Article;
-        console.log(`[RSS] Manual hero injected with ${blocks.length} blocks. (Media: ${manualHero.videoUrl ? 'Video' : 'Image'})`);
+    // A. Tentative via Vercel Blob (PROD)
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        const { list } = require('@vercel/blob');
+        const { blobs } = await list({ prefix: 'editorial/hero.json' });
+        const heroBlob = blobs.find((b: any) => b.pathname === 'editorial/hero.json');
+        if (heroBlob) {
+          const response = await fetch(heroBlob.url);
+          data = await response.json();
+          console.log(`[RSS] Hero manuel chargé depuis Blob: ${data.title}`);
+        }
+      } catch (blobErr) {
+        console.warn("[RSS] Erreur lecture Blob, fallback FS:", blobErr);
       }
     }
-  } catch (e) {
-    console.warn("[RSS] Erreur lecture Hero Manuel:", e);
+
+    // B. Fallback via File System (Local ou Build Time)
+    if (!data) {
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const heroPath = path.join(process.cwd(), 'public', 'editorial', 'hero.json');
+        if (fs.existsSync(heroPath)) {
+          data = JSON.parse(fs.readFileSync(heroPath, 'utf8'));
+          console.log(`[RSS] Hero manuel chargé depuis FS: ${data?.title}`);
+        }
+      } catch (fsErr) {
+        // Silencieux car souvent normal si fichier manquant
+      }
+    }
+
+    if (data && data.enabled) {
+      const blocks = data.blocks || [];
+      const firstMediaBlock = blocks.find((b: any) => b.type !== 'text') || {};
+      const ytId = extractYouTubeId(firstMediaBlock.content);
+
+      manualHero = {
+        id: 'manual-hero',
+        title: data.title,
+        excerpt: data.excerpt,
+        insight: data.excerpt,
+        imageUrl: firstMediaBlock.type === 'image' ? firstMediaBlock.content : undefined,
+        videoUrl: firstMediaBlock.type === 'video' ? firstMediaBlock.content : (firstMediaBlock.type === 'youtube' || ytId ? ytId : undefined),
+        category: data.category,
+        source: data.sourceName ? `${data.sourceName}` : 'ÉDITORIAL KÉROSÈNE',
+        pubDate: data.updatedAt || new Date().toISOString(),
+        link: data.sourceUrl || '#',
+        blocks: blocks
+      } as Article;
+    }
+  } catch (err) {
+    console.error('[RSS] Erreur fatale chargement hero:', err);
   }
 
   // 1. TENTATIVE DE RÉCUPÉRATION DU BLOB (CONTENU IA DU JOUR)
@@ -366,7 +392,66 @@ function rawIdFrom(item: { guid?: string; link?: string }): string {
 
 export async function getArticleById(id: string): Promise<Article | undefined> {
   const articles = await fetchArticles();
-  return articles.find(art => art.id === id);
+  const current = articles.find(art => art.id === id);
+  if (current) return current;
+
+  // Si non trouvé, chercher dans les ARCHIVES
+  try {
+    let data: any = null;
+
+    // A. Tentative via Vercel Blob (PROD)
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        const { list } = require('@vercel/blob');
+        // On cherche le fichier par son nom (l'ID dans l'URL correspond au nom du fichier sans .json)
+        const { blobs } = await list({ prefix: `editorial/archives/${id}.json` });
+        const archiveBlob = blobs.find((b: any) => b.pathname.includes(`${id}.json`));
+        
+        if (archiveBlob) {
+          const res = await fetch(archiveBlob.url);
+          data = await res.json();
+          console.log(`[RSS] Article archivé chargé depuis Blob: ${id}`);
+        }
+      } catch (e) {
+        console.warn("[RSS] Erreur recherche archive sur Blob:", e);
+      }
+    }
+
+    // B. Fallback via FS
+    if (!data) {
+      const fs = require('fs');
+      const path = require('path');
+      const archivePath = path.join(process.cwd(), 'public', 'editorial', 'archives', `${id}.json`);
+      if (fs.existsSync(archivePath)) {
+        data = JSON.parse(fs.readFileSync(archivePath, 'utf8'));
+        console.log(`[RSS] Article archivé chargé depuis FS: ${id}`);
+      }
+    }
+
+    if (data) {
+      const blocks = data.blocks || [];
+      const firstMediaBlock = blocks.find((b: any) => b.type !== 'text') || {};
+      const ytId = extractYouTubeId(firstMediaBlock.content);
+
+      return {
+        id: id,
+        title: data.title,
+        excerpt: data.excerpt,
+        insight: data.excerpt,
+        imageUrl: firstMediaBlock.type === 'image' ? firstMediaBlock.content : undefined,
+        videoUrl: firstMediaBlock.type === 'video' ? firstMediaBlock.content : (firstMediaBlock.type === 'youtube' || ytId ? ytId : undefined),
+        category: data.category,
+        source: data.sourceName ? `${data.sourceName}` : 'ÉDITORIAL KÉROSÈNE',
+        pubDate: data.updatedAt || new Date().toISOString(),
+        link: data.sourceUrl || '#',
+        blocks: blocks
+      } as Article;
+    }
+  } catch (err) {
+    console.error(`[RSS] Erreur recherche archive pour ID ${id}:`, err);
+  }
+
+  return undefined;
 }
 
 export async function getAvailableDates(): Promise<string[]> {
