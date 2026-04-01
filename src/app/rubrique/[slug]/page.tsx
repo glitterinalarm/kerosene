@@ -2,6 +2,7 @@ import React from 'react';
 import { fetchArticles } from '@/lib/rss';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { list } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
 
@@ -87,7 +88,6 @@ export default async function RubriquePage({ params }: PageProps) {
     // A. Tentative via Vercel Blob (PROD)
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       try {
-        const { list } = require('@vercel/blob');
         const { blobs } = await list({ prefix: 'editorial/archives/' });
         
         const archivePromises = blobs

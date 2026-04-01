@@ -1,3 +1,6 @@
+import { list } from '@vercel/blob';
+import fs from 'fs';
+import path from 'path';
 import Parser from 'rss-parser';
 
 export type Article = {
@@ -159,7 +162,6 @@ export async function fetchArticles(): Promise<Article[]> {
     // A. Tentative via Vercel Blob (PROD)
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       try {
-        const { list } = require('@vercel/blob');
         const { blobs } = await list({ prefix: 'editorial/hero.json' });
         const heroBlob = blobs.find((b: any) => b.pathname === 'editorial/hero.json');
         if (heroBlob) {
@@ -175,15 +177,13 @@ export async function fetchArticles(): Promise<Article[]> {
     // B. Fallback via File System (Local ou Build Time)
     if (!data) {
       try {
-        const fs = require('fs');
-        const path = require('path');
         const heroPath = path.join(process.cwd(), 'public', 'editorial', 'hero.json');
         if (fs.existsSync(heroPath)) {
           data = JSON.parse(fs.readFileSync(heroPath, 'utf8'));
           console.log(`[RSS] Hero manuel chargé depuis FS: ${data?.title}`);
         }
       } catch (fsErr) {
-        // Silencieux car souvent normal si fichier manquant
+        // Silencieux
       }
     }
 
@@ -402,7 +402,6 @@ export async function getArticleById(id: string): Promise<Article | undefined> {
     // A. Tentative via Vercel Blob (PROD)
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       try {
-        const { list } = require('@vercel/blob');
         // On cherche le fichier par son nom (l'ID dans l'URL correspond au nom du fichier sans .json)
         const { blobs } = await list({ prefix: `editorial/archives/${id}.json` });
         const archiveBlob = blobs.find((b: any) => b.pathname.includes(`${id}.json`));
@@ -419,13 +418,13 @@ export async function getArticleById(id: string): Promise<Article | undefined> {
 
     // B. Fallback via FS
     if (!data) {
-      const fs = require('fs');
-      const path = require('path');
-      const archivePath = path.join(process.cwd(), 'public', 'editorial', 'archives', `${id}.json`);
-      if (fs.existsSync(archivePath)) {
-        data = JSON.parse(fs.readFileSync(archivePath, 'utf8'));
-        console.log(`[RSS] Article archivé chargé depuis FS: ${id}`);
-      }
+      try {
+        const archivePath = path.join(process.cwd(), 'public', 'editorial', 'archives', `${id}.json`);
+        if (fs.existsSync(archivePath)) {
+          data = JSON.parse(fs.readFileSync(archivePath, 'utf8'));
+          console.log(`[RSS] Article archivé chargé depuis FS: ${id}`);
+        }
+      } catch (fsErr) {}
     }
 
     if (data) {
