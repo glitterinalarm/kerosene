@@ -39,33 +39,36 @@ export default async function Home({ searchParams }: HomeProps) {
     );
   }
 
-  const mainArticle = articles[0]; // The top story
+  const mainArticle = articles[0]; // The top story (potentially the manual hero)
   const restArticles = articles.slice(1);
 
   const themes = [
-    "GRAPHISME",
-    "PUBLICITÉ",
-    "SOCIAL MEDIA",
-    "INNOVATION",
-    "DROP",
-    "TREND"
+    { name: "KÉROSÈNE", slug: "kerosene", desc: "Analyses exclusives et éditos signés par la rédaction." },
+    { name: "GRAPHISME", slug: "graphisme", desc: "Identité visuelle, direction artistique et branding." },
+    { name: "PUBLICITÉ", slug: "publicite", desc: "Campagnes, films publicitaires et stratégies de marque." },
+    { name: "SOCIAL MEDIA", slug: "social-media", desc: "Créativité sociale, activations digitales et formats natifs." },
+    { name: "INNOVATION", slug: "innovation", desc: "Technologies émergentes, IA, UX et usages digitaux." },
+    { name: "DROP", slug: "drop", desc: "Mode, culture sneaker et collaborations créatives." },
+    { name: "TREND", slug: "trend", desc: "Signaux émergents, tendances culturelles et zeitgeist." },
   ];
 
-  const groupedArticles = themes.map(theme => {
+  const themeKeys = ["GRAPHISME", "PUBLICITÉ", "SOCIAL MEDIA", "INNOVATION", "DROP", "TREND"];
+
+  const groupedArticles = themeKeys.map(theme => {
+    const themeObj = themes.find(t => t.name === theme);
     return {
       name: theme,
+      slug: themeObj?.slug || theme.toLowerCase(),
+      desc: themeObj?.desc || '',
       articles: restArticles.filter(a => {
-        const cat = a.category?.toUpperCase() || "";
+        const cat = a.category?.toUpperCase() || '';
         const t = theme.toUpperCase();
         if (cat.includes(t) || t.includes(cat)) return true;
-        
-        // MAPPING DE RÉSILLIENCE
         if (t === "PUBLICITÉ" && (cat.includes("AD") || cat.includes("PUB"))) return true;
         if (t === "SOCIAL MEDIA" && (cat.includes("SOCIAL") || cat.includes("TWEET") || cat.includes("ACTIVATION"))) return true;
         if (t === "INNOVATION" && (cat.includes("TECH") || cat.includes("DIGITAL") || cat.includes("WEB"))) return true;
         if (t === "GRAPHISME" && (cat.includes("DESIGN") || cat.includes("BRANDING") || cat.includes("LOGO"))) return true;
         if (t === "DROP" && (cat.includes("STREET") || cat.includes("FASHION") || cat.includes("SNEAKER"))) return true;
-        
         return false;
       }).slice(0, 6)
     };
@@ -77,8 +80,50 @@ export default async function Home({ searchParams }: HomeProps) {
         <a href={`/article/${mainArticle.id}`} className="bento-hero-link">
           <section className="bento-hero container">
             <div className="bento-visuals">
-               <span className="bento-visual-label">À LA UNE</span>
-               <img src={mainArticle.imageUrl} alt={mainArticle.title} />
+                <span className="bento-visual-label">À LA UNE</span>
+                {mainArticle.longform && mainArticle.longform.slides.length > 1 ? (
+                  <SwipeCarousel>
+                    {mainArticle.longform.slides.map((slide, i) => (
+                      <div key={i} className="carousel-slide hero-slide">
+                         {slide.video ? (
+                            slide.video.includes('youtube.com') || slide.video.includes('youtu.be') || /^[a-zA-Z0-9_-]{11}$/.test(slide.video) ? (
+                              <iframe 
+                                 width="100%" height="100%" 
+                                 src={`https://www.youtube.com/embed/${slide.video.includes('v=') ? slide.video.split('v=')[1].split('&')[0] : slide.video}?autoplay=1&mute=1&loop=1&playlist=${slide.video.includes('v=') ? slide.video.split('v=')[1].split('&')[0] : slide.video}`} 
+                                 frameBorder="0" allowFullScreen
+                              ></iframe>
+                            ) : (
+                              <video autoPlay muted loop className="hero-full-video"><source src={slide.video} type="video/mp4" /></video>
+                            )
+                         ) : (
+                            <img src={slide.image || mainArticle.imageUrl} alt={mainArticle.title} />
+                         )}
+                      </div>
+                    ))}
+                  </SwipeCarousel>
+                ) : (
+                  mainArticle.videoUrl ? (
+                    (() => {
+                        const ytId = mainArticle.videoUrl.match(/(?:v=|\/v\/|embed\/|youtu\.be\/|shorts\/)([\w-]{11})/) 
+                                     ? mainArticle.videoUrl.match(/(?:v=|\/v\/|embed\/|youtu\.be\/|shorts\/)([\w-]{11})/)![1] 
+                                     : (mainArticle.videoUrl.length === 11 ? mainArticle.videoUrl : null);
+                        
+                        if (ytId) {
+                          return (
+                            <iframe 
+                               width="100%" height="100%" 
+                               src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&modestbranding=1`} 
+                               frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen
+                               className="hero-iframe"
+                            ></iframe>
+                          );
+                        }
+                        return <video autoPlay muted loop className="hero-full-video"><source src={mainArticle.videoUrl} type="video/mp4" /></video>;
+                    })()
+                  ) : (
+                    <img src={mainArticle.imageUrl} alt={mainArticle.title} />
+                  )
+                )}
             </div>
             
             <div className="bento-text-block">
@@ -102,12 +147,17 @@ export default async function Home({ searchParams }: HomeProps) {
       <section className="themes-section container">
         {groupedArticles.map((group, idx) => (
           <div key={idx} className="theme-block">
-            <div className="theme-header">
-              <div className="theme-title-wrapper">
-                <div className="theme-live-dot"></div>
-                <h2 className="theme-title">{group.name}</h2>
+            <Link href={`/rubrique/${group.slug}`} className="theme-header-link">
+              <div className="theme-header">
+                <div className="theme-rubrique-tag">RUBRIQUE</div>
+                <h2 className="theme-title-big">{group.name}</h2>
+                {group.desc && <p className="theme-desc">{group.desc}</p>}
+                <div className="theme-count-arrow">
+                  <span className="theme-article-count">{group.articles.length} ARTICLE{group.articles.length > 1 ? 'S' : ''}</span>
+                  <span className="theme-header-arrow">→</span>
+                </div>
               </div>
-            </div>
+            </Link>
             
             <div className="theme-grid">
               {group.articles.length > 0 ? (
@@ -121,7 +171,6 @@ export default async function Home({ searchParams }: HomeProps) {
                           }}></div>
                        </div>
                     </div>
-                    
                     <div className="theme-card-info">
                       <span className="theme-card-category">{art.category}</span>
                       <h3 className="theme-card-title" dangerouslySetInnerHTML={{ __html: art.title }}></h3>
