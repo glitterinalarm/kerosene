@@ -52,7 +52,7 @@ export default async function Home({ searchParams }: HomeProps) {
     { name: "TREND", slug: "trend", desc: "Signaux émergents, tendances culturelles et zeitgeist." },
   ];
 
-  const themeKeys = ["GRAPHISME", "PUBLICITÉ", "SOCIAL MEDIA", "INNOVATION", "DROP", "TREND"];
+  const themeKeys = ["KÉROSÈNE", "GRAPHISME", "PUBLICITÉ", "SOCIAL MEDIA", "INNOVATION", "DROP", "TREND"];
 
   const groupedArticles = themeKeys.map(theme => {
     const themeObj = themes.find(t => t.name === theme);
@@ -60,7 +60,19 @@ export default async function Home({ searchParams }: HomeProps) {
       name: theme,
       slug: themeObj?.slug || theme.toLowerCase(),
       desc: themeObj?.desc || '',
-      articles: restArticles.filter(a => {
+      articles: articles.filter(a => {
+        // Pour Kérosène, on prend les articles éditoriaux (IA ou manuel) 
+        // MAIS on évite de dupliquer le Hero principal s'il est déjà affiché en haut
+        if (theme === "KÉROSÈNE") {
+          const isEdito = a.source?.includes('KÉROSÈNE') || a.source?.includes('IA') || a.id === 'manual-hero';
+          if (!isEdito) return false;
+          // Si c'est le même ID que celui affiché en Hero, on le saute dans la liste du bas
+          return a.id !== mainArticle.id;
+        }
+
+        // Pour les autres, on ne filtre que sur le reste (pas le hero principal)
+        if (a.id === mainArticle.id) return false;
+
         const cat = a.category?.toUpperCase() || '';
         const t = theme.toUpperCase();
         if (cat.includes(t) || t.includes(cat)) return true;

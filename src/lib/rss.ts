@@ -359,24 +359,29 @@ export async function fetchArticles(): Promise<Article[]> {
   const feedsResults = await Promise.all(feedPromises);
   allArticles = feedsResults.flat().filter((a: any) => a !== null);
 
-  // Fusionner (Le Hero manuel est traité à part sur la home, mais on le veut dans le pool)
-  const finalPool = manualHero ? [manualHero, ...aiArticles, ...allArticles] : [...aiArticles, ...allArticles];
-  finalPool.sort((a, b) => {
-    // PRIORITÉ ABSOLUE AU CONTENU IA (SOURCE: IA)
-    const isAIA = a.source?.includes('IA');
-    const isBIA = b.source?.includes('IA');
-
-    if (isAIA && !isBIA) return -1;
-    if (!isAIA && isBIA) return 1;
-
-    // Sinon tri chronologique normal
-    return new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime();
-  });
-
   // Final deduplication
   const finalStream: Article[] = [];
   const seenIds = new Set();
-  for (const art of finalPool) {
+  
+  // 1. D'ABORD LE HERO MANUEL (S'IL EXISTE)
+  if (manualHero) {
+    finalStream.push(manualHero);
+    seenIds.add(manualHero.id);
+  }
+
+  // 2. ENSUITE LE RESTE DÉDUPLIQUÉ ET TRIÉ
+  const sortedRest = [...aiArticles, ...allArticles].sort((a, b) => {
+    // Priorité au contenu IA
+    const isAIA = a.source?.includes('IA') || a.source?.includes('KÉROSÈNE');
+    const isBIA = b.source?.includes('IA') || b.source?.includes('KÉROSÈNE');
+    if (isAIA && !isBIA) return -1;
+    if (!isAIA && isBIA) return 1;
+
+    // Sinon tri chronologique
+    return new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime();
+  });
+
+  for (const art of sortedRest) {
     if (!seenIds.has(art.id)) {
       finalStream.push(art);
       seenIds.add(art.id);
