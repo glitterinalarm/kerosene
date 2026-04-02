@@ -308,7 +308,9 @@ export async function fetchArticles(): Promise<Article[]> {
         }
         const finalImageUrl = imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop";
 
-        let finalTitle = item.title || realTitle || "Sans Titre";
+        let rawTitle = item.title || realTitle || "Sans Titre";
+        let finalTitle = typeof rawTitle === 'string' ? rawTitle : (typeof rawTitle === 'object' ? JSON.stringify(rawTitle) : String(rawTitle));
+        
         const CLOUDFLARE_NOISE = ["Attention Required", "Access Denied", "Just a moment", "403 Forbidden", "503 Service"];
         // Skip complètement les articles bloqués par Cloudflare
         if (CLOUDFLARE_NOISE.some(s => finalTitle.includes(s))) {
@@ -346,7 +348,7 @@ export async function fetchArticles(): Promise<Article[]> {
       });
 
       const results = await Promise.all(itemsPromises);
-      return results.filter((a): a is Article => a !== null);
+      return results.flat().filter((a: any) => a !== null);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Feed error";
       console.warn(`Erreur feed ${feed.url} ignorée: ${message}`);
@@ -355,7 +357,7 @@ export async function fetchArticles(): Promise<Article[]> {
   });
 
   const feedsResults = await Promise.all(feedPromises);
-  allArticles = feedsResults.flat().filter((a): a is Article => a !== null);
+  allArticles = feedsResults.flat().filter((a: any) => a !== null);
 
   // Fusionner (Le Hero manuel est traité à part sur la home, mais on le veut dans le pool)
   const finalPool = manualHero ? [manualHero, ...aiArticles, ...allArticles] : [...aiArticles, ...allArticles];
