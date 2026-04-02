@@ -52,7 +52,7 @@ export default async function Home({ searchParams }: HomeProps) {
     { name: "TREND", slug: "trend", desc: "Signaux émergents, tendances culturelles et zeitgeist." },
   ];
 
-  const themeKeys = ["KÉROSÈNE", "GRAPHISME", "PUBLICITÉ", "SOCIAL MEDIA", "INNOVATION", "DROP", "TREND"];
+  const themeKeys = ["GRAPHISME", "PUBLICITÉ", "SOCIAL MEDIA", "INNOVATION", "DROP", "TREND", "KÉROSÈNE"];
 
   const groupedArticles = themeKeys.map(theme => {
     const themeObj = themes.find(t => t.name === theme);
