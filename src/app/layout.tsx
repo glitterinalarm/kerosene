@@ -1,8 +1,5 @@
-import type { Metadata } from 'next';
-import { Suspense } from 'react';
+import { Metadata } from 'next';
 import './globals.css';
-import NavigationMenu from '@/components/NavigationMenu';
-import { getAvailableDates } from '@/lib/rss';
 
 export const metadata: Metadata = {
   title: 'KÉROSÈNE — Daily Creative Releases',
@@ -14,7 +11,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const availableDates = await getAvailableDates();
 
   return (
     <html lang="fr">
@@ -22,20 +18,12 @@ export default async function RootLayout({
         <header className="site-header">
           <div className="header-top">
             <span className="header-date">{new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-
           </div>
           <h1 className="site-title">
             {"KÉROSÈNE".split('').map((char, i) => (
               <span key={i}>{char}</span>
             ))}
           </h1>
-          <Suspense fallback={
-            <button className="menu-trigger" aria-label="Loading Menu">
-              <span></span><span></span><span></span>
-            </button>
-          }>
-            <NavigationMenu availableDates={availableDates} />
-          </Suspense>
         </header>
         
         <main>
