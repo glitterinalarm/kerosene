@@ -173,7 +173,7 @@ export async function fetchArticles(): Promise<Article[]> {
         const { blobs } = await list({ prefix: 'editorial/hero.json' });
         const heroBlob = blobs.find((b: any) => b.pathname === 'editorial/hero.json');
         if (heroBlob) {
-          const response = await fetch(heroBlob.url);
+          const response = await fetch(heroBlob.url, { cache: 'no-store' });
           data = await response.json();
           console.log(`[RSS] Hero manuel chargé depuis Blob: ${data.title}`);
         }
