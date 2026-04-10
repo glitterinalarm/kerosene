@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Syne:wght@400..800&family=Dela+Gothic+One&family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Syne:wght@400..800&family=Black+Han+Sans&family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&display=swap');
 
 :root {
   --bg-color: #fcfcfc;
@@ -9,7 +9,7 @@
   --border-color: #050505;
   --font-sans: 'Syne', sans-serif;
   --font-condensed: 'Anton', sans-serif;
-  --font-title: 'Dela Gothic One', cursive;
+  --font-title: 'Black Han Sans', sans-serif;
   --font-serif: 'Bodoni Moda', serif;
   --card-bg: #f4f4f4;
   --card-bg-hover: #e0e0e0;
@@ -73,15 +73,15 @@ img { display: block; max-width: 100%; height: auto; }
   font-size: clamp(2rem, 16vw, 25rem); 
   line-height: 0.8;
   text-align: center;
-  margin-bottom: 1vw;
-  font-weight: 400; /* Dela Gothic One n'a qu'un poids (400) qui est déjà ultra-heavy */
+  margin-bottom: 0.5vw;
+  font-weight: 400; 
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
   width: 100%;
   font-family: var(--font-title);
-  letter-spacing: -0.04em; /* On resserre pour l'effet "compact" */
-  transform: scaleY(1.1); /* On l'étire très légèrement verticalement pour plus de tension */
+  letter-spacing: -0.05em; 
+  transform: scaleY(1.2); /* Un peu plus étiré pour compenser le côté bloc */
 }
 
 /* Title base styles logic already moved to .site-title */
