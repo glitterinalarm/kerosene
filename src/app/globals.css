@@ -1008,16 +1008,16 @@ img { display: block; max-width: 100%; height: auto; }
 }
 
 .theme-subtag {
-  font-family: var(--font-condensed);
-  font-size: 0.75rem; /* Taille identique au label À LA UNE */
+  font-family: var(--font-sans); /* Utilisation de la Syne (Sans-serif) comme demandé */
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 1.3px;
   text-transform: uppercase;
-  color: #000000 !important;
+  color: #050505 !important;
   background: #ffffff !important;
-  padding: 0.5rem 0.9rem; /* Padding identique à la référence */
+  padding: 0.6rem 1rem;
   white-space: nowrap;
-  box-shadow: none; /* Suppression de l'ombre pour plus de rigueur */
+  box-shadow: none;
 }
 
 /* Hover Logic */
