@@ -2,6 +2,7 @@ import React from 'react';
 import { fetchArticles } from '@/lib/rss';
 import Link from 'next/link';
 import SwipeCarousel from '@/components/SwipeCarousel';
+import { THEMES_CONFIG } from '@/lib/config';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -42,45 +43,23 @@ export default async function Home({ searchParams }: HomeProps) {
   const mainArticle = articles[0]; // The top story (potentially the manual hero)
   const restArticles = articles.slice(1);
 
-  const themes = [
-    { name: "KÉROSÈNE", slug: "kerosene", desc: "Analyses exclusives et éditos signés par la rédaction.", subTags: ["InSight", "Radar", "Long-Form", "DA Club"] },
-    { name: "GRAPHISME", slug: "graphisme", desc: "Identité visuelle, direction artistique et branding.", subTags: ["Branding", "Typo", "Motion", "Packaging"] },
-    { name: "PUBLICITÉ", slug: "publicite", desc: "Campagnes, films publicitaires et stratégies de marque.", subTags: ["Film", "Print", "Stunt", "Integrated"] },
-    { name: "SOCIAL MEDIA", slug: "social-media", desc: "Créativité sociale, activations digitales et formats natifs.", subTags: ["Activation", "Content", "Viral", "TikTok"] },
-    { name: "INNOVATION", slug: "innovation", desc: "Technologies émergentes, IA, UX et usages digitaux.", subTags: ["AI Art", "Web3", "UX/UI", "Tech"] },
-    { name: "DROP", slug: "drop", desc: "Mode, culture sneaker et collaborations créatives.", subTags: ["Sneakers", "Apparel", "Limited", "Retail"] },
-    { name: "TREND", slug: "trend", desc: "Signaux émergents, tendances culturelles et zeitgeist.", subTags: ["Lifestyle", "Culture", "Report", "Future"] },
-  ];
-
-  const themeKeys = ["GRAPHISME", "PUBLICITÉ", "SOCIAL MEDIA", "INNOVATION", "DROP", "TREND", "KÉROSÈNE"];
-
-  const groupedArticles = themeKeys.map(theme => {
-    const themeObj = themes.find(t => t.name === theme);
+  const groupedArticles = THEMES_CONFIG.map(themeObj => {
     return {
-      name: theme,
-      slug: themeObj?.slug || theme.toLowerCase(),
-      desc: themeObj?.desc || '',
+      ...themeObj,
       articles: articles.filter(a => {
-        // Pour Kérosène, on prend les articles éditoriaux (IA ou manuel) 
-        // MAIS on évite de dupliquer le Hero principal s'il est déjà affiché en haut
-        if (theme === "KÉROSÈNE") {
+        if (themeObj.name === "KÉROSÈNE") {
           const isEdito = a.source?.includes('KÉROSÈNE') || a.source?.includes('IA') || a.id === 'manual-hero';
           if (!isEdito) return false;
-          // Si c'est le même ID que celui affiché en Hero, on le saute dans la liste du bas
           return a.id !== mainArticle.id;
         }
 
-        // Pour les autres, on ne filtre que sur le reste (pas le hero principal)
         if (a.id === mainArticle.id) return false;
 
         const cat = a.category?.toUpperCase() || '';
-        const t = theme.toUpperCase();
-        if (cat.includes(t) || t.includes(cat)) return true;
-        if (t === "PUBLICITÉ" && (cat.includes("AD") || cat.includes("PUB"))) return true;
-        if (t === "SOCIAL MEDIA" && (cat.includes("SOCIAL") || cat.includes("TWEET") || cat.includes("ACTIVATION"))) return true;
-        if (t === "INNOVATION" && (cat.includes("TECH") || cat.includes("DIGITAL") || cat.includes("WEB"))) return true;
-        if (t === "GRAPHISME" && (cat.includes("DESIGN") || cat.includes("BRANDING") || cat.includes("LOGO"))) return true;
-        if (t === "DROP" && (cat.includes("STREET") || cat.includes("FASHION") || cat.includes("SNEAKER"))) return true;
+        
+        // Exact match via categories config
+        if (themeObj.categories.some(rc => cat.includes(rc.toUpperCase()) || rc.toUpperCase().includes(cat))) return true;
+        
         return false;
       }).slice(0, 6)
     };
@@ -166,7 +145,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 <div className="theme-title-container">
                   <h2 className="theme-title-big">{group.name}</h2>
                   <div className="theme-rollover-layer">
-                    {(themes.find(t => t.name === group.name)?.subTags || []).map((tag, i) => (
+                    {group.subTags.map((tag: string, i: number) => (
                       <span key={i} className="theme-subtag">{tag}</span>
                     ))}
                   </div>

@@ -5,59 +5,14 @@ import { ArrowLeft } from 'lucide-react';
 import { list } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
+import { THEMES_CONFIG } from '@/lib/config';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Mapping slug → label affiché + catégories couverte
-const RUBRIQUES: Record<string, { label: string; categories: string[]; description: string; subTags: string[] }> = {
-  'graphisme': {
-    label: 'GRAPHISME',
-    categories: ['GRAPHISME', 'DESIGN', 'BRANDING', 'LOGO', 'TYPOGRAPHIE', 'ILLUSTRATION'],
-    description: 'Identité visuelle, direction artistique, typographie et branding.',
-    subTags: ["Branding", "Typo", "Motion", "Packaging"]
-  },
-  'publicite': {
-    label: 'PUBLICITÉ',
-    categories: ['PUBLICITÉ', 'AD', 'PUB', 'CAMPAGNE', 'FILM', 'SPOT', 'ADVERTISING'],
-    description: 'Campagnes, films publicitaires et stratégies de marque.',
-    subTags: ["Film", "Print", "Stunt", "Integrated"]
-  },
-  'social-media': {
-    label: 'SOCIAL MEDIA',
-    categories: ['SOCIAL', 'SOCIAL MEDIA', 'TWEET', 'ACTIVATION', 'INSTAGRAM', 'TIKTOK'],
-    description: 'Créativité sociale, activations digitales et formats natifs.',
-    subTags: ["Activation", "Content", "Viral", "TikTok"]
-  },
-  'innovation': {
-    label: 'INNOVATION',
-    categories: ['INNOVATION', 'TECH', 'DIGITAL', 'WEB', 'IA', 'AI', 'UX'],
-    description: 'Technologies émergentes, UX et usages digitaux.',
-    subTags: ["AI Art", "Web3", "UX/UI", "Tech"]
-  },
-  'drop': {
-    label: 'DROP',
-    categories: ['DROP', 'STREET', 'FASHION', 'SNEAKER', 'MODE', 'CULTURE'],
-    description: 'Mode, culture sneaker et collaborations créatives.',
-    subTags: ["Sneakers", "Apparel", "Limited", "Retail"]
-  },
-  'trend': {
-    label: 'TREND',
-    categories: ['TREND', 'TENDANCE', 'CULTURE', 'SOCIÉTÉ'],
-    description: 'Tendances culturelles, signaux émergents et zeitgeist.',
-    subTags: ["Lifestyle", "Culture", "Report", "Future"]
-  },
-  'kerosene': {
-    label: 'KÉROSÈNE ÉDITO',
-    categories: ['KÉROSÈNE', 'ÉDITORIAL', 'À LA UNE'],
-    description: 'Analyses exclusives et éditos signés Kérosène.',
-    subTags: ["InSight", "Radar", "Long-Form", "DA Club"]
-  },
-};
-
-function matchesRubrique(category: string, rubrique: typeof RUBRIQUES[string]): boolean {
+function matchesRubrique(category: string, categoriesConfig: string[]): boolean {
   const cat = category?.toUpperCase() || '';
-  return rubrique.categories.some(rc => cat.includes(rc) || rc.includes(cat));
+  return categoriesConfig.some(rc => cat.includes(rc.toUpperCase()) || rc.toUpperCase().includes(cat));
 }
 
 interface PageProps {
@@ -76,7 +31,7 @@ function isInternal(art: any): boolean {
 
 export default async function RubriquePage({ params }: PageProps) {
   const { slug } = await params;
-  const rubrique = RUBRIQUES[slug];
+  const rubrique = THEMES_CONFIG.find(t => t.slug === slug);
 
   if (!rubrique) {
     return (
@@ -138,7 +93,7 @@ export default async function RubriquePage({ params }: PageProps) {
   // Filtrage des articles RSS
   const filtered = articles.filter(a => {
     if (slug === 'kerosene') return a.source === 'ÉDITORIAL KÉROSÈNE';
-    return matchesRubrique(a.category || '', rubrique);
+    return matchesRubrique(a.category || '', rubrique.categories);
   });
 
   const allArticles = slug === 'kerosene'
@@ -151,7 +106,7 @@ export default async function RubriquePage({ params }: PageProps) {
         <div className="rubrique-tag">RUBRIQUE</div>
         
         <div className="theme-title-container">
-          <h1 className="rubrique-title theme-title-big">{rubrique.label}</h1>
+          <h1 className="rubrique-title theme-title-big">{rubrique.name}</h1>
           <div className="theme-rollover-layer" style={{ transform: 'translateY(-50%)' }}>
             {rubrique.subTags.map((tag, i) => (
               <span key={i} className="theme-subtag">{tag}</span>
@@ -187,7 +142,7 @@ export default async function RubriquePage({ params }: PageProps) {
                 <div className="rubrique-card-image">
                   {art.imageUrl
                     ? <img src={art.imageUrl} alt={art.title} />
-                    : <div className="rubrique-card-no-img">{rubrique.label[0]}</div>
+                    : <div className="rubrique-card-no-img">{rubrique.name[0]}</div>
                   }
                   <span className="rubrique-card-source">{art.source}</span>
                 </div>
@@ -211,11 +166,11 @@ export default async function RubriquePage({ params }: PageProps) {
       <section className="rubrique-footer-nav container">
         <p className="rubrique-footer-label">EXPLORER LES AUTRES RUBRIQUES</p>
         <div className="rubrique-footer-links">
-          {Object.entries(RUBRIQUES)
-            .filter(([s]) => s !== slug)
-            .map(([s, r]) => (
-              <Link key={s} href={`/rubrique/${s}`} className="rubrique-footer-link">
-                {r.label}
+          {THEMES_CONFIG
+            .filter(r => r.slug !== slug)
+            .map((r) => (
+              <Link key={r.slug} href={`/rubrique/${r.slug}`} className="rubrique-footer-link">
+                {r.name}
               </Link>
             ))}
         </div>
