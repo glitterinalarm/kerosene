@@ -147,12 +147,6 @@ export default async function RubriquePage({ params }: PageProps) {
 
   return (
     <div className="rubrique-page">
-      <nav className="rubrique-nav container">
-        <Link href="/" className="rubrique-back">
-          <ArrowLeft size={14} /> RETOUR À LA UNE
-        </Link>
-      </nav>
-
       <header className="rubrique-header container theme-header-link">
         <div className="rubrique-tag">RUBRIQUE</div>
         
@@ -165,6 +159,12 @@ export default async function RubriquePage({ params }: PageProps) {
           </div>
         </div>
       </header>
+
+      <nav className="rubrique-nav container">
+        <Link href="/" className="rubrique-back">
+          <ArrowLeft size={14} /> RETOUR À LA UNE
+        </Link>
+      </nav>
 
       <section className="rubrique-grid container">
         {allArticles.length === 0 ? (
