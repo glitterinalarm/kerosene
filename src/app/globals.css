@@ -9,7 +9,7 @@
   --border-color: #050505;
   --font-sans: 'Syne', sans-serif;
   --font-condensed: 'Anton', sans-serif;
-  --font-title: 'Black Han Sans', sans-serif;
+  --font-title: 'Syne', sans-serif;
   --font-serif: 'Bodoni Moda', serif;
   --card-bg: #f4f4f4;
   --card-bg-hover: #e0e0e0;
@@ -71,17 +71,19 @@ img { display: block; max-width: 100%; height: auto; }
 
 .site-title {
   font-size: clamp(2rem, 16vw, 25rem); 
-  line-height: 0.8;
+  line-height: 0.75;
   text-align: center;
   margin-bottom: 0.5vw;
-  font-weight: 400; 
+  font-weight: 800; /* Poids maximal de la Syne */
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
   width: 100%;
   font-family: var(--font-title);
-  letter-spacing: -0.05em; 
-  transform: scaleY(1.2); /* Un peu plus étiré pour compenser le côté bloc */
+  letter-spacing: -0.06em; /* Encore plus serré pour fusionner les lettres */
+  transform: scaleY(1.25); /* Tension maximale */
+  -webkit-text-stroke: 1.5px var(--text-color); /* On "engraisse" artificiellement la police */
+  paint-order: stroke fill;
 }
 
 /* Title base styles logic already moved to .site-title */
