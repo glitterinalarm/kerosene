@@ -10,41 +10,48 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 // Mapping slug → label affiché + catégories couverte
-const RUBRIQUES: Record<string, { label: string; categories: string[]; description: string }> = {
+const RUBRIQUES: Record<string, { label: string; categories: string[]; description: string; subTags: string[] }> = {
   'graphisme': {
     label: 'GRAPHISME',
     categories: ['GRAPHISME', 'DESIGN', 'BRANDING', 'LOGO', 'TYPOGRAPHIE', 'ILLUSTRATION'],
-    description: 'Identité visuelle, direction artistique, typographie et branding.'
+    description: 'Identité visuelle, direction artistique, typographie et branding.',
+    subTags: ["Branding", "Typo", "Motion", "Packaging"]
   },
   'publicite': {
     label: 'PUBLICITÉ',
     categories: ['PUBLICITÉ', 'AD', 'PUB', 'CAMPAGNE', 'FILM', 'SPOT', 'ADVERTISING'],
-    description: 'Campagnes, films publicitaires et stratégies de marque.'
+    description: 'Campagnes, films publicitaires et stratégies de marque.',
+    subTags: ["Film", "Print", "Stunt", "Integrated"]
   },
   'social-media': {
     label: 'SOCIAL MEDIA',
     categories: ['SOCIAL', 'SOCIAL MEDIA', 'TWEET', 'ACTIVATION', 'INSTAGRAM', 'TIKTOK'],
-    description: 'Créativité sociale, activations digitales et formats natifs.'
+    description: 'Créativité sociale, activations digitales et formats natifs.',
+    subTags: ["Activation", "Content", "Viral", "TikTok"]
   },
   'innovation': {
     label: 'INNOVATION',
     categories: ['INNOVATION', 'TECH', 'DIGITAL', 'WEB', 'IA', 'AI', 'UX'],
-    description: 'Technologies émergentes, UX et usages digitaux.'
+    description: 'Technologies émergentes, UX et usages digitaux.',
+    subTags: ["AI Art", "Web3", "UX/UI", "Tech"]
   },
   'drop': {
     label: 'DROP',
     categories: ['DROP', 'STREET', 'FASHION', 'SNEAKER', 'MODE', 'CULTURE'],
-    description: 'Mode, culture sneaker et collaborations créatives.'
+    description: 'Mode, culture sneaker et collaborations créatives.',
+    subTags: ["Sneakers", "Apparel", "Limited", "Retail"]
   },
   'trend': {
     label: 'TREND',
     categories: ['TREND', 'TENDANCE', 'CULTURE', 'SOCIÉTÉ'],
-    description: 'Tendances culturelles, signaux émergents et zeitgeist.'
+    description: 'Tendances culturelles, signaux émergents et zeitgeist.',
+    subTags: ["Lifestyle", "Culture", "Report", "Future"]
   },
   'kerosene': {
     label: 'KÉROSÈNE ÉDITO',
     categories: ['KÉROSÈNE', 'ÉDITORIAL', 'À LA UNE'],
-    description: 'Analyses exclusives et éditos signés Kérosène.'
+    description: 'Analyses exclusives et éditos signés Kérosène.',
+    subTags: ["InSight", "Radar", "Long-Form", "DA Club"]
   },
 };
 
@@ -146,11 +153,21 @@ export default async function RubriquePage({ params }: PageProps) {
         </Link>
       </nav>
 
-      <header className="rubrique-header container">
+      <header className="rubrique-header container theme-header-link">
         <div className="rubrique-tag">RUBRIQUE</div>
-        <h1 className="rubrique-title">{rubrique.label}</h1>
-        <p className="rubrique-desc">{rubrique.description}</p>
-        <div className="rubrique-count">{allArticles.length} ARTICLE{allArticles.length > 1 ? 'S' : ''}</div>
+        
+        <div className="theme-title-container">
+          <h1 className="rubrique-title theme-title-big">{rubrique.label}</h1>
+          <div className="theme-rollover-layer" style={{ transform: 'translateY(-50%)' }}>
+            {rubrique.subTags.map((tag, i) => (
+              <span key={i} className="theme-subtag">{tag}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="theme-arrow-only" style={{ marginTop: '1rem' }}>
+          <span className="theme-header-arrow">→</span>
+        </div>
       </header>
 
       <section className="rubrique-grid container">
