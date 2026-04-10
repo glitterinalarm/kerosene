@@ -135,29 +135,6 @@ export default async function Home({ searchParams }: HomeProps) {
         </a>
       )}
 
-      {/* FIL D'ACTUALITÉ (Carousel des dernières news) */}
-      <section className="fil-section container">
-        <h2 className="section-title">FIL D&apos;ACTUALITÉ</h2>
-        <div className="fil-carousel-wrapper">
-          <SwipeCarousel>
-            {restArticles.slice(0, 12).map((art, i) => (
-              <div key={art.id || i} className="carousel-slide fil-slide">
-                <a href={art.link} target="_blank" rel="noopener noreferrer" className="fil-card">
-                  <div className="fil-image-wrapper">
-                    <img src={art.imageUrl} alt={art.title} />
-                  </div>
-                  <div className="fil-card-content">
-                    <span className="fil-category">{art.category}</span>
-                    <h4 dangerouslySetInnerHTML={{ __html: art.title }}></h4>
-                    <span className="fil-source">{art.source}</span>
-                  </div>
-                </a>
-              </div>
-            ))}
-          </SwipeCarousel>
-        </div>
-      </section>
-
       <section className="themes-section container">
         {groupedArticles.map((group, idx) => (
           <div key={idx} className="theme-block">
