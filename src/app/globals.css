@@ -37,7 +37,7 @@ img { display: block; max-width: 100%; height: auto; }
   width: 100%;
   max-width: 1800px;
   margin: 0 auto;
-  padding: 0 5vw; /* Marges gauches/droites de sécurité pour éviter le côté "collé" */
+  padding: 0 5vw !important; /* Force la marge pour éviter le collage à gauche */
 }
 
 /* --- HEADER --- */
@@ -1409,13 +1409,13 @@ img { display: block; max-width: 100%; height: auto; }
    ================================ */
 .rubrique-page {
   min-height: 100vh;
-  background: #000;
-  color: #fff;
+  background: var(--bg-color); /* Utilise la variable globale */
+  color: var(--text-color);
   font-family: var(--font-sans);
 }
 
 .rubrique-nav {
-  padding: 2rem 0;
+  padding: 2rem 0 1rem;
   border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
