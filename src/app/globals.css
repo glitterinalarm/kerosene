@@ -989,20 +989,71 @@ img { display: block; max-width: 100%; height: auto; }
   max-width: 560px;
   line-height: 1.5;
   margin: 0 0 1.25rem;
+  transition: opacity 0.3s ease;
 }
 
-.theme-count-arrow {
+.theme-title-container {
+  position: relative;
+  display: block;
+  margin: 0 0 1rem;
+}
+
+.theme-rollover-layer {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 5;
+}
+
+.theme-subtag {
+  font-family: var(--font-condensed);
+  font-size: clamp(1rem, 2vw, 2.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--bg-inverted);
+  padding: 0.2rem 0.8rem;
+  white-space: nowrap;
+}
+
+/* Hover Logic */
+.theme-header-link:hover .theme-title-big {
+  opacity: 0.15;
+}
+
+.theme-header-link:hover .theme-desc {
+  opacity: 0;
+}
+
+.theme-header-link:hover .theme-rollover-layer {
+  opacity: 1;
+  transform: translateY(-50%) translateX(20px);
+}
+
+.theme-arrow-only {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 
-.theme-article-count {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  opacity: 0.3;
+.theme-header-arrow {
+  font-size: 2rem;
+  opacity: 0.2;
+  transition: transform 0.3s, opacity 0.3s;
 }
+
+.theme-header-link:hover .theme-header-arrow {
+  transform: translateX(10px);
+  opacity: 1;
+}
+
+
 
 .theme-header-arrow {
   font-size: 1rem;

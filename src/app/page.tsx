@@ -43,13 +43,13 @@ export default async function Home({ searchParams }: HomeProps) {
   const restArticles = articles.slice(1);
 
   const themes = [
-    { name: "KÉROSÈNE", slug: "kerosene", desc: "Analyses exclusives et éditos signés par la rédaction." },
-    { name: "GRAPHISME", slug: "graphisme", desc: "Identité visuelle, direction artistique et branding." },
-    { name: "PUBLICITÉ", slug: "publicite", desc: "Campagnes, films publicitaires et stratégies de marque." },
-    { name: "SOCIAL MEDIA", slug: "social-media", desc: "Créativité sociale, activations digitales et formats natifs." },
-    { name: "INNOVATION", slug: "innovation", desc: "Technologies émergentes, IA, UX et usages digitaux." },
-    { name: "DROP", slug: "drop", desc: "Mode, culture sneaker et collaborations créatives." },
-    { name: "TREND", slug: "trend", desc: "Signaux émergents, tendances culturelles et zeitgeist." },
+    { name: "KÉROSÈNE", slug: "kerosene", desc: "Analyses exclusives et éditos signés par la rédaction.", subTags: ["InSight", "Radar", "Long-Form", "DA Club"] },
+    { name: "GRAPHISME", slug: "graphisme", desc: "Identité visuelle, direction artistique et branding.", subTags: ["Branding", "Typo", "Motion", "Packaging"] },
+    { name: "PUBLICITÉ", slug: "publicite", desc: "Campagnes, films publicitaires et stratégies de marque.", subTags: ["Film", "Print", "Stunt", "Integrated"] },
+    { name: "SOCIAL MEDIA", slug: "social-media", desc: "Créativité sociale, activations digitales et formats natifs.", subTags: ["Activation", "Content", "Viral", "TikTok"] },
+    { name: "INNOVATION", slug: "innovation", desc: "Technologies émergentes, IA, UX et usages digitaux.", subTags: ["AI Art", "Web3", "UX/UI", "Tech"] },
+    { name: "DROP", slug: "drop", desc: "Mode, culture sneaker et collaborations créatives.", subTags: ["Sneakers", "Apparel", "Limited", "Retail"] },
+    { name: "TREND", slug: "trend", desc: "Signaux émergents, tendances culturelles et zeitgeist.", subTags: ["Lifestyle", "Culture", "Report", "Future"] },
   ];
 
   const themeKeys = ["GRAPHISME", "PUBLICITÉ", "SOCIAL MEDIA", "INNOVATION", "DROP", "TREND", "KÉROSÈNE"];
@@ -162,10 +162,19 @@ export default async function Home({ searchParams }: HomeProps) {
             <Link href={`/rubrique/${group.slug}`} className="theme-header-link">
               <div className="theme-header">
                 <div className="theme-rubrique-tag">RUBRIQUE</div>
-                <h2 className="theme-title-big">{group.name}</h2>
+                
+                <div className="theme-title-container">
+                  <h2 className="theme-title-big">{group.name}</h2>
+                  <div className="theme-rollover-layer">
+                    {(themes.find(t => t.name === group.name)?.subTags || []).map((tag, i) => (
+                      <span key={i} className="theme-subtag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
                 {group.desc && <p className="theme-desc">{group.desc}</p>}
-                <div className="theme-count-arrow">
-                  <span className="theme-article-count">{group.articles.length} ARTICLE{group.articles.length > 1 ? 'S' : ''}</span>
+                
+                <div className="theme-arrow-only">
                   <span className="theme-header-arrow">→</span>
                 </div>
               </div>
