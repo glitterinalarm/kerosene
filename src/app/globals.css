@@ -71,9 +71,9 @@ img { display: block; max-width: 100%; height: auto; }
 
 .site-title {
   font-size: clamp(2rem, 16vw, 25rem); 
-  line-height: 0.85; /* On redonne un peu d'air pour éviter la coupure */
+  line-height: 0.85;
   text-align: center;
-  margin-bottom: 2vw;
+  margin-bottom: 1vw; /* Réduit pour plus de tension */
   font-weight: 800;
   text-transform: uppercase;
   display: flex;
@@ -939,18 +939,18 @@ img { display: block; max-width: 100%; height: auto; }
 .themes-section {
   display: flex;
   flex-direction: column;
-  gap: 8vw;
-  margin-bottom: 15vw;
+  gap: 4vw; /* Divisé par 2 pour plus de densité */
+  margin-bottom: 10vw;
 }
 
 .theme-block {
   border-top: 2px solid var(--border-color);
-  padding-top: 3vw;
+  padding-top: 2vw;
 }
 
 .theme-header {
-  padding-bottom: 2vw;
-  margin-bottom: 3vw;
+  padding-bottom: 1vw;
+  margin-bottom: 1.5vw;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   overflow: hidden;
 }
@@ -1451,9 +1451,9 @@ img { display: block; max-width: 100%; height: auto; }
 .rubrique-back:hover { color: #fff; }
 
 .rubrique-header {
-  padding: 5vw 0 3vw;
+  padding: 3vw 0 1vw; /* Moins d'espace mort en haut de page rubrique */
   border-bottom: 1px solid rgba(255,255,255,0.1);
-  margin-bottom: 4vw;
+  margin-bottom: 2vw;
 }
 
 .rubrique-tag {
