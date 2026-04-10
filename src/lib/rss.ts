@@ -55,7 +55,7 @@ const feeds = [
   { name: "Muse by Clio", url: "https://musebycl.io/rss.xml", category: "PUBLICITÉ" },
   { name: "J'ai un pote dans la com", url: "https://jai-un-pote-dans-la.com/feed/", category: "PUBLICITÉ" },
   { name: "LBB Online", url: "https://www.lbbonline.com/news/feed/", category: "PUBLICITÉ" },
-  { name: "Campaign Live", url: "https://www.campaignlive.co.uk/rss/news", category: "PUBLICITÉ" },
+  { name: "Famous Campaigns", url: "https://www.famouscampaigns.com/feed/", category: "PUBLICITÉ" },
   { name: "Ad Age", url: "https://adage.com/rss-news", category: "PUBLICITÉ" },
   { name: "The Drum", url: "https://www.thedrum.com/feeds/rss/all", category: "PUBLICITÉ" },
   { name: "CB News", url: "https://www.cbnews.fr/rss", category: "PUBLICITÉ" },
