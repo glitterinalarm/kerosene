@@ -218,6 +218,61 @@ export async function fetchArticles(): Promise<Article[]> {
     console.error('[RSS] Erreur fatale chargement hero:', err);
   }
 
+  // 0.bis CHARGEMENT DES ARCHIVES ÉDITORIALES (Pour la rubrique Kérosène)
+  let keroArchives: Article[] = [];
+  try {
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const { blobs } = await list({ prefix: 'editorial/archives/' });
+      const archivePromises = blobs
+        .filter(b => b.pathname.endsWith('.json'))
+        .map(async (b) => {
+          try {
+            const res = await fetch(b.url, { cache: 'no-store' });
+            const data = await res.json();
+            return {
+              id: b.pathname.split('/').pop()?.replace('.json', '') || 'archive',
+              title: data.title,
+              excerpt: data.excerpt,
+              insight: data.excerpt,
+              imageUrl: (data.blocks?.find((b: any) => b.type === 'image')?.content) || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop",
+              category: data.category || 'KÉROSÈNE',
+              source: data.sourceName || 'ÉDITORIAL KÉROSÈNE',
+              pubDate: data.updatedAt || new Date().toISOString(),
+              link: `/article/${b.pathname.split('/').pop()?.replace('.json', '')}`,
+              blocks: data.blocks || []
+            } as Article;
+          } catch { return null; }
+        });
+      keroArchives = (await Promise.all(archivePromises)).filter((a): a is Article => a !== null);
+    } else {
+      // Local FS Fallback
+      const archivesDir = path.join(process.cwd(), 'public', 'editorial', 'archives');
+      if (fs.existsSync(archivesDir)) {
+        keroArchives = fs.readdirSync(archivesDir)
+          .filter(f => f.endsWith('.json'))
+          .map(f => {
+            try {
+              const data = JSON.parse(fs.readFileSync(path.join(archivesDir, f), 'utf8'));
+              return {
+                id: f.replace('.json', ''),
+                title: data.title,
+                excerpt: data.excerpt,
+                insight: data.excerpt,
+                imageUrl: (data.blocks?.find((b: any) => b.type === 'image')?.content) || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop",
+                category: data.category || 'KÉROSÈNE',
+                source: data.sourceName || 'ÉDITORIAL KÉROSÈNE',
+                pubDate: data.updatedAt || new Date().toISOString(),
+                link: `/article/${f.replace('.json', '')}`,
+                blocks: data.blocks || []
+              } as Article;
+            } catch { return null; }
+          }).filter((a): a is Article => a !== null);
+      }
+    }
+  } catch (err) {
+    console.warn("[RSS] Erreur chargement archives:", err);
+  }
+
   // 1. TENTATIVE DE RÉCUPÉRATION DU BLOB (CONTENU IA DU JOUR)
   try {
     let data;
@@ -378,7 +433,7 @@ export async function fetchArticles(): Promise<Article[]> {
   }
 
   // 2. ENSUITE LE RESTE DÉDUPLIQUÉ ET TRIÉ
-  const sortedRest = [...aiArticles, ...allArticles].sort((a, b) => {
+  const sortedRest = [...aiArticles, ...keroArchives, ...allArticles].sort((a, b) => {
     // Priorité au contenu IA
     const isAIA = a.source?.includes('IA') || a.source?.includes('KÉROSÈNE');
     const isBIA = b.source?.includes('IA') || b.source?.includes('KÉROSÈNE');
