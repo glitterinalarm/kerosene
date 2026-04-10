@@ -208,7 +208,7 @@ export async function fetchArticles(): Promise<Article[]> {
         imageUrl: firstMediaBlock.type === 'image' ? firstMediaBlock.content : undefined,
         videoUrl: firstMediaBlock.type === 'video' ? firstMediaBlock.content : (firstMediaBlock.type === 'youtube' || ytId ? ytId : undefined),
         category: data.category,
-        source: data.sourceName ? `${data.sourceName}` : 'ÉDITORIAL KÉROSÈNE',
+        source: data.sourceName ? `KÉROSÈNE | ${data.sourceName}` : 'ÉDITORIAL KÉROSÈNE',
         pubDate: data.updatedAt || new Date().toISOString(),
         link: data.sourceUrl || '#',
         blocks: blocks
@@ -236,7 +236,7 @@ export async function fetchArticles(): Promise<Article[]> {
               insight: data.excerpt,
               imageUrl: (data.blocks?.find((b: any) => b.type === 'image')?.content) || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop",
               category: data.category || 'KÉROSÈNE',
-              source: data.sourceName || 'ÉDITORIAL KÉROSÈNE',
+              source: data.sourceName ? `KÉROSÈNE | ${data.sourceName}` : 'ÉDITORIAL KÉROSÈNE',
               pubDate: data.updatedAt || new Date().toISOString(),
               link: `/article/${b.pathname.split('/').pop()?.replace('.json', '')}`,
               blocks: data.blocks || []
@@ -260,7 +260,7 @@ export async function fetchArticles(): Promise<Article[]> {
                 insight: data.excerpt,
                 imageUrl: (data.blocks?.find((b: any) => b.type === 'image')?.content) || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop",
                 category: data.category || 'KÉROSÈNE',
-                source: data.sourceName || 'ÉDITORIAL KÉROSÈNE',
+                source: data.sourceName ? `KÉROSÈNE | ${data.sourceName}` : 'ÉDITORIAL KÉROSÈNE',
                 pubDate: data.updatedAt || new Date().toISOString(),
                 link: `/article/${f.replace('.json', '')}`,
                 blocks: data.blocks || []
