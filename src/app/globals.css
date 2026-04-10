@@ -71,19 +71,20 @@ img { display: block; max-width: 100%; height: auto; }
 
 .site-title {
   font-size: clamp(2rem, 16vw, 25rem); 
-  line-height: 0.75;
+  line-height: 0.85; /* On redonne un peu d'air pour éviter la coupure */
   text-align: center;
-  margin-bottom: 0.5vw;
-  font-weight: 800; /* Poids maximal de la Syne */
+  margin-bottom: 2vw;
+  font-weight: 800;
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
   width: 100%;
   font-family: var(--font-title);
-  letter-spacing: -0.06em; /* Encore plus serré pour fusionner les lettres */
-  transform: scaleY(1.25); /* Tension maximale */
-  -webkit-text-stroke: 1.5px var(--text-color); /* On "engraisse" artificiellement la police */
+  letter-spacing: -0.06em; 
+  transform: scaleY(1.2); /* Légère réduction pour la stabilité */
+  -webkit-text-stroke: 1.5px var(--text-color);
   paint-order: stroke fill;
+  padding-bottom: 0.05em; /* Espace de sécurité pour le bas des lettres */
 }
 
 /* Title base styles logic already moved to .site-title */
