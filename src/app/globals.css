@@ -1009,14 +1009,15 @@ img { display: block; max-width: 100%; height: auto; }
 
 .theme-subtag {
   font-family: var(--font-condensed);
-  font-size: clamp(0.8rem, 1.5vw, 1.5rem);
+  font-size: 0.75rem; /* Taille identique au label À LA UNE */
   font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #000000 !important; /* Texte Noir pour contraste maximal */
-  background: #ffffff !important; /* Fond Blanc pour "popper" sur le titre */
-  padding: 0.3rem 0.8rem;
+  color: #000000 !important;
+  background: #ffffff !important;
+  padding: 0.5rem 0.9rem; /* Padding identique à la référence */
   white-space: nowrap;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: none; /* Suppression de l'ombre pour plus de rigueur */
 }
 
 /* Hover Logic */

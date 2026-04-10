@@ -164,10 +164,6 @@ export default async function RubriquePage({ params }: PageProps) {
             ))}
           </div>
         </div>
-
-        <div className="theme-arrow-only" style={{ marginTop: '1rem' }}>
-          <span className="theme-header-arrow">→</span>
-        </div>
       </header>
 
       <section className="rubrique-grid container">

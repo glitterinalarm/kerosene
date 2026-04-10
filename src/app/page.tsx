@@ -173,10 +173,6 @@ export default async function Home({ searchParams }: HomeProps) {
                 </div>
 
                 {group.desc && <p className="theme-desc">{group.desc}</p>}
-                
-                <div className="theme-arrow-only">
-                  <span className="theme-header-arrow">→</span>
-                </div>
               </div>
             </Link>
             
