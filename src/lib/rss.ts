@@ -44,6 +44,10 @@ const feeds = [
   { name: "It's Nice That", url: "https://www.itsnicethat.com/articles.rss", category: "GRAPHISME" },
   { name: "Creative Review", url: "https://www.creativereview.co.uk/feed/", category: "GRAPHISME" },
   { name: "Graphéine", url: "https://www.grapheine.com/feed", category: "GRAPHISME" },
+  { name: "BP&O", url: "https://bpando.org/feed/", category: "GRAPHISME" },
+  { name: "The Brand Identity", url: "https://the-brandidentity.com/feed", category: "GRAPHISME" },
+  { name: "Eye on Design", url: "https://eyeondesign.aiga.org/feed", category: "GRAPHISME" },
+  { name: "Brand New", url: "https://www.underconsideration.com/brandnew/feed", category: "GRAPHISME" },
 
   // PUBLICITÉ
   { name: "Ads of the World", url: "https://www.adsoftheworld.com/feed", category: "PUBLICITÉ" },
@@ -57,10 +61,13 @@ const feeds = [
   { name: "CB News", url: "https://www.cbnews.fr/rss", category: "PUBLICITÉ" },
   { name: "Print Mag", url: "https://www.printmag.com/feed/", category: "PUBLICITÉ" },
 
-  // INNOVATION
+  // INNOVATION & MOTION
   { name: "Contagious", url: "https://www.contagious.com/rss/news", category: "INNOVATION" },
   { name: "Creapills", url: "https://creapills.com/feed", category: "INNOVATION" },
   { name: "Marketing Week", url: "https://www.marketingweek.com/feed/", category: "INNOVATION" },
+  { name: "Motionographer", url: "https://motionographer.com/feed/", category: "INNOVATION" },
+  { name: "Dezeen", url: "https://www.dezeen.com/feed/", category: "INNOVATION" },
+  { name: "Designboom", url: "https://www.designboom.com/feed/", category: "INNOVATION" },
 
   // DROP
   { name: "Highsnobiety", url: "https://www.highsnobiety.com/feeds/rss", category: "DROP" },
@@ -71,8 +78,9 @@ const feeds = [
   { name: "Dazed", url: "https://www.dazeddigital.com/rss", category: "TREND" },
   { name: "i-D", url: "https://i-d.vice.com/en_uk/rss", category: "TREND" },
   { name: "The Business of Fashion", url: "https://www.businessoffashion.com/site/rss", category: "TREND" },
+  { name: "032c", url: "https://032c.com/feed/", category: "TREND" },
 
-  // SOCIAL MEDIA & DIGITAL — Flux vérifiés accessibles (sans Cloudflare)
+  // SOCIAL MEDIA & DIGITAL
   { name: "Sprout Social", url: "https://sproutsocial.com/insights/feed/", category: "SOCIAL MEDIA" },
   { name: "Social Media Examiner", url: "https://www.socialmediaexaminer.com/feed/", category: "SOCIAL MEDIA" },
   { name: "Later Blog", url: "https://later.com/blog/feed/", category: "SOCIAL MEDIA" },
@@ -357,7 +365,7 @@ export async function fetchArticles(): Promise<Article[]> {
   });
 
   const feedsResults = await Promise.all(feedPromises);
-  allArticles = feedsResults.flat().filter((a: any) => a !== null);
+  allArticles = (feedsResults.flat().filter((a) => a !== null) as Article[]);
 
   // Final deduplication
   const finalStream: Article[] = [];
