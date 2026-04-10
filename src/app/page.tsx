@@ -186,10 +186,6 @@ export default async function Home({ searchParams }: HomeProps) {
         ))}
       </section>
       
-      {/* MANIFESTO FOOTER */}
-      <section className="manifesto container">
-          <h2>Seule compte l&apos;exigence du craft et la radicalité de l&apos;idée.</h2>
-      </section>
     </>
   );
 }
