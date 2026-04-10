@@ -8,13 +8,6 @@ export interface RubriqueConfig {
 
 export const THEMES_CONFIG: RubriqueConfig[] = [
   { 
-    name: "KÉROSÈNE", 
-    slug: "kerosene", 
-    desc: "Analyses exclusives et éditos signés par la rédaction.", 
-    subTags: ["InSight", "Radar", "Long-Form", "DA Club"],
-    categories: ['KÉROSÈNE', 'ÉDITORIAL', 'À LA UNE']
-  },
-  { 
     name: "GRAPHISME", 
     slug: "graphisme", 
     desc: "Identité visuelle, direction artistique et branding.", 
@@ -55,5 +48,12 @@ export const THEMES_CONFIG: RubriqueConfig[] = [
     desc: "Signaux émergents, tendances culturelles et zeitgeist.", 
     subTags: ["Lifestyle", "Culture", "Report", "Future"],
     categories: ['TREND', 'TENDANCE', 'CULTURE', 'SOCIÉTÉ']
+  },
+  { 
+    name: "KÉROSÈNE", 
+    slug: "kerosene", 
+    desc: "Analyses exclusives et éditos signés par la rédaction.", 
+    subTags: ["InSight", "Radar", "Long-Form", "DA Club"],
+    categories: ['KÉROSÈNE', 'ÉDITORIAL', 'À LA UNE']
   },
 ];
