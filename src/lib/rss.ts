@@ -60,6 +60,7 @@ const feeds = [
   { name: "The Drum", url: "https://www.thedrum.com/feeds/rss/all", category: "PUBLICITÉ" },
   { name: "CB News", url: "https://www.cbnews.fr/rss.xml", category: "PUBLICITÉ" },
   { name: "Print Mag", url: "https://www.printmag.com/feed/", category: "PUBLICITÉ" },
+  { name: "Dans Ta Pub", url: "https://www.danstapub.com/feed/", category: "PUBLICITÉ" },
 
   // INNOVATION & MOTION
   { name: "Contagious", url: "https://www.contagious.com/rss/news", category: "INNOVATION" },
@@ -79,14 +80,13 @@ const feeds = [
   { name: "i-D", url: "https://i-d.vice.com/en_uk/rss", category: "TREND" },
   { name: "The Business of Fashion", url: "https://www.businessoffashion.com/site/rss", category: "TREND" },
   { name: "032c", url: "https://032c.com/feed/", category: "TREND" },
+  { name: "L'ADN", url: "https://www.ladn.eu/feed/", category: "TREND" },
 
   // SOCIAL MEDIA & DIGITAL
   { name: "We Are Social FR", url: "https://wearesocial.com/fr/feed/", category: "SOCIAL MEDIA" },
   { name: "We Are Social UK", url: "https://wearesocial.com/uk/feed/", category: "SOCIAL MEDIA" },
   { name: "We Are Social Global", url: "https://wearesocial.com/feed/", category: "SOCIAL MEDIA" },
-  { name: "Dans Ta Pub", url: "https://www.danstapub.com/feed/", category: "SOCIAL MEDIA" },
   { name: "JUPDLC Social", url: "https://jai-un-pote-dans-la.com/tag/social-media/feed/", category: "SOCIAL MEDIA" },
-  { name: "L'ADN", url: "https://www.ladn.eu/feed/", category: "SOCIAL MEDIA" },
 ];
 
 function decodeHTMLEntities(text: string): string {
