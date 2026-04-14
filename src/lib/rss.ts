@@ -58,7 +58,7 @@ const feeds = [
   { name: "Famous Campaigns", url: "https://www.famouscampaigns.com/feed/", category: "PUBLICITÉ" },
   { name: "Ad Age", url: "https://adage.com/rss-news", category: "PUBLICITÉ" },
   { name: "The Drum", url: "https://www.thedrum.com/feeds/rss/all", category: "PUBLICITÉ" },
-  { name: "CB News", url: "https://www.cbnews.fr/rss", category: "PUBLICITÉ" },
+  { name: "CB News", url: "https://www.cbnews.fr/rss.xml", category: "PUBLICITÉ" },
   { name: "Print Mag", url: "https://www.printmag.com/feed/", category: "PUBLICITÉ" },
 
   // INNOVATION & MOTION
@@ -81,9 +81,12 @@ const feeds = [
   { name: "032c", url: "https://032c.com/feed/", category: "TREND" },
 
   // SOCIAL MEDIA & DIGITAL
-  { name: "Sprout Social", url: "https://sproutsocial.com/insights/feed/", category: "SOCIAL MEDIA" },
-  { name: "Social Media Examiner", url: "https://www.socialmediaexaminer.com/feed/", category: "SOCIAL MEDIA" },
-  { name: "Later Blog", url: "https://later.com/blog/feed/", category: "SOCIAL MEDIA" },
+  { name: "We Are Social FR", url: "https://wearesocial.com/fr/feed/", category: "SOCIAL MEDIA" },
+  { name: "We Are Social UK", url: "https://wearesocial.com/uk/feed/", category: "SOCIAL MEDIA" },
+  { name: "We Are Social Global", url: "https://wearesocial.com/feed/", category: "SOCIAL MEDIA" },
+  { name: "Dans Ta Pub", url: "https://www.danstapub.com/feed/", category: "SOCIAL MEDIA" },
+  { name: "JUPDLC Social", url: "https://jai-un-pote-dans-la.com/tag/social-media/feed/", category: "SOCIAL MEDIA" },
+  { name: "L'ADN", url: "https://www.ladn.eu/feed/", category: "SOCIAL MEDIA" },
 ];
 
 function decodeHTMLEntities(text: string): string {
@@ -331,12 +334,14 @@ export async function fetchArticles(): Promise<Article[]> {
   const feedPromises = feeds.map(async (feed) => {
     try {
       // Revalidation set to 1 hour (3600s)
-      const response = await fetch(feed.url, { next: { revalidate: 3600 } });
+      // Temporairement réduit à 60s pour forcer la prise en compte du nouveau lien JUPDLC
+      const response = await fetch(feed.url, { next: { revalidate: 60 } });
       const text = await response.text();
       const parsed = await parser.parseString(text);
 
       // Fetch more items (e.g., 15) to actually populate archives and ensure stability
-      const items = parsed.items.slice(0, 15);
+      // Réduit à 10 pour plus de rapidité et moins de risques de timeout
+      const items = parsed.items.slice(0, 10);
 
       // We fetch OG data in parallel for items of this single feed too
       const itemsPromises = items.map(async (item) => {
@@ -434,14 +439,24 @@ export async function fetchArticles(): Promise<Article[]> {
 
   // 2. ENSUITE LE RESTE DÉDUPLIQUÉ ET TRIÉ
   const sortedRest = [...aiArticles, ...keroArchives, ...allArticles].sort((a, b) => {
-    // Priorité au contenu IA
+    const dateA = new Date(a.pubDate).getTime();
+    const dateB = new Date(b.pubDate).getTime();
+    
+    // Si un article a moins de 12h, il est considéré comme "Breaking" et remonte
+    const isVeryFreshA = (Date.now() - dateA) < 12 * 3600 * 1000;
+    const isVeryFreshB = (Date.now() - dateB) < 12 * 3600 * 1000;
+
+    if (isVeryFreshA && !isVeryFreshB) return -1;
+    if (!isVeryFreshA && isVeryFreshB) return 1;
+
+    // Priorité ensuite au contenu IA si les dates sont proches
     const isAIA = a.source?.includes('IA') || a.source?.includes('KÉROSÈNE');
     const isBIA = b.source?.includes('IA') || b.source?.includes('KÉROSÈNE');
     if (isAIA && !isBIA) return -1;
     if (!isAIA && isBIA) return 1;
 
-    // Sinon tri chronologique
-    return new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime();
+    // Sinon tri chronologique pur
+    return dateB - dateA;
   });
 
   for (const art of sortedRest) {
