@@ -87,6 +87,10 @@ const feeds = [
   { name: "We Are Social UK", url: "https://wearesocial.com/uk/feed/", category: "SOCIAL MEDIA" },
   { name: "We Are Social Global", url: "https://wearesocial.com/feed/", category: "SOCIAL MEDIA" },
   { name: "JUPDLC Social", url: "https://jai-un-pote-dans-la.com/tag/social-media/feed/", category: "SOCIAL MEDIA" },
+  { name: "Adweek Social", url: "https://www.adweek.com/category/social-marketing/feed/", category: "SOCIAL MEDIA" },
+  { name: "Social Media Examiner", url: "https://www.socialmediaexaminer.com/feed/", category: "SOCIAL MEDIA" },
+  { name: "Digiday", url: "https://digiday.com/feed/", category: "SOCIAL MEDIA" },
+  { name: "Marketing Dive", url: "https://www.marketingdive.com/feeds/news/", category: "SOCIAL MEDIA" },
 ];
 
 function decodeHTMLEntities(text: string): string {
@@ -109,9 +113,23 @@ function decodeHTMLEntities(text: string): string {
     .replace(/&#8221;/g, '"');
 }
 
-function extractImageFromContent(content: string = ''): string | null {
-  const match = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-  return match ? match[1] : null;
+function extractImageFromContent(content: string = '', feedBaseUrl?: string): string | null {
+  // Priorité au data-src (lazy-load Blazy utilisé par CBnews etc.)
+  const dataSrcMatch = content.match(/<img[^>]+data-src=["']((?!\/\/|data:)[^"']+)["']/i);
+  const srcMatch = content.match(/<img[^>]+src=["']((?!data:)[^"']+)["']/i);
+  const rawUrl = dataSrcMatch ? dataSrcMatch[1] : (srcMatch ? srcMatch[1] : null);
+  if (!rawUrl) return null;
+  // Résouds les URLs relatives contre le domaine du feed
+  if (!rawUrl.startsWith('http')) {
+    if (feedBaseUrl) {
+      try {
+        const base = new URL(feedBaseUrl);
+        return `${base.origin}${rawUrl.startsWith('/') ? '' : '/'}${rawUrl}`;
+      } catch { return null; }
+    }
+    return null;
+  }
+  return rawUrl;
 }
 
 /**
@@ -351,8 +369,8 @@ export async function fetchArticles(): Promise<Article[]> {
         const actualLink = typeof item.link === 'string' ? item.link : (((item.link as unknown as { href?: string })?.href as string) || '#');
         const articleId = Buffer.from(rawIdFrom(item)).toString('base64url');
 
-        // Fallback images from feed content if OG failed
-        const feedImageUrl = item.mediaContent?.['$']?.url || extractImageFromContent(item.contentEncoded) || extractImageFromContent(item.description);
+        // Fallback images from feed content if OG failed (avec résolution d'URLs relatives pour CBnews etc.)
+        const feedImageUrl = item.mediaContent?.['$']?.url || extractImageFromContent(item.contentEncoded, feed.url) || extractImageFromContent(item.description, feed.url);
 
         // If we have no image from feed, AND we have a link, try to fetch OG data
         let allImages: string[] = [];
@@ -372,7 +390,13 @@ export async function fetchArticles(): Promise<Article[]> {
         // IMPORTANT: We do NOT skip articles if image is missing anymore
         // But we provide a default placeholder if really nothing is found
         if (imageUrl && !imageUrl.startsWith('http')) {
-          imageUrl = null;
+          // Tenter la résolution relative avant d'abandonner
+          try {
+            const base = new URL(feed.url);
+            imageUrl = `${base.origin}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+          } catch {
+            imageUrl = null;
+          }
         }
         const finalImageUrl = imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop";
 
