@@ -93,10 +93,7 @@ const feeds = [
   { name: "Marketing Dive", url: "https://www.marketingdive.com/feeds/news/", category: "SOCIAL MEDIA" },
 
   // IA CRÉATIVE
-  { name: "Creative Bloq AI", url: "https://www.creativebloq.com/feeds/artificial-intelligence", category: "IA CRÉATIVE" },
-  { name: "The Verge AI", url: "https://www.theverge.com/rss/artificial-intelligence/index.xml", category: "IA CRÉATIVE" },
-  { name: "Adweek AI", url: "https://www.adweek.com/category/artificial-intelligence/feed/", category: "IA CRÉATIVE" },
-  { name: "MarkTechPost GenAI", url: "https://www.marktechpost.com/category/generative-ai/feed/", category: "IA CRÉATIVE" },
+  { name: "Maginative", url: "https://www.maginative.com/perspectives/rss/", category: "IA CRÉATIVE" },
 ];
 
 function decodeHTMLEntities(text: string): string {
