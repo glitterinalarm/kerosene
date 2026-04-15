@@ -50,17 +50,17 @@ export const THEMES_CONFIG: RubriqueConfig[] = [
     categories: ['TREND', 'TENDANCE', 'CULTURE', 'SOCIÉTÉ']
   },
   { 
-    name: "KÉROSÈNE", 
-    slug: "kerosene", 
-    desc: "Analyses exclusives et éditos signés par la rédaction.", 
-    subTags: ["InSight", "Radar", "Long-Form", "DA Club"],
-    categories: ['KÉROSÈNE', 'ÉDITORIAL', 'À LA UNE']
-  },
-  { 
     name: "IA CRÉATIVE", 
     slug: "ia-creative", 
     desc: "Outils génératifs, création d'images, vidéos, et prompt engineering.", 
     subTags: ["Gen-AI", "Midjourney", "Video", "Tools"],
     categories: ['IA CRÉATIVE', 'GEN AI', 'IA GENERATIVE', 'MIDJOURNEY', 'AI ART', 'GEN-AI']
+  },
+  { 
+    name: "KÉROSÈNE", 
+    slug: "kerosene", 
+    desc: "Analyses exclusives et éditos signés par la rédaction.", 
+    subTags: ["InSight", "Radar", "Long-Form", "DA Club"],
+    categories: ['KÉROSÈNE', 'ÉDITORIAL', 'À LA UNE']
   },
 ];
