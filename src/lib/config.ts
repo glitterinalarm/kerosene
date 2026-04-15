@@ -31,9 +31,9 @@ export const THEMES_CONFIG: RubriqueConfig[] = [
   { 
     name: "INNOVATION", 
     slug: "innovation", 
-    desc: "Technologies émergentes, IA, UX et usages digitaux.", 
-    subTags: ["AI Art", "Web3", "UX/UI", "Tech"],
-    categories: ['INNOVATION', 'TECH', 'DIGITAL', 'WEB', 'IA', 'AI', 'UX']
+    desc: "Technologies émergentes, UX, digital et nouveaux usages.", 
+    subTags: ["Web3", "UX/UI", "Tech", "Expérience"],
+    categories: ['INNOVATION', 'TECH', 'DIGITAL', 'WEB', 'UX', 'WEB3']
   },
   { 
     name: "DROP", 
@@ -55,5 +55,12 @@ export const THEMES_CONFIG: RubriqueConfig[] = [
     desc: "Analyses exclusives et éditos signés par la rédaction.", 
     subTags: ["InSight", "Radar", "Long-Form", "DA Club"],
     categories: ['KÉROSÈNE', 'ÉDITORIAL', 'À LA UNE']
+  },
+  { 
+    name: "IA CRÉATIVE", 
+    slug: "ia-creative", 
+    desc: "Outils génératifs, création d'images, vidéos, et prompt engineering.", 
+    subTags: ["Gen-AI", "Midjourney", "Video", "Tools"],
+    categories: ['IA CRÉATIVE', 'GEN AI', 'IA GENERATIVE', 'MIDJOURNEY', 'AI ART', 'GEN-AI']
   },
 ];
