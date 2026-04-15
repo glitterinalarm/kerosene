@@ -60,8 +60,14 @@ export default async function Home({ searchParams }: HomeProps) {
 
         const cat = a.category?.toUpperCase() || '';
         
-        // Exact match via categories config
-        if (themeObj.categories.some(rc => cat.includes(rc.toUpperCase()) || rc.toUpperCase().includes(cat))) return true;
+        // Exact match via categories config with word boundaries protection
+        const matches = themeObj.categories.some(rc => {
+          const rcUpper = rc.toUpperCase();
+          if (cat === rcUpper) return true;
+          const regex = new RegExp(`\\b${rcUpper.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+          return regex.test(cat);
+        });
+        if (matches) return true;
         
         return false;
       }).slice(0, 6)

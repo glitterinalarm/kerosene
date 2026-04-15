@@ -12,7 +12,13 @@ export const revalidate = 0;
 
 function matchesRubrique(category: string, categoriesConfig: string[]): boolean {
   const cat = category?.toUpperCase() || '';
-  return categoriesConfig.some(rc => cat.includes(rc.toUpperCase()) || rc.toUpperCase().includes(cat));
+  return categoriesConfig.some(rc => {
+    const rcUpper = rc.toUpperCase();
+    if (cat === rcUpper) return true;
+    // Évite que "SOCIAL MEDIA" match "IA" par erreur
+    const regex = new RegExp(`\\b${rcUpper.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    return regex.test(cat);
+  });
 }
 
 interface PageProps {
