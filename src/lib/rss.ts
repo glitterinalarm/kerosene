@@ -94,6 +94,7 @@ const feeds = [
 
   // IA CRÉATIVE
   { name: "Maginative", url: "https://www.maginative.com/perspectives/rss/", category: "IA CRÉATIVE" },
+  { name: "Everypixel Journal", url: "https://journal.everypixel.com/rss", category: "IA CRÉATIVE" },
 ];
 
 function decodeHTMLEntities(text: string): string {
